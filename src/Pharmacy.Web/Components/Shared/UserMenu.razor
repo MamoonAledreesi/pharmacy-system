@@ -1,0 +1,25 @@
+@using System.Security.Claims
+@using Pharmacy.Infrastructure.Identity
+
+<AuthorizeView>
+    <Authorized>
+        <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" AriaLabel="@L["UserMenu.Label"]">
+            <div class="px-4 py-2">
+                <MudText Typo="Typo.subtitle2">@context.User.FindFirstValue(PharmacyClaimTypes.FullName)</MudText>
+                <MudText Typo="Typo.caption" dir="ltr">@context.User.Identity?.Name</MudText>
+            </div>
+            <MudDivider />
+            <MudMenuItem Icon="@Icons.Material.Filled.Password" Href="@AccountGuardMiddleware.ChangePasswordPath" ForceLoad="true">
+                @L["ChangePassword.Title"]
+            </MudMenuItem>
+            @* Logout is a form POST with an antiforgery token (see AccountEndpoints). *@
+            <form action="@AccountEndpoints.LogoutPath" method="post">
+                <AntiforgeryToken />
+                <button type="submit" class="user-menu-logout">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" />
+                    <span>@L["UserMenu.Logout"]</span>
+                </button>
+            </form>
+        </MudMenu>
+    </Authorized>
+</AuthorizeView>

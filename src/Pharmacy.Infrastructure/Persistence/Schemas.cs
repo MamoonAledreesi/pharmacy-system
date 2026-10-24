@@ -4,4 +4,6 @@ namespace Pharmacy.Infrastructure.Persistence;
 internal static class Schemas
 {
     public const string Config = "config";
+    public const string Identity = "identity";
+    public const string Audit = "audit";
 }

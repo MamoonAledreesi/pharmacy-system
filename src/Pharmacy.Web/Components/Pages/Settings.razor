@@ -1,4 +1,5 @@
 @page "/settings"
+@attribute [Authorize(Policy = Permissions.SettingsManage)]
 @inject PharmacySettingsService SettingsService
 @inject ISnackbar Snackbar
 
@@ -89,9 +90,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // The page is already restricted by policy; the service checks the permission again.
         var current = await SettingsService.GetForEditAsync();
-        _form = SettingsForm.From(current.Values);
-        _rowVersion = current.RowVersion;
+        if (current.IsFailure)
+        {
+            return;
+        }
+
+        _form = SettingsForm.From(current.Value.Values);
+        _rowVersion = current.Value.RowVersion;
     }
 
     private async Task SaveAsync()
@@ -119,7 +126,12 @@
             }
 
             // Reload so the next save carries the new concurrency token.
-            _rowVersion = (await SettingsService.GetForEditAsync()).RowVersion;
+            var reloaded = await SettingsService.GetForEditAsync();
+            if (reloaded.IsSuccess)
+            {
+                _rowVersion = reloaded.Value.RowVersion;
+            }
+
             Snackbar.Add(L["Settings.Saved"], Severity.Success);
         }
         finally

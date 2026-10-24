@@ -1,0 +1,68 @@
+@page "/Account/Login"
+@attribute [AllowAnonymous]
+@inject SignInService SignInService
+@inject NavigationManager Navigation
+
+<PageTitle>@L["Login.Title"] - @L["App.Name"]</PageTitle>
+
+<h1 class="account-title">@L["Login.Title"]</h1>
+
+<AccountError Message="@_error" />
+
+<EditForm Model="Input" method="post" OnSubmit="SignInAsync" FormName="login" class="account-form">
+    <label class="account-label" for="user-name">@L["Login.UserName"]</label>
+    <InputText id="user-name" class="account-input" @bind-Value="Input.UserName" autocomplete="username" dir="ltr" autofocus />
+
+    <label class="account-label" for="password">@L["Login.Password"]</label>
+    <InputText id="password" type="password" class="account-input" @bind-Value="Input.Password" autocomplete="current-password" dir="ltr" />
+
+    <button type="submit" class="account-button">@L["Login.Submit"]</button>
+</EditForm>
+
+@code {
+    private string? _error;
+
+    [SupplyParameterFromForm]
+    private LoginInput Input { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private async Task SignInAsync()
+    {
+        var password = Input.Password;
+        // Never echo a password back into the re-rendered form.
+        Input.Password = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(Input.UserName) || string.IsNullOrEmpty(password))
+        {
+            _error = L["Account.FieldsRequired"];
+            return;
+        }
+
+        switch (await SignInService.PasswordSignInAsync(Input.UserName, password))
+        {
+            case SignInOutcome.Succeeded:
+                Navigation.NavigateTo(LocalUrl.OrRoot(ReturnUrl));
+                break;
+            case SignInOutcome.MustChangePassword:
+                Navigation.NavigateTo(AccountGuardMiddleware.ChangePasswordPath);
+                break;
+            case SignInOutcome.LockedOut:
+                _error = L["Login.LockedOut", (int)UserRules.LockoutDuration.TotalMinutes];
+                break;
+            default:
+                _error = L["Login.Failed"];
+                break;
+        }
+    }
+
+    private sealed class LoginInput
+    {
+        public string UserName { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+    }
+}

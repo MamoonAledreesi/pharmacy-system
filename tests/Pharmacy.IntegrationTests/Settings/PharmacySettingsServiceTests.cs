@@ -1,5 +1,8 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
+using Pharmacy.Application.Auditing;
+using Pharmacy.Application.Authorization;
 using Pharmacy.Application.Common;
 using Pharmacy.Application.Settings;
 using Pharmacy.Domain.Settings;
@@ -12,91 +15,98 @@ public sealed class PharmacySettingsServiceTests : IAsyncLifetime
     private static readonly PharmacySettingsData _updated = new(
         "صيدلية الشفاء", "Al Shifa Pharmacy", "0123456789", "الشارع الرئيسي", ThemeMode.Dark, ThemeColor.Purple);
 
-    private readonly string _connectionString = TestDatabase.CreateUniqueConnectionString();
-    private readonly PharmacySettingsState _state = new();
+    private readonly TestServices _services = new();
 
     public async Task InitializeAsync()
     {
-        await using var context = TestDatabase.CreateContext(_connectionString);
-        await context.Database.MigrateAsync();
+        await _services.InitializeAsync();
+        _services.CurrentUser.SignInAs(1, "manager", isAdministrator: false, Permissions.SettingsManage);
     }
 
-    public async Task DisposeAsync()
-    {
-        await using var context = TestDatabase.CreateContext(_connectionString);
-        await context.Database.EnsureDeletedAsync();
-    }
+    public Task DisposeAsync() => _services.DisposeAsync();
 
     [Fact]
     public async Task GetCurrent_LoadsOnceThenServesFromMemory()
     {
-        await using var context = TestDatabase.CreateContext(_connectionString);
-
-        var first = await CreateService(context).GetCurrentAsync();
-        await context.Database.ExecuteSqlRawAsync("UPDATE config.PharmacySettings SET NameEnglish = N'Changed directly'");
-        var second = await CreateService(context).GetCurrentAsync();
+        var first = await _services.InScopeAsync(s => s.GetRequiredService<PharmacySettingsService>().GetCurrentAsync());
+        await _services.InScopeAsync(s => s.GetRequiredService<PharmacyDbContext>().Database
+            .ExecuteSqlRawAsync("UPDATE config.PharmacySettings SET NameEnglish = N'Changed directly'"));
+        var second = await _services.InScopeAsync(s => s.GetRequiredService<PharmacySettingsService>().GetCurrentAsync());
 
         first.ShouldBe(PharmacySettings.Defaults);
         second.ShouldBeSameAs(first);
     }
 
     [Fact]
-    public async Task Update_PersistsAndRefreshesTheSharedState()
+    public async Task Update_PersistsRefreshesSharedStateAndIsAudited()
     {
+        var state = await _services.InScopeAsync(s => Task.FromResult(s.GetRequiredService<PharmacySettingsState>()));
         var notified = new List<PharmacySettingsData>();
-        _state.Changed += notified.Add;
+        state.Changed += notified.Add;
 
-        await using (var context = TestDatabase.CreateContext(_connectionString))
-        {
-            var service = CreateService(context);
-            var edit = await service.GetForEditAsync();
+        var result = await UpdateAsync(_updated);
 
-            var result = await service.UpdateAsync(_updated, edit.RowVersion);
-
-            result.IsSuccess.ShouldBeTrue();
-        }
-
-        await using var verify = TestDatabase.CreateContext(_connectionString);
-        (await verify.PharmacySettings.AsNoTracking().SingleAsync()).ToData().ShouldBe(_updated);
-        _state.Current.ShouldBe(_updated);
+        result.IsSuccess.ShouldBeTrue();
+        (await LoadSettingsAsync()).ShouldBe(_updated);
+        state.Current.ShouldBe(_updated);
         notified.ShouldBe([_updated]);
+
+        var audit = await _services.InScopeAsync(s => s.GetRequiredService<PharmacyDbContext>().AuditLogEntries.SingleAsync());
+        audit.Action.ShouldBe(AuditActions.SettingsUpdated);
+        audit.UserName.ShouldBe("manager");
+        using var details = JsonDocument.Parse(audit.Details!);
+        details.RootElement.GetProperty("Before").GetProperty("NameArabic").GetString().ShouldBe(PharmacySettings.Defaults.NameArabic);
+        details.RootElement.GetProperty("After").GetProperty("NameArabic").GetString().ShouldBe(_updated.NameArabic);
+    }
+
+    [Fact]
+    public async Task Update_WithoutPermission_IsForbiddenAndChangesNothing()
+    {
+        _services.CurrentUser.SignInAs(2, "cashier");
+
+        var edit = await _services.InScopeAsync(s => s.GetRequiredService<PharmacySettingsService>().GetForEditAsync());
+        var update = await _services.InScopeAsync(s =>
+            s.GetRequiredService<PharmacySettingsService>().UpdateAsync(_updated, []));
+
+        edit.Error!.Code.ShouldBe(CommonErrors.Forbidden);
+        update.Error!.Code.ShouldBe(CommonErrors.Forbidden);
+        (await LoadSettingsAsync()).ShouldBe(PharmacySettings.Defaults);
     }
 
     [Fact]
     public async Task Update_WithStaleVersion_IsRejectedAndKeepsTheOtherUsersChange()
     {
         // Two users open the settings page at the same time.
-        await using var firstContext = TestDatabase.CreateContext(_connectionString);
-        await using var secondContext = TestDatabase.CreateContext(_connectionString);
-        var firstUser = CreateService(firstContext);
-        var secondUser = CreateService(secondContext);
-        var firstEdit = await firstUser.GetForEditAsync();
-        var secondEdit = await secondUser.GetForEditAsync();
+        var firstVersion = await LoadVersionAsync();
+        var secondVersion = await LoadVersionAsync();
 
-        (await firstUser.UpdateAsync(_updated, firstEdit.RowVersion)).IsSuccess.ShouldBeTrue();
-        var second = await secondUser.UpdateAsync(
-            _updated with { NameEnglish = "Overwrite attempt" }, secondEdit.RowVersion);
+        (await UpdateAsync(_updated, firstVersion)).IsSuccess.ShouldBeTrue();
+        var second = await UpdateAsync(_updated with { NameEnglish = "Overwrite attempt" }, secondVersion);
 
         second.Error!.Code.ShouldBe(CommonErrors.ConcurrencyConflict);
-        await using var verify = TestDatabase.CreateContext(_connectionString);
-        (await verify.PharmacySettings.AsNoTracking().SingleAsync()).NameEnglish.ShouldBe(_updated.NameEnglish);
+        (await LoadSettingsAsync()).NameEnglish.ShouldBe(_updated.NameEnglish);
     }
 
     [Fact]
     public async Task Update_WithInvalidValues_SavesNothing()
     {
-        await using var context = TestDatabase.CreateContext(_connectionString);
-        var service = CreateService(context);
-        var edit = await service.GetForEditAsync();
-
-        var result = await service.UpdateAsync(_updated with { NameArabic = " " }, edit.RowVersion);
+        var result = await UpdateAsync(_updated with { NameArabic = " " });
 
         result.Error!.Code.ShouldBe(SettingsErrors.NameArabicRequired);
-        await using var verify = TestDatabase.CreateContext(_connectionString);
-        (await verify.PharmacySettings.AsNoTracking().SingleAsync()).ToData().ShouldBe(PharmacySettings.Defaults);
-        _state.Current.ShouldBeNull();
+        (await LoadSettingsAsync()).ShouldBe(PharmacySettings.Defaults);
+        (await _services.InScopeAsync(s => s.GetRequiredService<PharmacyDbContext>().AuditLogEntries.CountAsync())).ShouldBe(0);
     }
 
-    private PharmacySettingsService CreateService(PharmacyDbContext context) =>
-        new(context, _state, NullLogger<PharmacySettingsService>.Instance);
+    private async Task<Domain.Common.Result> UpdateAsync(PharmacySettingsData values, byte[]? rowVersion = null)
+    {
+        rowVersion ??= await LoadVersionAsync();
+        return await _services.InScopeAsync(s => s.GetRequiredService<PharmacySettingsService>().UpdateAsync(values, rowVersion));
+    }
+
+    private Task<byte[]> LoadVersionAsync() =>
+        _services.InScopeAsync(async s => (await s.GetRequiredService<PharmacySettingsService>().GetForEditAsync()).Value.RowVersion);
+
+    private Task<PharmacySettingsData> LoadSettingsAsync() =>
+        _services.InScopeAsync(async s =>
+            (await s.GetRequiredService<PharmacyDbContext>().PharmacySettings.AsNoTracking().SingleAsync()).ToData());
 }

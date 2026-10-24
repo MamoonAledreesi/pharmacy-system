@@ -1,0 +1,46 @@
+@inherits LayoutComponentBase
+@inject PharmacySettingsService SettingsService
+
+@* Static (server-rendered) layout for sign-in pages: forms post normally so the auth cookie can be written. *@
+<MudThemeProvider Theme="_theme" IsDarkMode="_isDarkMode" />
+
+<main class="account-page">
+    <div class="account-card">
+        <div class="account-brand">
+            <span class="account-brand-name">@_pharmacyName</span>
+            <span class="account-brand-system">@L["App.Name"]</span>
+        </div>
+
+        @Body
+
+        <nav class="account-languages" aria-label="@L["Language.Switch"]">
+            <a href="@LanguageUrl(SupportedCultures.Arabic)" lang="ar">@L["Language.Arabic"]</a>
+            <span aria-hidden="true">·</span>
+            <a href="@LanguageUrl(SupportedCultures.English)" lang="en">@L["Language.English"]</a>
+        </nav>
+    </div>
+</main>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private MudTheme _theme = PharmacyTheme.For(PharmacySettings.Defaults.PrimaryColor);
+    private bool _isDarkMode;
+    private string _pharmacyName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var settings = await SettingsService.GetCurrentAsync();
+        _theme = PharmacyTheme.For(settings.PrimaryColor);
+        // "Match device" needs JavaScript, which static pages do not run; it renders light here.
+        _isDarkMode = settings.ThemeMode == ThemeMode.Dark;
+        _pharmacyName = settings.DisplayName(CultureInfo.CurrentUICulture);
+    }
+
+    private string LanguageUrl(string culture)
+    {
+        var returnPath = HttpContext.Request.Path + HttpContext.Request.QueryString;
+        return $"{CultureEndpoints.SetCulturePath}?culture={culture}&redirectUri={Uri.EscapeDataString(returnPath)}";
+    }
+}

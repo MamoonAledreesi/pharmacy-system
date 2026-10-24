@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pharmacy.Application.Abstractions;
+using Pharmacy.Application.Users;
+using Pharmacy.Infrastructure.Identity;
 using Pharmacy.Infrastructure.Persistence;
 
 namespace Pharmacy.Infrastructure;
@@ -24,6 +27,37 @@ public static class DependencyInjection
         services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<IPharmacyDbContext>(provider => provider.GetRequiredService<PharmacyDbContext>());
 
+        services.AddScoped<IUserManagementService, UserManagementService>();
+        services.AddScoped<IAccountService, AccountService>();
+
         return services;
+    }
+
+    /// <summary>
+    /// Registers ASP.NET Core Identity stores and the approved password/lockout policy.
+    /// The web host adds the sign-in manager and cookies on the returned builder.
+    /// </summary>
+    public static IdentityBuilder AddPharmacyIdentity(this IServiceCollection services)
+    {
+        return services
+            .AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.User.RequireUniqueEmail = false;
+
+                options.Password.RequiredLength = UserRules.PasswordMinLength;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredUniqueChars = 1;
+
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = UserRules.MaxFailedAccessAttempts;
+                options.Lockout.DefaultLockoutTimeSpan = UserRules.LockoutDuration;
+            })
+            .AddRoles<ApplicationRole>()
+            .AddEntityFrameworkStores<PharmacyDbContext>()
+            .AddPasswordValidator<PasswordLetterValidator>()
+            .AddClaimsPrincipalFactory<PharmacyUserClaimsPrincipalFactory>();
     }
 }

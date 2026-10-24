@@ -1,0 +1,93 @@
+@page "/admin/roles"
+@attribute [Authorize(Policy = Permissions.UsersManage)]
+@inject IUserManagementService UserManagement
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>@L["Nav.Roles"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudText Typo="Typo.h4">@L["Nav.Roles"]</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="() => ShowRoleDialogAsync(null)">
+        @L["Roles.Add"]
+    </MudButton>
+</div>
+
+<MudText Typo="Typo.body2" Class="mb-4">@L["Roles.Intro"]</MudText>
+
+<MudTable Items="_roles" Hover="true" Dense="true" Loading="_loading" Elevation="1">
+    <HeaderContent>
+        <MudTh>@L["Roles.Name"]</MudTh>
+        <MudTh>@L["Roles.Users"]</MudTh>
+        <MudTh>@L["Roles.Permissions"]</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Roles.Name"]">@L.RoleName(context.Name)</MudTd>
+        <MudTd DataLabel="@L["Roles.Users"]">@context.UserCount</MudTd>
+        <MudTd DataLabel="@L["Roles.Permissions"]">
+            @if (context.IsSystem)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Primary">@L["Roles.AllPermissions"]</MudChip>
+            }
+            else if (context.Permissions.Count == 0)
+            {
+                <MudText Typo="Typo.caption">@L["Roles.NoPermissions"]</MudText>
+            }
+            else
+            {
+                @string.Join(L["Common.ListSeparator"], context.Permissions.Select(p => L[$"Permissions.{p}"].Value))
+            }
+        </MudTd>
+        <MudTd>
+            @if (!context.IsSystem)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" aria-label="@L["Roles.Edit"]" title="@L["Roles.Edit"]" OnClick="() => ShowRoleDialogAsync(context)" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" Disabled="context.UserCount > 0"
+                               aria-label="@L["Roles.Delete"]" title="@L["Roles.Delete"]" OnClick="() => DeleteAsync(context)" />
+            }
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private IReadOnlyList<RoleSummary> _roles = [];
+    private bool _loading = true;
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        var roles = await UserManagement.GetRolesAsync();
+        _roles = roles.IsSuccess ? roles.Value : [];
+        _loading = false;
+    }
+
+    private async Task ShowRoleDialogAsync(RoleSummary? role)
+    {
+        var parameters = new DialogParameters<RoleDialog> { { d => d.Role, role } };
+        var title = role is null ? L["Roles.Add"] : L["Roles.Edit"];
+        var dialog = await DialogService.ShowAsync<RoleDialog>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Common.Saved"], Severity.Success);
+            await LoadAsync();
+        }
+    }
+
+    private async Task DeleteAsync(RoleSummary role)
+    {
+        var confirmed = await DialogService.ShowMessageBoxAsync(
+            L["Roles.Delete"], L["Roles.DeleteConfirm", L.RoleName(role.Name)], yesText: L["Roles.Delete"], cancelText: L["Common.Cancel"]);
+        if (confirmed != true)
+        {
+            return;
+        }
+
+        var result = await UserManagement.DeleteRoleAsync(role.Id);
+        Snackbar.Add(result.IsSuccess ? L["Roles.Deleted"] : L.Message(result.Error!), result.IsSuccess ? Severity.Success : Severity.Error);
+        await LoadAsync();
+    }
+}

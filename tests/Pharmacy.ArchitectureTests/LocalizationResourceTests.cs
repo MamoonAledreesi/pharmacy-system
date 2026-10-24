@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Pharmacy.Application.Auditing;
+using Pharmacy.Application.Authorization;
 using Pharmacy.Application.Common;
 using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Settings;
@@ -78,6 +80,19 @@ public partial class LocalizationResourceTests
             .Concat(Enum.GetNames<ThemeColor>().Select(name => $"Settings.Color.{name}"));
 
         expected.Where(key => !keys.Contains(key)).ShouldBeEmpty("settings options without a label");
+    }
+
+    [Fact]
+    public void EveryPermissionModuleAuditActionAndBuiltInRole_HasALabel()
+    {
+        var keys = LoadResource("SharedResource.en.resx").Keys.ToHashSet(StringComparer.Ordinal);
+
+        var expected = Permissions.All.Select(p => $"Permissions.{p}")
+            .Concat(Permissions.All.Select(Permissions.ModuleOf).Distinct().Select(m => $"PermissionModules.{m}"))
+            .Concat(AuditActions.All.Select(a => $"AuditActions.{a}"))
+            .Concat(SystemRoles.Defaults.Select(r => $"RoleNames.{r}"));
+
+        expected.Where(key => !keys.Contains(key)).ShouldBeEmpty("labels missing from the resources");
     }
 
     // Matches L["Some.Key"] and L["Some.Key", arg] in markup.

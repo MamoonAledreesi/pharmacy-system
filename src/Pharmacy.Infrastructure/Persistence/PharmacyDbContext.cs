@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Abstractions;
+using Pharmacy.Domain.Auditing;
 using Pharmacy.Domain.Settings;
+using Pharmacy.Infrastructure.Identity;
 
 namespace Pharmacy.Infrastructure.Persistence;
 
@@ -9,12 +13,19 @@ namespace Pharmacy.Infrastructure.Persistence;
 /// into its own SQL Server schema through IEntityTypeConfiguration classes in this assembly.
 /// </summary>
 public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> options)
-    : DbContext(options), IPharmacyDbContext
+    : IdentityDbContext<ApplicationUser, ApplicationRole, int,
+        IdentityUserClaim<int>, IdentityUserRole<int>, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>>(options),
+      IPharmacyDbContext
 {
     public DbSet<PharmacySettings> PharmacySettings => Set<PharmacySettings>();
 
+    public DbSet<AuditLogEntry> AuditLogEntries => Set<AuditLogEntry>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Identity's own mapping first; the configurations in this assembly then refine it.
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PharmacyDbContext).Assembly);
     }
 

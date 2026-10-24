@@ -43,7 +43,7 @@
     <value>التقارير</value>
   </data>
   <data name="Nav.Users" xml:space="preserve">
-    <value>المستخدمون والصلاحيات</value>
+    <value>المستخدمون</value>
   </data>
   <data name="Nav.ComingSoon" xml:space="preserve">
     <value>قريباً</value>
@@ -209,5 +209,407 @@
   </data>
   <data name="Errors.ConcurrencyConflict" xml:space="preserve">
     <value>عدّل مستخدم آخر هذه البيانات قبل قليل. أعد تحميل الصفحة ثم أعد المحاولة.</value>
+  </data>
+  <data name="Nav.Roles" xml:space="preserve">
+    <value>الأدوار والصلاحيات</value>
+  </data>
+  <data name="Nav.AuditLog" xml:space="preserve">
+    <value>سجل التدقيق</value>
+  </data>
+  <data name="AccessDenied.Title" xml:space="preserve">
+    <value>لا تملك صلاحية الوصول</value>
+  </data>
+  <data name="AccessDenied.Message" xml:space="preserve">
+    <value>هذه الصفحة تتطلب صلاحية لا يملكها حسابك. تواصل مع مدير النظام إن كنت تحتاجها.</value>
+  </data>
+  <data name="UserMenu.Label" xml:space="preserve">
+    <value>حساب المستخدم</value>
+  </data>
+  <data name="UserMenu.Logout" xml:space="preserve">
+    <value>تسجيل الخروج</value>
+  </data>
+  <data name="Login.Title" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="Login.UserName" xml:space="preserve">
+    <value>اسم المستخدم</value>
+  </data>
+  <data name="Login.Password" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+  <data name="Login.Submit" xml:space="preserve">
+    <value>دخول</value>
+  </data>
+  <data name="Login.Failed" xml:space="preserve">
+    <value>اسم المستخدم أو كلمة المرور غير صحيحة.</value>
+  </data>
+  <data name="Login.LockedOut" xml:space="preserve">
+    <value>تم قفل الحساب مؤقتاً بسبب محاولات دخول فاشلة متكررة. حاول بعد {0} دقيقة أو تواصل مع مدير النظام.</value>
+  </data>
+  <data name="Account.FieldsRequired" xml:space="preserve">
+    <value>جميع الحقول مطلوبة.</value>
+  </data>
+  <data name="Account.ConfirmPassword" xml:space="preserve">
+    <value>تأكيد كلمة المرور</value>
+  </data>
+  <data name="Account.PasswordsDoNotMatch" xml:space="preserve">
+    <value>كلمتا المرور غير متطابقتين.</value>
+  </data>
+  <data name="Account.PasswordPolicy" xml:space="preserve">
+    <value>{0} أحرف على الأقل، وتحتوي على حرف ورقم.</value>
+  </data>
+  <data name="Setup.Title" xml:space="preserve">
+    <value>الإعداد الأولي</value>
+  </data>
+  <data name="Setup.Intro" xml:space="preserve">
+    <value>أنشئ حساب مدير النظام. ستُغلق هذه الشاشة بعد إنشاء الحساب.</value>
+  </data>
+  <data name="Setup.Submit" xml:space="preserve">
+    <value>إنشاء حساب المدير</value>
+  </data>
+  <data name="ChangePassword.Title" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="ChangePassword.Required" xml:space="preserve">
+    <value>كلمة مرورك مؤقتة. اختر كلمة مرور جديدة للمتابعة.</value>
+  </data>
+  <data name="ChangePassword.Current" xml:space="preserve">
+    <value>كلمة المرور الحالية</value>
+  </data>
+  <data name="ChangePassword.New" xml:space="preserve">
+    <value>كلمة المرور الجديدة</value>
+  </data>
+  <data name="ChangePassword.Submit" xml:space="preserve">
+    <value>حفظ كلمة المرور</value>
+  </data>
+  <data name="Users.FullName" xml:space="preserve">
+    <value>الاسم الكامل</value>
+  </data>
+  <data name="Users.Add" xml:space="preserve">
+    <value>إضافة مستخدم</value>
+  </data>
+  <data name="Users.Edit" xml:space="preserve">
+    <value>تعديل المستخدم</value>
+  </data>
+  <data name="Users.Roles" xml:space="preserve">
+    <value>الأدوار</value>
+  </data>
+  <data name="Users.Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="Users.LastLogin" xml:space="preserve">
+    <value>آخر دخول</value>
+  </data>
+  <data name="Users.Active" xml:space="preserve">
+    <value>فعّال</value>
+  </data>
+  <data name="Users.Inactive" xml:space="preserve">
+    <value>معطّل</value>
+  </data>
+  <data name="Users.LockedOut" xml:space="preserve">
+    <value>مقفل مؤقتاً</value>
+  </data>
+  <data name="Users.ResetPassword" xml:space="preserve">
+    <value>إعادة تعيين كلمة المرور</value>
+  </data>
+  <data name="Users.Unlock" xml:space="preserve">
+    <value>فك القفل</value>
+  </data>
+  <data name="Users.Unlocked" xml:space="preserve">
+    <value>تم فك قفل الحساب.</value>
+  </data>
+  <data name="Users.PasswordResetDone" xml:space="preserve">
+    <value>تم تعيين كلمة مرور مؤقتة. سيُطلب من المستخدم تغييرها عند الدخول.</value>
+  </data>
+  <data name="Users.UserNameHint" xml:space="preserve">
+    <value>أحرف إنجليزية وأرقام، مثل ahmed أو cashier1</value>
+  </data>
+  <data name="Users.TemporaryPassword" xml:space="preserve">
+    <value>كلمة مرور مؤقتة</value>
+  </data>
+  <data name="Users.ResetPasswordFor" xml:space="preserve">
+    <value>تعيين كلمة مرور مؤقتة للمستخدم: {0}</value>
+  </data>
+  <data name="Users.ResetPasswordHint" xml:space="preserve">
+    <value>سيُطلب من المستخدم تغييرها عند الدخول، وستنتهي جلساته المفتوحة.</value>
+  </data>
+  <data name="Common.Saved" xml:space="preserve">
+    <value>تم الحفظ.</value>
+  </data>
+  <data name="Common.Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="Common.ListSeparator" xml:space="preserve">
+    <value>، </value>
+  </data>
+  <data name="Roles.Add" xml:space="preserve">
+    <value>إضافة دور</value>
+  </data>
+  <data name="Roles.Edit" xml:space="preserve">
+    <value>تعديل الدور</value>
+  </data>
+  <data name="Roles.Delete" xml:space="preserve">
+    <value>حذف الدور</value>
+  </data>
+  <data name="Roles.Intro" xml:space="preserve">
+    <value>مدير النظام يملك جميع الصلاحيات دائماً. حدد صلاحيات بقية الأدوار، وتُطبَّق التغييرات على المستخدمين خلال دقيقة.</value>
+  </data>
+  <data name="Roles.Name" xml:space="preserve">
+    <value>اسم الدور</value>
+  </data>
+  <data name="Roles.Users" xml:space="preserve">
+    <value>عدد المستخدمين</value>
+  </data>
+  <data name="Roles.Permissions" xml:space="preserve">
+    <value>الصلاحيات</value>
+  </data>
+  <data name="Roles.AllPermissions" xml:space="preserve">
+    <value>جميع الصلاحيات</value>
+  </data>
+  <data name="Roles.NoPermissions" xml:space="preserve">
+    <value>لا توجد صلاحيات بعد</value>
+  </data>
+  <data name="Roles.DeleteConfirm" xml:space="preserve">
+    <value>هل تريد حذف الدور «{0}»؟</value>
+  </data>
+  <data name="Roles.Deleted" xml:space="preserve">
+    <value>تم حذف الدور.</value>
+  </data>
+  <data name="RoleNames.Administrator" xml:space="preserve">
+    <value>مدير النظام</value>
+  </data>
+  <data name="RoleNames.Pharmacist" xml:space="preserve">
+    <value>صيدلي</value>
+  </data>
+  <data name="RoleNames.Cashier" xml:space="preserve">
+    <value>كاشير</value>
+  </data>
+  <data name="RoleNames.Accountant" xml:space="preserve">
+    <value>محاسب</value>
+  </data>
+  <data name="RoleNames.StoreKeeper" xml:space="preserve">
+    <value>أمين مخزن</value>
+  </data>
+  <data name="PermissionModules.Users" xml:space="preserve">
+    <value>المستخدمون</value>
+  </data>
+  <data name="PermissionModules.Settings" xml:space="preserve">
+    <value>الإعدادات</value>
+  </data>
+  <data name="PermissionModules.AuditLog" xml:space="preserve">
+    <value>سجل التدقيق</value>
+  </data>
+  <data name="Permissions.Users.Manage" xml:space="preserve">
+    <value>إدارة المستخدمين والأدوار</value>
+  </data>
+  <data name="Permissions.Settings.Manage" xml:space="preserve">
+    <value>تعديل إعدادات الصيدلية</value>
+  </data>
+  <data name="Permissions.AuditLog.View" xml:space="preserve">
+    <value>عرض سجل التدقيق</value>
+  </data>
+  <data name="Audit.From" xml:space="preserve">
+    <value>من تاريخ</value>
+  </data>
+  <data name="Audit.To" xml:space="preserve">
+    <value>إلى تاريخ</value>
+  </data>
+  <data name="Audit.Action" xml:space="preserve">
+    <value>العملية</value>
+  </data>
+  <data name="Audit.Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="Audit.Time" xml:space="preserve">
+    <value>الوقت</value>
+  </data>
+  <data name="Audit.Target" xml:space="preserve">
+    <value>الهدف</value>
+  </data>
+  <data name="Audit.Details" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="Audit.NoRecords" xml:space="preserve">
+    <value>لا توجد سجلات مطابقة.</value>
+  </data>
+  <data name="AuditActions.Auth.LoginSucceeded" xml:space="preserve">
+    <value>دخول ناجح</value>
+  </data>
+  <data name="AuditActions.Auth.LoginFailed" xml:space="preserve">
+    <value>محاولة دخول فاشلة</value>
+  </data>
+  <data name="AuditActions.Auth.LockedOut" xml:space="preserve">
+    <value>قفل الحساب</value>
+  </data>
+  <data name="AuditActions.Auth.Logout" xml:space="preserve">
+    <value>تسجيل خروج</value>
+  </data>
+  <data name="AuditActions.Auth.PasswordChanged" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="AuditActions.Setup.Completed" xml:space="preserve">
+    <value>الإعداد الأولي</value>
+  </data>
+  <data name="AuditActions.Users.Created" xml:space="preserve">
+    <value>إنشاء مستخدم</value>
+  </data>
+  <data name="AuditActions.Users.Updated" xml:space="preserve">
+    <value>تعديل مستخدم</value>
+  </data>
+  <data name="AuditActions.Users.PasswordReset" xml:space="preserve">
+    <value>إعادة تعيين كلمة مرور</value>
+  </data>
+  <data name="AuditActions.Users.Unlocked" xml:space="preserve">
+    <value>فك قفل حساب</value>
+  </data>
+  <data name="AuditActions.Roles.Created" xml:space="preserve">
+    <value>إنشاء دور</value>
+  </data>
+  <data name="AuditActions.Roles.Updated" xml:space="preserve">
+    <value>تعديل دور</value>
+  </data>
+  <data name="AuditActions.Roles.Deleted" xml:space="preserve">
+    <value>حذف دور</value>
+  </data>
+  <data name="AuditActions.Settings.Updated" xml:space="preserve">
+    <value>تعديل الإعدادات</value>
+  </data>
+  <data name="Errors.Forbidden" xml:space="preserve">
+    <value>لا تملك صلاحية تنفيذ هذه العملية.</value>
+  </data>
+  <data name="Errors.NotFound" xml:space="preserve">
+    <value>العنصر المطلوب غير موجود.</value>
+  </data>
+  <data name="Users.FullNameRequired" xml:space="preserve">
+    <value>الاسم الكامل مطلوب.</value>
+  </data>
+  <data name="Users.FullNameTooLong" xml:space="preserve">
+    <value>يجب ألا يتجاوز الاسم الكامل {0} حرفاً.</value>
+  </data>
+  <data name="Users.RoleRequired" xml:space="preserve">
+    <value>اختر دوراً واحداً على الأقل.</value>
+  </data>
+  <data name="Users.UnknownRole" xml:space="preserve">
+    <value>أحد الأدوار المختارة غير موجود.</value>
+  </data>
+  <data name="Users.CannotDeactivateSelf" xml:space="preserve">
+    <value>لا يمكنك تعطيل حسابك.</value>
+  </data>
+  <data name="Users.CannotRemoveOwnAdministratorRole" xml:space="preserve">
+    <value>لا يمكنك إزالة دور مدير النظام من حسابك.</value>
+  </data>
+  <data name="Users.LastAdministrator" xml:space="preserve">
+    <value>يجب أن يبقى مدير نظام فعّال واحد على الأقل.</value>
+  </data>
+  <data name="Users.SetupAlreadyCompleted" xml:space="preserve">
+    <value>تم الإعداد الأولي مسبقاً.</value>
+  </data>
+  <data name="Users.CurrentPasswordIncorrect" xml:space="preserve">
+    <value>كلمة المرور الحالية غير صحيحة.</value>
+  </data>
+  <data name="Roles.NameRequired" xml:space="preserve">
+    <value>اسم الدور مطلوب.</value>
+  </data>
+  <data name="Roles.NameTaken" xml:space="preserve">
+    <value>يوجد دور بهذا الاسم.</value>
+  </data>
+  <data name="Roles.SystemRoleReadOnly" xml:space="preserve">
+    <value>دور مدير النظام لا يمكن تعديله أو حذفه.</value>
+  </data>
+  <data name="Roles.InUse" xml:space="preserve">
+    <value>لا يمكن حذف دور مسند لمستخدمين.</value>
+  </data>
+  <data name="Roles.UnknownPermission" xml:space="preserve">
+    <value>إحدى الصلاحيات المختارة غير معروفة.</value>
+  </data>
+  <data name="Identity.DefaultError" xml:space="preserve">
+    <value>تعذر تنفيذ العملية. تحقق من البيانات وأعد المحاولة.</value>
+  </data>
+  <data name="Identity.DuplicateUserName" xml:space="preserve">
+    <value>اسم المستخدم مستخدم مسبقاً.</value>
+  </data>
+  <data name="Identity.InvalidUserName" xml:space="preserve">
+    <value>اسم المستخدم يقبل الأحرف الإنجليزية والأرقام والرموز - . _ @ + فقط.</value>
+  </data>
+  <data name="Identity.PasswordTooShort" xml:space="preserve">
+    <value>يجب أن تتكون كلمة المرور من {0} أحرف على الأقل.</value>
+  </data>
+  <data name="Identity.PasswordRequiresDigit" xml:space="preserve">
+    <value>يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.</value>
+  </data>
+  <data name="Identity.PasswordRequiresLetter" xml:space="preserve">
+    <value>يجب أن تحتوي كلمة المرور على حرف واحد على الأقل.</value>
+  </data>
+  <data name="Identity.PasswordMismatch" xml:space="preserve">
+    <value>كلمة المرور غير صحيحة.</value>
+  </data>
+  <data name="Identity.DuplicateRoleName" xml:space="preserve">
+    <value>يوجد دور بهذا الاسم.</value>
+  </data>
+  <data name="Identity.InvalidRoleName" xml:space="preserve">
+    <value>اسم الدور غير صالح.</value>
+  </data>
+  <data name="Identity.ConcurrencyFailure" xml:space="preserve">
+    <value>عدّل مستخدم آخر هذه البيانات قبل قليل. أعد تحميل الصفحة ثم أعد المحاولة.</value>
+  </data>
+  <data name="Pager.RowsPerPage" xml:space="preserve">
+    <value>عدد الصفوف في الصفحة:</value>
+  </data>
+  <data name="Pager.InfoFormat" xml:space="preserve">
+    <value>{first_item}-{last_item} من {all_items}</value>
+  </data>
+  <data name="MudBlazor.MudTable_Loading" xml:space="preserve">
+    <value>جارٍ التحميل…</value>
+  </data>
+  <data name="MudBlazor.MudTablePager_FirstPage" xml:space="preserve">
+    <value>الصفحة الأولى</value>
+  </data>
+  <data name="MudBlazor.MudTablePager_LastPage" xml:space="preserve">
+    <value>الصفحة الأخيرة</value>
+  </data>
+  <data name="MudBlazor.MudTablePager_NextPage" xml:space="preserve">
+    <value>الصفحة التالية</value>
+  </data>
+  <data name="MudBlazor.MudTablePager_PreviousPage" xml:space="preserve">
+    <value>الصفحة السابقة</value>
+  </data>
+  <data name="MudBlazor.MudDialog_Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="MudBlazor.MudSnackbar_Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="MudBlazor.MudAlert_Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="MudBlazor.MudChip_Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="MudBlazor.MudInput_Clear" xml:space="preserve">
+    <value>مسح</value>
+  </data>
+  <data name="MudBlazor.MudFormComponent_Required" xml:space="preserve">
+    <value>مطلوب</value>
+  </data>
+  <data name="MudBlazor.MudSelect_SelectAll" xml:space="preserve">
+    <value>تحديد الكل</value>
+  </data>
+  <data name="MudBlazor.MudBaseDatePicker_Open" xml:space="preserve">
+    <value>فتح التقويم</value>
+  </data>
+  <data name="MudBlazor.MudBaseDatePicker_NextMonth" xml:space="preserve">
+    <value>الشهر التالي {0}</value>
+  </data>
+  <data name="MudBlazor.MudBaseDatePicker_PrevMonth" xml:space="preserve">
+    <value>الشهر السابق {0}</value>
+  </data>
+  <data name="MudBlazor.MudBaseDatePicker_NextYear" xml:space="preserve">
+    <value>السنة التالية {0}</value>
+  </data>
+  <data name="MudBlazor.MudBaseDatePicker_PrevYear" xml:space="preserve">
+    <value>السنة السابقة {0}</value>
+  </data>
+  <data name="MudBlazor.Converter_InvalidDateTime" xml:space="preserve">
+    <value>تاريخ غير صالح</value>
   </data>
 </root>

@@ -1,0 +1,108 @@
+@inject IUserManagementService UserManagement
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudTextField @bind-Value="_fullName" Label="@L["Users.FullName"]" Required="true"
+                      RequiredError="@L[UserErrors.FullNameRequired]" MaxLength="UserRules.FullNameMaxLength" />
+
+        @if (IsNew)
+        {
+            <MudTextField @bind-Value="_userName" Label="@L["Login.UserName"]" Required="true"
+                          RequiredError="@L["Account.FieldsRequired"]" MaxLength="UserRules.UserNameMaxLength"
+                          HelperText="@L["Users.UserNameHint"]" InputMode="InputMode.text" Style="direction: ltr" />
+            <MudTextField @bind-Value="_temporaryPassword" Label="@L["Users.TemporaryPassword"]" Required="true"
+                          RequiredError="@L["Account.FieldsRequired"]" HelperText="@L["Account.PasswordPolicy", UserRules.PasswordMinLength]"
+                          Style="direction: ltr" />
+        }
+        else
+        {
+            <MudSwitch @bind-Value="_isActive" Color="Color.Primary" Label="@L["Users.Active"]" Class="mt-3" />
+        }
+
+        <MudText Typo="Typo.subtitle2" Class="mt-4">@L["Users.Roles"]</MudText>
+        @foreach (var role in Roles)
+        {
+            <MudCheckBox T="bool" Value="_selectedRoles.Contains(role.Name)" ValueChanged="selected => ToggleRole(role.Name, selected)"
+                         Label="@L.RoleName(role.Name)" Color="Color.Primary" Dense="true" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_saving" OnClick="SaveAsync">@L["Settings.Save"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    /// <summary>Null when creating a new user.</summary>
+    [Parameter]
+    public UserSummary? User { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<RoleSummary> Roles { get; set; } = [];
+
+    private string _fullName = string.Empty;
+    private string _userName = string.Empty;
+    private string _temporaryPassword = string.Empty;
+    private bool _isActive = true;
+    private readonly HashSet<string> _selectedRoles = new(StringComparer.Ordinal);
+    private string? _error;
+    private bool _saving;
+
+    private bool IsNew => User is null;
+
+    protected override void OnInitialized()
+    {
+        if (User is not null)
+        {
+            _fullName = User.FullName;
+            _isActive = User.IsActive;
+            _selectedRoles.UnionWith(User.Roles);
+        }
+    }
+
+    private void ToggleRole(string role, bool selected)
+    {
+        if (selected)
+        {
+            _selectedRoles.Add(role);
+        }
+        else
+        {
+            _selectedRoles.Remove(role);
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        _saving = true;
+        try
+        {
+            var roles = _selectedRoles.ToList();
+            var result = IsNew
+                ? await UserManagement.CreateUserAsync(new CreateUserRequest(_userName, _fullName, _temporaryPassword, roles))
+                : await UserManagement.UpdateUserAsync(new UpdateUserRequest(User!.Id, _fullName, _isActive, roles));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

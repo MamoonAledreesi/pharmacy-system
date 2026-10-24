@@ -37,9 +37,11 @@ public class LayerDependencyTests
     }
 
     [Fact]
-    public void Infrastructure_DoesNotDependOnUi()
+    public void Infrastructure_DoesNotDependOnUiOrHttp()
     {
-        AssertNoDependencies(_infrastructureAssembly, Web, "Microsoft.AspNetCore", "MudBlazor");
+        // ASP.NET Core Identity stores (Microsoft.AspNetCore.Identity) are allowed; the web pipeline is not.
+        AssertNoDependencies(_infrastructureAssembly,
+            Web, "Microsoft.AspNetCore.Components", "Microsoft.AspNetCore.Http", "Microsoft.AspNetCore.Mvc", "MudBlazor");
     }
 
     [Fact]

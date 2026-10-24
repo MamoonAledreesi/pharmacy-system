@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Localization;
+using Pharmacy.Web.Common;
 
 namespace Pharmacy.Web.Localization;
 
@@ -30,15 +31,9 @@ public static class CultureEndpoints
                     Secure = httpContext.Request.IsHttps,
                 });
 
-            return Results.LocalRedirect(IsLocalPath(redirectUri) ? redirectUri! : "/");
+            return Results.LocalRedirect(LocalUrl.OrRoot(redirectUri));
         });
 
         return endpoints;
     }
-
-    // Prevents open redirects: only app-relative paths such as "/sales" are accepted.
-    private static bool IsLocalPath(string? path) =>
-        !string.IsNullOrEmpty(path)
-        && path[0] == '/'
-        && (path.Length == 1 || (path[1] != '/' && path[1] != '\\'));
 }

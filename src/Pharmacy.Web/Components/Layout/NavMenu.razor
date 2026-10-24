@@ -11,9 +11,17 @@
         </MudNavLink>
     }
 
-    <MudNavLink Href="settings" Icon="@Icons.Material.Filled.Settings">
-        @L["Nav.Settings"]
-    </MudNavLink>
+    @* Administration entries are shown only to users who hold the permission. *@
+    <AuthorizeView Policy="@Permissions.UsersManage">
+        <MudNavLink Href="admin/users" Icon="@Icons.Material.Filled.ManageAccounts">@L["Nav.Users"]</MudNavLink>
+        <MudNavLink Href="admin/roles" Icon="@Icons.Material.Filled.AdminPanelSettings">@L["Nav.Roles"]</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Policy="@Permissions.AuditLogView">
+        <MudNavLink Href="admin/audit" Icon="@Icons.Material.Filled.History">@L["Nav.AuditLog"]</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Policy="@Permissions.SettingsManage">
+        <MudNavLink Href="settings" Icon="@Icons.Material.Filled.Settings">@L["Nav.Settings"]</MudNavLink>
+    </AuthorizeView>
 </MudNavMenu>
 
 @code {
@@ -26,6 +34,5 @@
         ("Nav.Customers", Icons.Material.Filled.People),
         ("Nav.Cash", Icons.Material.Filled.AccountBalanceWallet),
         ("Nav.Reports", Icons.Material.Filled.Assessment),
-        ("Nav.Users", Icons.Material.Filled.ManageAccounts),
     ];
 }

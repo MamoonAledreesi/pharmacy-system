@@ -1,0 +1,22 @@
+namespace Pharmacy.Application.Authorization;
+
+/// <summary>
+/// Fine-grained permissions, stored as role claims of type <see cref="ClaimType"/>.
+/// Each value is "Module.Action"; the module prefix groups them in the role editor, and
+/// "Permissions.{value}" is the localization key of its label.
+/// Add a permission here together with the feature that checks it.
+/// </summary>
+public static class Permissions
+{
+    public const string ClaimType = "permission";
+
+    public const string UsersManage = "Users.Manage";
+    public const string SettingsManage = "Settings.Manage";
+    public const string AuditLogView = "AuditLog.View";
+
+    public static IReadOnlyList<string> All { get; } = [UsersManage, SettingsManage, AuditLogView];
+
+    public static bool IsDefined(string permission) => All.Contains(permission, StringComparer.Ordinal);
+
+    public static string ModuleOf(string permission) => permission[..permission.IndexOf('.', StringComparison.Ordinal)];
+}

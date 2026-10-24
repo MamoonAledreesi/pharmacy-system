@@ -1,0 +1,91 @@
+@page "/setup"
+@attribute [AllowAnonymous]
+@inject IAccountService AccountService
+@inject SignInService SignInService
+@inject SetupState SetupState
+@inject NavigationManager Navigation
+
+<PageTitle>@L["Setup.Title"] - @L["App.Name"]</PageTitle>
+
+<h1 class="account-title">@L["Setup.Title"]</h1>
+<p class="account-hint">@L["Setup.Intro"]</p>
+
+<AccountError Message="@_error" />
+
+<EditForm Model="Input" method="post" OnSubmit="CompleteSetupAsync" FormName="setup" class="account-form">
+    <label class="account-label" for="full-name">@L["Users.FullName"]</label>
+    <InputText id="full-name" class="account-input" @bind-Value="Input.FullName" autocomplete="name" autofocus />
+
+    <label class="account-label" for="user-name">@L["Login.UserName"]</label>
+    <InputText id="user-name" class="account-input" @bind-Value="Input.UserName" autocomplete="username" dir="ltr" />
+
+    <label class="account-label" for="password">@L["Login.Password"]</label>
+    <InputText id="password" type="password" class="account-input" @bind-Value="Input.Password" autocomplete="new-password" dir="ltr" />
+
+    <label class="account-label" for="confirm-password">@L["Account.ConfirmPassword"]</label>
+    <InputText id="confirm-password" type="password" class="account-input" @bind-Value="Input.ConfirmPassword" autocomplete="new-password" dir="ltr" />
+
+    <p class="account-hint">@L["Account.PasswordPolicy", UserRules.PasswordMinLength]</p>
+
+    <button type="submit" class="account-button">@L["Setup.Submit"]</button>
+</EditForm>
+
+@code {
+    private string? _error;
+
+    [SupplyParameterFromForm]
+    private SetupInput Input { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Input ??= new();
+
+        // The page exists only until the first administrator is created.
+        if (!await AccountService.IsSetupRequiredAsync())
+        {
+            SetupState.MarkCompleted();
+            Navigation.NavigateTo(AccountEndpoints.LoginPath);
+        }
+    }
+
+    private async Task CompleteSetupAsync()
+    {
+        var (password, confirmation) = (Input.Password, Input.ConfirmPassword);
+        // Never echo a password back into the re-rendered form.
+        (Input.Password, Input.ConfirmPassword) = (string.Empty, string.Empty);
+
+        if (string.IsNullOrWhiteSpace(Input.FullName) || string.IsNullOrWhiteSpace(Input.UserName) || string.IsNullOrEmpty(password))
+        {
+            _error = L["Account.FieldsRequired"];
+            return;
+        }
+
+        if (password != confirmation)
+        {
+            _error = L["Account.PasswordsDoNotMatch"];
+            return;
+        }
+
+        var result = await AccountService.CompleteSetupAsync(Input.UserName, Input.FullName, password);
+        if (result.IsFailure)
+        {
+            _error = L.Message(result.Error!);
+            return;
+        }
+
+        SetupState.MarkCompleted();
+        await SignInService.PasswordSignInAsync(Input.UserName, password);
+        Navigation.NavigateTo("/");
+    }
+
+    private sealed class SetupInput
+    {
+        public string FullName { get; set; } = string.Empty;
+
+        public string UserName { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
+}

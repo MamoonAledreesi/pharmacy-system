@@ -1,0 +1,80 @@
+@page "/admin/audit"
+@attribute [Authorize(Policy = Permissions.AuditLogView)]
+@inject AuditLogQueryService AuditLogQuery
+
+<PageTitle>@L["Nav.AuditLog"] - @L["App.Name"]</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">@L["Nav.AuditLog"]</MudText>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" sm="6" md="3">
+            <MudDatePicker Label="@L["Audit.From"]" @bind-Date="_from" Clearable="true" />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudDatePicker Label="@L["Audit.To"]" @bind-Date="_to" Clearable="true" />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudTextField @bind-Value="_userName" Label="@L["Login.UserName"]" Clearable="true" />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudSelect T="string" @bind-Value="_action" Label="@L["Audit.Action"]" Clearable="true">
+                @foreach (var action in AuditActions.All)
+                {
+                    <MudSelectItem T="string" Value="action">@L[$"AuditActions.{action}"]</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
+    <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Search" OnClick="SearchAsync">
+        @L["Audit.Search"]
+    </MudButton>
+</MudPaper>
+
+<MudTable @ref="_table" T="AuditLogRow" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="50">
+    <HeaderContent>
+        <MudTh>@L["Audit.Time"]</MudTh>
+        <MudTh>@L["Login.UserName"]</MudTh>
+        <MudTh>@L["Audit.Action"]</MudTh>
+        <MudTh>@L["Audit.Target"]</MudTh>
+        <MudTh>@L["Audit.Details"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Audit.Time"]">@LocalizerExtensions.LocalTime(context.OccurredAtUtc)</MudTd>
+        <MudTd DataLabel="@L["Login.UserName"]"><span dir="ltr">@context.UserName</span></MudTd>
+        <MudTd DataLabel="@L["Audit.Action"]">@L[$"AuditActions.{context.Action}"]</MudTd>
+        <MudTd DataLabel="@L["Audit.Target"]">@context.Target</MudTd>
+        <MudTd DataLabel="@L["Audit.Details"]"><code class="audit-details" dir="ltr">@context.Details</code></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Audit.NoRecords"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<AuditLogRow>? _table;
+    private DateTime? _from;
+    private DateTime? _to;
+    private string? _userName;
+    private string? _action;
+
+    private Task SearchAsync() => _table?.ReloadServerData() ?? Task.CompletedTask;
+
+    private async Task<TableData<AuditLogRow>> LoadAsync(TableState state, CancellationToken cancellationToken)
+    {
+        // Dates are picked in local time; "to" includes the whole selected day.
+        var filter = new AuditLogFilter(
+            _from?.Date.ToUniversalTime(),
+            _to?.Date.AddDays(1).ToUniversalTime(),
+            _userName,
+            _action);
+
+        var result = await AuditLogQuery.SearchAsync(filter, state.Page, state.PageSize, cancellationToken);
+        return result.IsSuccess
+            ? new TableData<AuditLogRow> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<AuditLogRow> { Items = [], TotalItems = 0 };
+    }
+}

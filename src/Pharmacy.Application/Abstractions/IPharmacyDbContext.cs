@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Pharmacy.Domain.Auditing;
 using Pharmacy.Domain.Settings;
 
 namespace Pharmacy.Application.Abstractions;
@@ -11,6 +12,8 @@ namespace Pharmacy.Application.Abstractions;
 public interface IPharmacyDbContext
 {
     DbSet<PharmacySettings> PharmacySettings { get; }
+
+    DbSet<AuditLogEntry> AuditLogEntries { get; }
 
     EntityEntry<TEntity> Entry<TEntity>(TEntity entity)
         where TEntity : class;

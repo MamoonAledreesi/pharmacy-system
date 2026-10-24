@@ -36,3 +36,149 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+/* Account pages (sign-in, setup, change password): static server-rendered forms. */
+.account-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--mud-palette-background-gray);
+    font-family: var(--mud-typography-default-family);
+}
+
+.account-card {
+    width: 100%;
+    max-width: 26rem;
+    padding: 2rem;
+    border-radius: var(--mud-default-borderradius);
+    background: var(--mud-palette-surface);
+    color: var(--mud-palette-text-primary);
+    box-shadow: var(--mud-elevation-4);
+}
+
+.account-brand {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--mud-palette-primary);
+}
+
+.account-brand-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--mud-palette-primary);
+}
+
+.account-brand-system {
+    font-size: 0.85rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.account-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0 0 1rem;
+}
+
+.account-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.account-label {
+    font-size: 0.875rem;
+    margin: 0.75rem 0 0.25rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.account-input {
+    padding: 0.6rem 0.75rem;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1px solid var(--mud-palette-lines-inputs);
+    border-radius: var(--mud-default-borderradius);
+    background: var(--mud-palette-surface);
+    color: var(--mud-palette-text-primary);
+}
+
+.account-input:focus {
+    outline: 2px solid var(--mud-palette-primary);
+    outline-offset: -1px;
+}
+
+.account-button {
+    margin-top: 1.5rem;
+    padding: 0.7rem;
+    font-size: 1rem;
+    font-family: inherit;
+    border: none;
+    border-radius: var(--mud-default-borderradius);
+    background: var(--mud-palette-primary);
+    color: var(--mud-palette-primary-text);
+    cursor: pointer;
+}
+
+.account-button:hover {
+    background: var(--mud-palette-primary-darken);
+}
+
+.account-error {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--mud-default-borderradius);
+    background: var(--mud-palette-error-hover);
+    color: var(--mud-palette-error-darken);
+    font-size: 0.9rem;
+}
+
+.account-hint {
+    font-size: 0.85rem;
+    color: var(--mud-palette-text-secondary);
+    margin: 0.5rem 0 0;
+}
+
+.account-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--mud-palette-primary);
+}
+
+.account-languages {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+}
+
+.account-languages a {
+    color: var(--mud-palette-primary);
+    text-decoration: none;
+}
+
+/* Logout is a real form button inside the user menu; style it like a menu item. */
+.user-menu-logout {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    text-align: start;
+}
+
+.user-menu-logout:hover {
+    background: var(--mud-palette-action-default-hover);
+}
+
+.audit-details {
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+}

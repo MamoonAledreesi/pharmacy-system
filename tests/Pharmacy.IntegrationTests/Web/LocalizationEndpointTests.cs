@@ -6,7 +6,7 @@ namespace Pharmacy.IntegrationTests.Web;
 
 /// <summary>
 /// Hosts the real application in memory and checks language selection end to end:
-/// culture cookie → request culture → html lang/dir → localized text.
+/// culture cookie → request culture → html lang/dir → localized text (on the public sign-in page).
 /// </summary>
 public sealed class LocalizationEndpointTests(PharmacyWebFactory factory)
     : IClassFixture<PharmacyWebFactory>
@@ -17,9 +17,9 @@ public sealed class LocalizationEndpointTests(PharmacyWebFactory factory)
     });
 
     [Fact]
-    public async Task HomePage_DefaultsToArabicRightToLeft()
+    public async Task LoginPage_DefaultsToArabicRightToLeft()
     {
-        var html = await _client.GetStringAsync("/");
+        var html = await _client.GetStringAsync("/Account/Login");
 
         html.ShouldContain("lang=\"ar\"");
         html.ShouldContain("dir=\"rtl\"");
@@ -27,9 +27,9 @@ public sealed class LocalizationEndpointTests(PharmacyWebFactory factory)
     }
 
     [Fact]
-    public async Task HomePage_WithEnglishCookie_IsEnglishLeftToRight()
+    public async Task LoginPage_WithEnglishCookie_IsEnglishLeftToRight()
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, "/");
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/Account/Login");
         request.Headers.Add(HeaderNames.Cookie, ".AspNetCore.Culture=c%3Den%7Cuic%3Den");
 
         using var response = await _client.SendAsync(request);

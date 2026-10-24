@@ -1,34 +1,30 @@
 using System.Net;
+using Pharmacy.Domain.Settings;
 
 namespace Pharmacy.IntegrationTests.Web;
 
 public sealed class AppEndpointTests(PharmacyWebFactory factory) : IClassFixture<PharmacyWebFactory>
 {
-    private readonly HttpClient _client = factory.CreateClient();
-
     [Fact]
-    public async Task Health_IsHealthyOnceTheDatabaseIsMigrated()
+    public async Task Health_IsHealthyAndPublic()
     {
-        using var response = await _client.GetAsync("/health");
+        using var response = await factory.CreateBrowser().GetAsync("/health");
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         (await response.Content.ReadAsStringAsync()).ShouldBe("Healthy");
     }
 
     [Fact]
-    public async Task AppBar_ShowsThePharmacyNameFromSettings()
+    public async Task SignedInAdministrator_SeesPharmacyNameAndSettings()
     {
-        var html = await _client.GetStringAsync("/");
+        var browser = factory.CreateBrowser();
+        await PharmacyWebFactory.SignInAsync(browser, PharmacyWebFactory.AdminUserName, PharmacyWebFactory.AdminPassword);
 
-        html.ShouldContain($">{Domain.Settings.PharmacySettings.Defaults.NameArabic}</h6>");
-    }
+        var home = await browser.GetStringAsync("/");
+        var settings = await browser.GetStringAsync("/settings");
 
-    [Fact]
-    public async Task SettingsPage_Renders()
-    {
-        var html = await _client.GetStringAsync("/settings");
-
-        html.ShouldContain("إعدادات الصيدلية");
-        html.ShouldContain("اسم الصيدلية بالعربية");
+        home.ShouldContain($">{PharmacySettings.Defaults.NameArabic}</h6>");
+        settings.ShouldContain("إعدادات الصيدلية");
+        settings.ShouldContain("اسم الصيدلية بالعربية");
     }
 }

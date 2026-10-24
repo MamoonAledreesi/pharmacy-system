@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Pharmacy.Application.Abstractions;
+using Pharmacy.Application.Auditing;
+using Pharmacy.Application.Authorization;
 using Pharmacy.Application.Common;
 using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Settings;
@@ -13,9 +15,11 @@ public sealed record PharmacySettingsForEdit(PharmacySettingsData Values, byte[]
 public sealed partial class PharmacySettingsService(
     IPharmacyDbContext db,
     PharmacySettingsState state,
+    ICurrentUser currentUser,
+    IAuditLog auditLog,
     ILogger<PharmacySettingsService> logger)
 {
-    /// <summary>Current settings, served from memory after the first load.</summary>
+    /// <summary>Current settings, served from memory after the first load. Readable by everyone (theme, name).</summary>
     public async Task<PharmacySettingsData> GetCurrentAsync(CancellationToken cancellationToken = default)
     {
         if (state.Current is { } cached)
@@ -28,10 +32,15 @@ public sealed partial class PharmacySettingsService(
         return state.Current!;
     }
 
-    public async Task<PharmacySettingsForEdit> GetForEditAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<PharmacySettingsForEdit>> GetForEditAsync(CancellationToken cancellationToken = default)
     {
+        if (!currentUser.HasPermission(Permissions.SettingsManage))
+        {
+            return Result.Failure<PharmacySettingsForEdit>(new Error(CommonErrors.Forbidden));
+        }
+
         var settings = await LoadAsync(asNoTracking: true, cancellationToken);
-        return new PharmacySettingsForEdit(settings.ToData(), settings.RowVersion);
+        return Result.Success(new PharmacySettingsForEdit(settings.ToData(), settings.RowVersion));
     }
 
     public async Task<Result> UpdateAsync(
@@ -40,7 +49,13 @@ public sealed partial class PharmacySettingsService(
         ArgumentNullException.ThrowIfNull(values);
         ArgumentNullException.ThrowIfNull(rowVersion);
 
+        if (!currentUser.HasPermission(Permissions.SettingsManage))
+        {
+            return Result.Failure(new Error(CommonErrors.Forbidden));
+        }
+
         var settings = await LoadAsync(asNoTracking: false, cancellationToken);
+        var before = settings.ToData();
 
         // Compare against the version the user loaded, not the one just read, so a save made by
         // someone else in between is detected instead of silently overwritten.
@@ -52,6 +67,9 @@ public sealed partial class PharmacySettingsService(
             return result;
         }
 
+        var after = settings.ToData();
+        auditLog.Record(AuditActions.SettingsUpdated, details: new { Before = before, After = after });
+
         try
         {
             await db.SaveChangesAsync(cancellationToken);
@@ -62,7 +80,7 @@ public sealed partial class PharmacySettingsService(
             return Result.Failure(new Error(CommonErrors.ConcurrencyConflict));
         }
 
-        state.Set(settings.ToData());
+        state.Set(after);
         LogSettingsUpdated(logger, settings.ThemeMode, settings.PrimaryColor);
         return Result.Success();
     }

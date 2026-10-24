@@ -1,0 +1,112 @@
+@page "/admin/users"
+@attribute [Authorize(Policy = Permissions.UsersManage)]
+@inject IUserManagementService UserManagement
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>@L["Nav.Users"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudText Typo="Typo.h4">@L["Nav.Users"]</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd" OnClick="CreateAsync">
+        @L["Users.Add"]
+    </MudButton>
+</div>
+
+<MudTable Items="_users" Hover="true" Dense="true" Loading="_loading" Elevation="1">
+    <HeaderContent>
+        <MudTh>@L["Users.FullName"]</MudTh>
+        <MudTh>@L["Login.UserName"]</MudTh>
+        <MudTh>@L["Users.Roles"]</MudTh>
+        <MudTh>@L["Users.Status"]</MudTh>
+        <MudTh>@L["Users.LastLogin"]</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Users.FullName"]">@context.FullName</MudTd>
+        <MudTd DataLabel="@L["Login.UserName"]"><span dir="ltr">@context.UserName</span></MudTd>
+        <MudTd DataLabel="@L["Users.Roles"]">@string.Join(L["Common.ListSeparator"], context.Roles.Select(L.RoleName))</MudTd>
+        <MudTd DataLabel="@L["Users.Status"]">
+            @if (!context.IsActive)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Default">@L["Users.Inactive"]</MudChip>
+            }
+            else if (context.IsLockedOut)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Users.LockedOut"]</MudChip>
+            }
+            else
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Success">@L["Users.Active"]</MudChip>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Users.LastLogin"]">
+            @(context.LastLoginAtUtc is { } lastLogin ? LocalizerExtensions.LocalTime(lastLogin) : "—")
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" aria-label="@L["Users.Edit"]" title="@L["Users.Edit"]" OnClick="() => EditAsync(context)" />
+            <MudIconButton Icon="@Icons.Material.Filled.LockReset" Size="Size.Small" aria-label="@L["Users.ResetPassword"]" title="@L["Users.ResetPassword"]" OnClick="() => ResetPasswordAsync(context)" />
+            @if (context.IsLockedOut)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.LockOpen" Size="Size.Small" aria-label="@L["Users.Unlock"]" title="@L["Users.Unlock"]" OnClick="() => UnlockAsync(context)" />
+            }
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private IReadOnlyList<UserSummary> _users = [];
+    private IReadOnlyList<RoleSummary> _roles = [];
+    private bool _loading = true;
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        var users = await UserManagement.GetUsersAsync();
+        var roles = await UserManagement.GetRolesAsync();
+        _users = users.IsSuccess ? users.Value : [];
+        _roles = roles.IsSuccess ? roles.Value : [];
+        _loading = false;
+    }
+
+    private Task CreateAsync() => ShowUserDialogAsync(null);
+
+    private Task EditAsync(UserSummary user) => ShowUserDialogAsync(user);
+
+    private async Task ShowUserDialogAsync(UserSummary? user)
+    {
+        var parameters = new DialogParameters<UserDialog>
+        {
+            { d => d.User, user },
+            { d => d.Roles, _roles },
+        };
+        var title = user is null ? L["Users.Add"] : L["Users.Edit"];
+        var dialog = await DialogService.ShowAsync<UserDialog>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Common.Saved"], Severity.Success);
+            await LoadAsync();
+        }
+    }
+
+    private async Task ResetPasswordAsync(UserSummary user)
+    {
+        var parameters = new DialogParameters<ResetPasswordDialog> { { d => d.User, user } };
+        var dialog = await DialogService.ShowAsync<ResetPasswordDialog>(L["Users.ResetPassword"], parameters, new DialogOptions { MaxWidth = MaxWidth.ExtraSmall, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Users.PasswordResetDone"], Severity.Success);
+            await LoadAsync();
+        }
+    }
+
+    private async Task UnlockAsync(UserSummary user)
+    {
+        var result = await UserManagement.UnlockAsync(user.Id);
+        Snackbar.Add(result.IsSuccess ? L["Users.Unlocked"] : L.Message(result.Error!), result.IsSuccess ? Severity.Success : Severity.Error);
+        await LoadAsync();
+    }
+}

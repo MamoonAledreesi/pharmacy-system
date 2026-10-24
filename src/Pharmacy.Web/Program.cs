@@ -1,9 +1,15 @@
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Identity;
 using MudBlazor.Services;
 using Pharmacy.Application;
+using Pharmacy.Application.Abstractions;
 using Pharmacy.Infrastructure;
 using Pharmacy.Infrastructure.Persistence;
+using Pharmacy.Web.Authentication;
 using Pharmacy.Web.Components;
 using Pharmacy.Web.Localization;
 using Serilog;
@@ -30,11 +36,43 @@ try
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
     builder.Services.AddMudServices();
+    builder.Services.AddTransient<MudBlazor.MudLocalizer, PharmacyMudLocalizer>();
 
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddHealthChecks()
         .AddDbContextCheck<PharmacyDbContext>();
+
+    // Authentication: ASP.NET Core Identity with cookies (pattern from the Blazor Identity template).
+    builder.Services.AddCascadingAuthenticationState();
+    builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+    builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        })
+        .AddIdentityCookies();
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.Cookie.Name = "Pharmacy.Auth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.LoginPath = AccountEndpoints.LoginPath;
+        options.AccessDeniedPath = AccountEndpoints.AccessDeniedPath;
+        options.ExpireTimeSpan = TimeSpan.FromHours(12);
+        options.SlidingExpiration = true;
+    });
+    builder.Services.AddPharmacyIdentity()
+        .AddSignInManager<ApplicationSignInManager>();
+
+    // Authorization: one policy per permission, checked in pages and again in application services.
+    builder.Services.AddAuthorizationBuilder().AddPermissionPolicies();
+    builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+    builder.Services.AddScoped<CurrentUserAccessor>();
+    builder.Services.AddScoped<ICurrentUser>(provider => provider.GetRequiredService<CurrentUserAccessor>());
+    builder.Services.AddScoped<CircuitHandler, CurrentUserCircuitHandler>();
+    builder.Services.AddScoped<SignInService>();
+    builder.Services.AddSingleton<SetupState>();
 
     var app = builder.Build();
 
@@ -52,10 +90,16 @@ try
     app.UseHttpsRedirection();
     app.UseSerilogRequestLogging();
     app.UseRequestLocalization(SupportedCultures.CreateOptions());
+    app.UseAuthentication();
+    app.UseMiddleware<CurrentUserMiddleware>();
+    // Before authorization: on a fresh install the setup page must win over the sign-in redirect.
+    app.UseMiddleware<AccountGuardMiddleware>();
+    app.UseAuthorization();
     app.UseAntiforgery();
 
     app.MapStaticAssets();
     app.MapCultureEndpoints();
+    app.MapAccountEndpoints();
     app.MapHealthChecks("/health");
     app.MapRazorComponents<App>()
         .AddInteractiveServerRenderMode();

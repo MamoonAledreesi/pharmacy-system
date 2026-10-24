@@ -1,0 +1,88 @@
+@inject IUserManagementService UserManagement
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudTextField @bind-Value="_name" Label="@L["Roles.Name"]" Required="true"
+                      RequiredError="@L[UserErrors.RoleNameRequired]" MaxLength="UserRules.RoleNameMaxLength" />
+
+        @foreach (var module in Permissions.All.GroupBy(Permissions.ModuleOf))
+        {
+            <MudText Typo="Typo.subtitle2" Class="mt-4">@L[$"PermissionModules.{module.Key}"]</MudText>
+            @foreach (var permission in module)
+            {
+                <MudCheckBox T="bool" Value="_selected.Contains(permission)" ValueChanged="selected => Toggle(permission, selected)"
+                             Label="@L[$"Permissions.{permission}"]" Color="Color.Primary" Dense="true" />
+            }
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_saving" OnClick="SaveAsync">@L["Settings.Save"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    /// <summary>Null when creating a new role.</summary>
+    [Parameter]
+    public RoleSummary? Role { get; set; }
+
+    private string _name = string.Empty;
+    private readonly HashSet<string> _selected = new(StringComparer.Ordinal);
+    private string? _error;
+    private bool _saving;
+
+    protected override void OnInitialized()
+    {
+        if (Role is not null)
+        {
+            _name = Role.Name;
+            _selected.UnionWith(Role.Permissions);
+        }
+    }
+
+    private void Toggle(string permission, bool selected)
+    {
+        if (selected)
+        {
+            _selected.Add(permission);
+        }
+        else
+        {
+            _selected.Remove(permission);
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        _saving = true;
+        try
+        {
+            var permissions = _selected.ToList();
+            var result = Role is null
+                ? await UserManagement.CreateRoleAsync(_name, permissions)
+                : await UserManagement.UpdateRoleAsync(Role.Id, _name, permissions);
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
