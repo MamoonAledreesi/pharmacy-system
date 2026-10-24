@@ -1,0 +1,154 @@
+@page "/settings"
+@inject PharmacySettingsService SettingsService
+@inject ISnackbar Snackbar
+
+<PageTitle>@L["Settings.Title"] - @L["App.Name"]</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">@L["Settings.Title"]</MudText>
+
+@if (_form is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+<MudForm @ref="_mudForm" Model="_form">
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6" GutterBottom="true">@L["Settings.PharmacyInfo"]</MudText>
+
+                <MudTextField @bind-Value="_form.NameArabic"
+                              Label="@L["Settings.NameArabic"]"
+                              Required="true"
+                              RequiredError="@L[SettingsErrors.NameArabicRequired]"
+                              MaxLength="PharmacySettings.NameMaxLength"
+                              Counter="PharmacySettings.NameMaxLength" />
+
+                <MudTextField @bind-Value="_form.NameEnglish"
+                              Label="@L["Settings.NameEnglish"]"
+                              Required="true"
+                              RequiredError="@L[SettingsErrors.NameEnglishRequired]"
+                              MaxLength="PharmacySettings.NameMaxLength"
+                              Counter="PharmacySettings.NameMaxLength" />
+
+                <MudTextField @bind-Value="_form.Phone"
+                              Label="@L["Settings.Phone"]"
+                              InputType="InputType.Telephone"
+                              MaxLength="PharmacySettings.PhoneMaxLength" />
+
+                <MudTextField @bind-Value="_form.Address"
+                              Label="@L["Settings.Address"]"
+                              Lines="3"
+                              MaxLength="PharmacySettings.AddressMaxLength"
+                              Counter="PharmacySettings.AddressMaxLength" />
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6" GutterBottom="true">@L["Settings.Appearance"]</MudText>
+
+                <MudText Typo="Typo.subtitle2">@L["Settings.ThemeMode"]</MudText>
+                <MudRadioGroup T="ThemeMode" @bind-Value="_form.ThemeMode">
+                    @foreach (var mode in Enum.GetValues<ThemeMode>())
+                    {
+                        <MudRadio T="ThemeMode" Value="mode" Color="Color.Primary" AriaLabel="@L[$"Settings.ThemeMode.{mode}"]">@L[$"Settings.ThemeMode.{mode}"]</MudRadio>
+                    }
+                </MudRadioGroup>
+
+                <MudText Typo="Typo.subtitle2" Class="mt-4">@L["Settings.PrimaryColor"]</MudText>
+                <MudRadioGroup T="ThemeColor" @bind-Value="_form.PrimaryColor">
+                    @foreach (var color in Enum.GetValues<ThemeColor>())
+                    {
+                        <MudRadio T="ThemeColor" Value="color" Color="Color.Primary" AriaLabel="@L[$"Settings.Color.{color}"]">
+                            <span class="color-swatch" style="background-color: @PharmacyTheme.SwatchFor(color)"></span>
+                            @L[$"Settings.Color.{color}"]
+                        </MudRadio>
+                    }
+                </MudRadioGroup>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudButton Class="mt-4 align-self-start"
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Save"
+               Disabled="_saving"
+               OnClick="SaveAsync">
+        @L["Settings.Save"]
+    </MudButton>
+</MudForm>
+
+@code {
+    private MudForm? _mudForm;
+    private SettingsForm? _form;
+    private byte[] _rowVersion = [];
+    private bool _saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var current = await SettingsService.GetForEditAsync();
+        _form = SettingsForm.From(current.Values);
+        _rowVersion = current.RowVersion;
+    }
+
+    private async Task SaveAsync()
+    {
+        if (_form is null || _mudForm is null)
+        {
+            return;
+        }
+
+        await _mudForm.ValidateAsync();
+        if (!_mudForm.IsValid)
+        {
+            return;
+        }
+
+        _saving = true;
+        try
+        {
+            var result = await SettingsService.UpdateAsync(_form.ToData(), _rowVersion);
+            if (result.IsFailure)
+            {
+                var error = result.Error!;
+                Snackbar.Add(L[error.Code, [.. error.Arguments]], Severity.Error);
+                return;
+            }
+
+            // Reload so the next save carries the new concurrency token.
+            _rowVersion = (await SettingsService.GetForEditAsync()).RowVersion;
+            Snackbar.Add(L["Settings.Saved"], Severity.Success);
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    /// <summary>Mutable form model; the domain record stays immutable.</summary>
+    private sealed class SettingsForm
+    {
+        public string NameArabic { get; set; } = string.Empty;
+        public string NameEnglish { get; set; } = string.Empty;
+        public string? Phone { get; set; }
+        public string? Address { get; set; }
+        public ThemeMode ThemeMode { get; set; }
+        public ThemeColor PrimaryColor { get; set; }
+
+        public static SettingsForm From(PharmacySettingsData data) => new()
+        {
+            NameArabic = data.NameArabic,
+            NameEnglish = data.NameEnglish,
+            Phone = data.Phone,
+            Address = data.Address,
+            ThemeMode = data.ThemeMode,
+            PrimaryColor = data.PrimaryColor,
+        };
+
+        public PharmacySettingsData ToData() =>
+            new(NameArabic, NameEnglish, Phone, Address, ThemeMode, PrimaryColor);
+    }
+}

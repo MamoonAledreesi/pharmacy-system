@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="App.Name" xml:space="preserve">
+    <value>Pharmacy Management System</value>
+  </data>
+  <data name="Nav.ToggleMenu" xml:space="preserve">
+    <value>Toggle menu</value>
+  </data>
+  <data name="Nav.Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Nav.Products" xml:space="preserve">
+    <value>Medicines &amp; Products</value>
+  </data>
+  <data name="Nav.Inventory" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="Nav.Purchases" xml:space="preserve">
+    <value>Suppliers &amp; Purchases</value>
+  </data>
+  <data name="Nav.Sales" xml:space="preserve">
+    <value>Sales &amp; Returns</value>
+  </data>
+  <data name="Nav.Customers" xml:space="preserve">
+    <value>Customers &amp; Debts</value>
+  </data>
+  <data name="Nav.Cash" xml:space="preserve">
+    <value>Cash &amp; Expenses</value>
+  </data>
+  <data name="Nav.Reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="Nav.Users" xml:space="preserve">
+    <value>Users &amp; Permissions</value>
+  </data>
+  <data name="Nav.ComingSoon" xml:space="preserve">
+    <value>Coming soon</value>
+  </data>
+  <data name="Language.Switch" xml:space="preserve">
+    <value>Change language</value>
+  </data>
+  <data name="Language.Arabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="Language.English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Home.Title" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Home.Welcome" xml:space="preserve">
+    <value>Welcome to the Pharmacy Management System</value>
+  </data>
+  <data name="Home.FoundationNotice" xml:space="preserve">
+    <value>This is the system foundation. Modules will appear here as they are delivered.</value>
+  </data>
+  <data name="Home.Today" xml:space="preserve">
+    <value>Today: {0}</value>
+  </data>
+  <data name="Error.Title" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Error.Heading" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="Error.Message" xml:space="preserve">
+    <value>The error has been logged. Please try again, and contact your system administrator if it continues.</value>
+  </data>
+  <data name="Error.RequestId" xml:space="preserve">
+    <value>Request ID</value>
+  </data>
+  <data name="Error.Unhandled" xml:space="preserve">
+    <value>An unexpected error has occurred.</value>
+  </data>
+  <data name="Error.Reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="Error.Retry" xml:space="preserve">
+    <value>Try again</value>
+  </data>
+  <data name="NotFound.Title" xml:space="preserve">
+    <value>Page not found</value>
+  </data>
+  <data name="NotFound.Message" xml:space="preserve">
+    <value>The page you are looking for does not exist.</value>
+  </data>
+  <data name="NotFound.BackHome" xml:space="preserve">
+    <value>Back to home</value>
+  </data>
+  <data name="Reconnect.Rejoining" xml:space="preserve">
+    <value>Rejoining the server...</value>
+  </data>
+  <data name="Reconnect.RetryingIn" xml:space="preserve">
+    <value>Rejoin failed. Trying again in</value>
+  </data>
+  <data name="Reconnect.Seconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="Reconnect.Failed" xml:space="preserve">
+    <value>Failed to rejoin. Please retry or reload the page.</value>
+  </data>
+  <data name="Reconnect.Retry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="Reconnect.Paused" xml:space="preserve">
+    <value>The session has been paused by the server.</value>
+  </data>
+  <data name="Reconnect.ResumeFailed" xml:space="preserve">
+    <value>Failed to resume the session. Please retry or reload the page.</value>
+  </data>
+  <data name="Reconnect.Resume" xml:space="preserve">
+    <value>Resume</value>
+  </data>
+  <data name="Nav.Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings.Title" xml:space="preserve">
+    <value>Pharmacy Settings</value>
+  </data>
+  <data name="Settings.PharmacyInfo" xml:space="preserve">
+    <value>Pharmacy information</value>
+  </data>
+  <data name="Settings.NameArabic" xml:space="preserve">
+    <value>Pharmacy name (Arabic)</value>
+  </data>
+  <data name="Settings.NameEnglish" xml:space="preserve">
+    <value>Pharmacy name (English)</value>
+  </data>
+  <data name="Settings.Phone" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="Settings.Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Settings.Appearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="Settings.ThemeMode" xml:space="preserve">
+    <value>Display mode</value>
+  </data>
+  <data name="Settings.ThemeMode.System" xml:space="preserve">
+    <value>Match device</value>
+  </data>
+  <data name="Settings.ThemeMode.Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Settings.ThemeMode.Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Settings.PrimaryColor" xml:space="preserve">
+    <value>Primary color</value>
+  </data>
+  <data name="Settings.Color.MedicalGreen" xml:space="preserve">
+    <value>Medical green</value>
+  </data>
+  <data name="Settings.Color.Blue" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="Settings.Color.Indigo" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="Settings.Color.Purple" xml:space="preserve">
+    <value>Purple</value>
+  </data>
+  <data name="Settings.Color.Teal" xml:space="preserve">
+    <value>Teal</value>
+  </data>
+  <data name="Settings.Color.BurntOrange" xml:space="preserve">
+    <value>Burnt orange</value>
+  </data>
+  <data name="Settings.Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Settings.Saved" xml:space="preserve">
+    <value>Settings saved</value>
+  </data>
+  <data name="Settings.NameArabicRequired" xml:space="preserve">
+    <value>The Arabic pharmacy name is required</value>
+  </data>
+  <data name="Settings.NameEnglishRequired" xml:space="preserve">
+    <value>The English pharmacy name is required</value>
+  </data>
+  <data name="Settings.NameTooLong" xml:space="preserve">
+    <value>The pharmacy name must not exceed {0} characters</value>
+  </data>
+  <data name="Settings.PhoneTooLong" xml:space="preserve">
+    <value>The phone number must not exceed {0} characters</value>
+  </data>
+  <data name="Settings.AddressTooLong" xml:space="preserve">
+    <value>The address must not exceed {0} characters</value>
+  </data>
+  <data name="Settings.InvalidThemeMode" xml:space="preserve">
+    <value>The display mode is not valid</value>
+  </data>
+  <data name="Settings.InvalidColor" xml:space="preserve">
+    <value>The selected color is not valid</value>
+  </data>
+  <data name="Errors.ConcurrencyConflict" xml:space="preserve">
+    <value>Another user changed this data a moment ago. Reload the page and try again.</value>
+  </data>
+</root>

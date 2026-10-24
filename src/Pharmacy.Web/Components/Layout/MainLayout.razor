@@ -1,0 +1,127 @@
+﻿@inherits LayoutComponentBase
+@implements IAsyncDisposable
+@inject PharmacySettingsService SettingsService
+@inject PharmacySettingsState SettingsState
+
+<MudRTLProvider RightToLeft="_isRightToLeft">
+    <MudThemeProvider @ref="_themeProvider" Theme="_theme" IsDarkMode="_isDarkMode" />
+    <MudPopoverProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+
+    <MudLayout>
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                           Color="Color.Inherit"
+                           Edge="Edge.Start"
+                           aria-label="@L["Nav.ToggleMenu"]"
+                           OnClick="ToggleDrawer" />
+            <MudText Typo="Typo.h6" Class="ms-2">@_pharmacyName</MudText>
+            <MudSpacer />
+            <LanguageSwitcher />
+        </MudAppBar>
+
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="1">
+            <NavMenu />
+        </MudDrawer>
+
+        <MudMainContent>
+            <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="py-4">
+                <ErrorBoundary @ref="_errorBoundary">
+                    <ChildContent>
+                        @Body
+                    </ChildContent>
+                    <ErrorContent>
+                        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+                            @L["Error.Unhandled"]
+                            <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="Recover">
+                                @L["Error.Retry"]
+                            </MudButton>
+                        </MudAlert>
+                    </ErrorContent>
+                </ErrorBoundary>
+            </MudContainer>
+        </MudMainContent>
+    </MudLayout>
+</MudRTLProvider>
+
+<div id="blazor-error-ui" data-nosnippet>
+    @L["Error.Unhandled"]
+    <a href="." class="reload">@L["Error.Reload"]</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    private readonly bool _isRightToLeft = SupportedCultures.IsRightToLeft(CultureInfo.CurrentUICulture);
+    private MudThemeProvider? _themeProvider;
+    private MudTheme _theme = PharmacyTheme.For(PharmacySettings.Defaults.PrimaryColor);
+    private ThemeMode _themeMode = PharmacySettings.Defaults.ThemeMode;
+    private bool _isDarkMode;
+    private bool _systemPrefersDark;
+    private bool _isInteractive;
+    private string _pharmacyName = string.Empty;
+    private bool _drawerOpen = true;
+    private ErrorBoundary? _errorBoundary;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Apply(await SettingsService.GetCurrentAsync());
+        SettingsState.Changed += OnSettingsChanged;
+    }
+
+    // Navigating to another page clears an error shown by the boundary.
+    protected override void OnParametersSet() => _errorBoundary?.Recover();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // The device preference is only readable once the page is interactive (JS available).
+        if (firstRender && _themeProvider is not null && RendererInfo.IsInteractive)
+        {
+            _isInteractive = true;
+            _systemPrefersDark = await _themeProvider.GetSystemDarkModeAsync();
+            await _themeProvider.WatchSystemDarkModeAsync(OnSystemDarkModeChangedAsync);
+            UpdateDarkMode();
+            StateHasChanged();
+        }
+    }
+
+    private void Apply(PharmacySettingsData settings)
+    {
+        _pharmacyName = settings.DisplayName(CultureInfo.CurrentUICulture);
+        _theme = PharmacyTheme.For(settings.PrimaryColor);
+        _themeMode = settings.ThemeMode;
+        UpdateDarkMode();
+    }
+
+    private void UpdateDarkMode() => _isDarkMode = _themeMode switch
+    {
+        ThemeMode.Dark => true,
+        ThemeMode.System => _isInteractive && _systemPrefersDark,
+        _ => false,
+    };
+
+    // Raised on the thread that saved the settings, possibly from another user's circuit.
+    private void OnSettingsChanged(PharmacySettingsData settings) =>
+        _ = InvokeAsync(() =>
+        {
+            Apply(settings);
+            StateHasChanged();
+        });
+
+    private Task OnSystemDarkModeChangedAsync(bool prefersDark)
+    {
+        _systemPrefersDark = prefersDark;
+        UpdateDarkMode();
+        return InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+
+    private void Recover() => _errorBoundary?.Recover();
+
+    public ValueTask DisposeAsync()
+    {
+        SettingsState.Changed -= OnSettingsChanged;
+        return ValueTask.CompletedTask;
+    }
+}

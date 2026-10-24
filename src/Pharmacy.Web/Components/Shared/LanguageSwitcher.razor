@@ -1,0 +1,25 @@
+@inject NavigationManager Navigation
+
+<MudMenu Icon="@Icons.Material.Filled.Translate"
+         Color="Color.Inherit"
+         AriaLabel="@L["Language.Switch"]">
+    <MudMenuItem OnClick="() => SwitchTo(SupportedCultures.Arabic)">@L["Language.Arabic"]</MudMenuItem>
+    <MudMenuItem OnClick="() => SwitchTo(SupportedCultures.English)">@L["Language.English"]</MudMenuItem>
+</MudMenu>
+
+@code {
+    private void SwitchTo(string culture)
+    {
+        if (string.Equals(CultureInfo.CurrentUICulture.Name, culture, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var returnPath = "/" + Navigation.ToBaseRelativePath(Navigation.Uri);
+        var target = $"{CultureEndpoints.SetCulturePath}?culture={Uri.EscapeDataString(culture)}"
+                     + $"&redirectUri={Uri.EscapeDataString(returnPath)}";
+
+        // forceLoad: the culture and the page direction are fixed per circuit, so reload the page.
+        Navigation.NavigateTo(target, forceLoad: true);
+    }
+}

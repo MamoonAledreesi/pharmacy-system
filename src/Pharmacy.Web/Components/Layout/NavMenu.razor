@@ -1,0 +1,31 @@
+<MudNavMenu>
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">
+        @L["Nav.Dashboard"]
+    </MudNavLink>
+
+    @* Module entries are enabled as each module is delivered (see the roadmap). *@
+    @foreach (var (key, icon) in _upcomingModules)
+    {
+        <MudNavLink Disabled="true" Icon="@icon" title="@L["Nav.ComingSoon"]">
+            @L[key]
+        </MudNavLink>
+    }
+
+    <MudNavLink Href="settings" Icon="@Icons.Material.Filled.Settings">
+        @L["Nav.Settings"]
+    </MudNavLink>
+</MudNavMenu>
+
+@code {
+    private static readonly (string Key, string Icon)[] _upcomingModules =
+    [
+        ("Nav.Products", Icons.Material.Filled.Medication),
+        ("Nav.Inventory", Icons.Material.Filled.Inventory),
+        ("Nav.Purchases", Icons.Material.Filled.LocalShipping),
+        ("Nav.Sales", Icons.Material.Filled.PointOfSale),
+        ("Nav.Customers", Icons.Material.Filled.People),
+        ("Nav.Cash", Icons.Material.Filled.AccountBalanceWallet),
+        ("Nav.Reports", Icons.Material.Filled.Assessment),
+        ("Nav.Users", Icons.Material.Filled.ManageAccounts),
+    ];
+}

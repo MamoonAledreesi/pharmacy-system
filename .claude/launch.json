@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pharmacy-web",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Pharmacy.Web", "--launch-profile", "http"],
+      "port": 5016
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Pharmacy.Application/Pharmacy.Application.csproj" />
+    <Project Path="src/Pharmacy.Domain/Pharmacy.Domain.csproj" />
+    <Project Path="src/Pharmacy.Infrastructure/Pharmacy.Infrastructure.csproj" />
+    <Project Path="src/Pharmacy.Web/Pharmacy.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Pharmacy.Application.Tests/Pharmacy.Application.Tests.csproj" />
+    <Project Path="tests/Pharmacy.ArchitectureTests/Pharmacy.ArchitectureTests.csproj" />
+    <Project Path="tests/Pharmacy.Domain.Tests/Pharmacy.Domain.Tests.csproj" />
+    <Project Path="tests/Pharmacy.IntegrationTests/Pharmacy.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

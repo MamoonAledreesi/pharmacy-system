@@ -1,0 +1,7 @@
+﻿@page "/"
+
+<PageTitle>@L["Home.Title"] - @L["App.Name"]</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">@L["Home.Welcome"]</MudText>
+<MudText Typo="Typo.body1" Class="mb-2">@L["Home.FoundationNotice"]</MudText>
+<MudText Typo="Typo.body2" Color="Color.Secondary">@L["Home.Today", DateTime.Now.ToString("D", CultureInfo.CurrentCulture)]</MudText>
