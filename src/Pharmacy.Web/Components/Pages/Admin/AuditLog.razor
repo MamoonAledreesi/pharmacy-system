@@ -1,6 +1,6 @@
 @page "/admin/audit"
 @attribute [Authorize(Policy = Permissions.AuditLogView)]
-@inject AuditLogQueryService AuditLogQuery
+@inject ServiceRunner Services
 
 <PageTitle>@L["Nav.AuditLog"] - @L["App.Name"]</PageTitle>
 
@@ -72,7 +72,7 @@
             _userName,
             _action);
 
-        var result = await AuditLogQuery.SearchAsync(filter, state.Page, state.PageSize, cancellationToken);
+        var result = await Services.For<AuditLogQueryService>().RunAsync(s => s.SearchAsync(filter, state.Page, state.PageSize, cancellationToken));
         return result.IsSuccess
             ? new TableData<AuditLogRow> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
             : new TableData<AuditLogRow> { Items = [], TotalItems = 0 };

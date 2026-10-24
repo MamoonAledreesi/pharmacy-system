@@ -612,4 +612,238 @@
   <data name="MudBlazor.Converter_InvalidDateTime" xml:space="preserve">
     <value>تاريخ غير صالح</value>
   </data>
+  <data name="Nav.ProductList" xml:space="preserve">
+    <value>قائمة المنتجات</value>
+  </data>
+  <data name="Nav.CatalogLists" xml:space="preserve">
+    <value>القوائم المرجعية</value>
+  </data>
+  <data name="Catalog.Categories" xml:space="preserve">
+    <value>الفئات</value>
+  </data>
+  <data name="Catalog.Units" xml:space="preserve">
+    <value>وحدات القياس</value>
+  </data>
+  <data name="Catalog.UnitsIntro" xml:space="preserve">
+    <value>الوحدات العامة المتاحة للمنتجات. كل منتج يحدد وحداته ومعاملات التحويل الخاصة به.</value>
+  </data>
+  <data name="Catalog.DosageForms" xml:space="preserve">
+    <value>الأشكال الدوائية</value>
+  </data>
+  <data name="Catalog.AddItem" xml:space="preserve">
+    <value>إضافة</value>
+  </data>
+  <data name="Catalog.EditItem" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="Catalog.NameArabic" xml:space="preserve">
+    <value>الاسم بالعربية</value>
+  </data>
+  <data name="Catalog.NameEnglish" xml:space="preserve">
+    <value>الاسم بالإنجليزية</value>
+  </data>
+  <data name="Products.Add" xml:space="preserve">
+    <value>إضافة منتج</value>
+  </data>
+  <data name="Products.Edit" xml:space="preserve">
+    <value>تعديل المنتج</value>
+  </data>
+  <data name="Products.BackToList" xml:space="preserve">
+    <value>العودة إلى القائمة</value>
+  </data>
+  <data name="Products.Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="Products.SearchHint" xml:space="preserve">
+    <value>الاسم التجاري أو العلمي أو الباركود</value>
+  </data>
+  <data name="Products.ShowInactive" xml:space="preserve">
+    <value>إظهار المعطّلة</value>
+  </data>
+  <data name="Products.NoResults" xml:space="preserve">
+    <value>لا توجد منتجات مطابقة.</value>
+  </data>
+  <data name="Products.TradeName" xml:space="preserve">
+    <value>الاسم التجاري</value>
+  </data>
+  <data name="Products.TradeNameArabic" xml:space="preserve">
+    <value>الاسم التجاري بالعربية</value>
+  </data>
+  <data name="Products.TradeNameEnglish" xml:space="preserve">
+    <value>الاسم التجاري بالإنجليزية</value>
+  </data>
+  <data name="Products.TradeNameHint" xml:space="preserve">
+    <value>أدخل الاسم التجاري بلغة واحدة على الأقل.</value>
+  </data>
+  <data name="Products.ScientificName" xml:space="preserve">
+    <value>الاسم العلمي (المادة الفعالة)</value>
+  </data>
+  <data name="Products.Strength" xml:space="preserve">
+    <value>التركيز</value>
+  </data>
+  <data name="Products.DosageForm" xml:space="preserve">
+    <value>الشكل الدوائي</value>
+  </data>
+  <data name="Products.Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="Products.Manufacturer" xml:space="preserve">
+    <value>الشركة المصنعة</value>
+  </data>
+  <data name="Products.TracksExpiry" xml:space="preserve">
+    <value>له تاريخ صلاحية</value>
+  </data>
+  <data name="Products.MinimumStock" xml:space="preserve">
+    <value>الحد الأدنى للمخزون</value>
+  </data>
+  <data name="Products.InBaseUnits" xml:space="preserve">
+    <value>بالوحدة الأساسية: {0}</value>
+  </data>
+  <data name="Products.NearExpiryDays" xml:space="preserve">
+    <value>تنبيه قرب الانتهاء (أيام)</value>
+  </data>
+  <data name="Products.NearExpiryDaysHint" xml:space="preserve">
+    <value>اتركه فارغاً لاستخدام إعداد الصيدلية العام</value>
+  </data>
+  <data name="Products.Notes" xml:space="preserve">
+    <value>ملاحظات</value>
+  </data>
+  <data name="Products.Details" xml:space="preserve">
+    <value>بيانات المنتج</value>
+  </data>
+  <data name="Products.Units" xml:space="preserve">
+    <value>الوحدات</value>
+  </data>
+  <data name="Products.UnitsIntro" xml:space="preserve">
+    <value>حدد الوحدة الأساسية (أصغر وحدة تُباع)، ثم الوحدات الأكبر وعدد الوحدات الأساسية في كل منها.</value>
+  </data>
+  <data name="Products.Unit" xml:space="preserve">
+    <value>الوحدة</value>
+  </data>
+  <data name="Products.Factor" xml:space="preserve">
+    <value>المعامل</value>
+  </data>
+  <data name="Products.DefaultPrice" xml:space="preserve">
+    <value>سعر البيع المقترح</value>
+  </data>
+  <data name="Products.Barcode" xml:space="preserve">
+    <value>الباركود (اختياري)</value>
+  </data>
+  <data name="Products.BaseUnit" xml:space="preserve">
+    <value>الوحدة الأساسية</value>
+  </data>
+  <data name="Products.BaseUnitHint" xml:space="preserve">
+    <value>الدائرة المحددة هي الوحدة الأساسية التي يُحسب بها المخزون والتكلفة.</value>
+  </data>
+  <data name="Products.AddUnit" xml:space="preserve">
+    <value>إضافة وحدة</value>
+  </data>
+  <data name="Products.RemoveUnit" xml:space="preserve">
+    <value>حذف الوحدة</value>
+  </data>
+  <data name="Products.Conversion" xml:space="preserve">
+    <value>1 {0} = {1} {2}</value>
+  </data>
+  <data name="Products.Deactivate" xml:space="preserve">
+    <value>تعطيل المنتج</value>
+  </data>
+  <data name="Products.Activate" xml:space="preserve">
+    <value>تفعيل المنتج</value>
+  </data>
+  <data name="PermissionModules.Catalog" xml:space="preserve">
+    <value>الأدوية والمنتجات</value>
+  </data>
+  <data name="Permissions.Catalog.View" xml:space="preserve">
+    <value>عرض المنتجات والقوائم</value>
+  </data>
+  <data name="Permissions.Catalog.Manage" xml:space="preserve">
+    <value>إدارة المنتجات والقوائم</value>
+  </data>
+  <data name="AuditActions.Catalog.ProductCreated" xml:space="preserve">
+    <value>إضافة منتج</value>
+  </data>
+  <data name="AuditActions.Catalog.ProductUpdated" xml:space="preserve">
+    <value>تعديل منتج</value>
+  </data>
+  <data name="AuditActions.Catalog.ProductStatusChanged" xml:space="preserve">
+    <value>تفعيل/تعطيل منتج</value>
+  </data>
+  <data name="AuditActions.Catalog.LookupCreated" xml:space="preserve">
+    <value>إضافة عنصر قائمة</value>
+  </data>
+  <data name="AuditActions.Catalog.LookupUpdated" xml:space="preserve">
+    <value>تعديل عنصر قائمة</value>
+  </data>
+  <data name="Catalog.NameArabicRequired" xml:space="preserve">
+    <value>الاسم بالعربية مطلوب.</value>
+  </data>
+  <data name="Catalog.NameEnglishRequired" xml:space="preserve">
+    <value>الاسم بالإنجليزية مطلوب.</value>
+  </data>
+  <data name="Catalog.NameTooLong" xml:space="preserve">
+    <value>يجب ألا يتجاوز الاسم {0} حرفاً.</value>
+  </data>
+  <data name="Catalog.NameTaken" xml:space="preserve">
+    <value>يوجد عنصر بهذا الاسم.</value>
+  </data>
+  <data name="Catalog.TradeNameRequired" xml:space="preserve">
+    <value>أدخل الاسم التجاري بالعربية أو الإنجليزية.</value>
+  </data>
+  <data name="Catalog.FieldTooLong" xml:space="preserve">
+    <value>أحد الحقول يتجاوز الحد المسموح ({0} حرفاً).</value>
+  </data>
+  <data name="Catalog.CategoryRequired" xml:space="preserve">
+    <value>اختر الفئة.</value>
+  </data>
+  <data name="Catalog.UnknownCategory" xml:space="preserve">
+    <value>الفئة المختارة غير موجودة.</value>
+  </data>
+  <data name="Catalog.UnknownDosageForm" xml:space="preserve">
+    <value>الشكل الدوائي المختار غير موجود.</value>
+  </data>
+  <data name="Catalog.InvalidMinimumStock" xml:space="preserve">
+    <value>الحد الأدنى للمخزون لا يمكن أن يكون سالباً.</value>
+  </data>
+  <data name="Catalog.InvalidNearExpiryDays" xml:space="preserve">
+    <value>تنبيه قرب الانتهاء يجب أن يكون بين 1 و{0} يوماً.</value>
+  </data>
+  <data name="Catalog.UnitsRequired" xml:space="preserve">
+    <value>أضف وحدة واحدة على الأقل.</value>
+  </data>
+  <data name="Catalog.ExactlyOneBaseUnit" xml:space="preserve">
+    <value>حدد وحدة أساسية واحدة.</value>
+  </data>
+  <data name="Catalog.BaseUnitFactorMustBeOne" xml:space="preserve">
+    <value>معامل الوحدة الأساسية يجب أن يكون 1.</value>
+  </data>
+  <data name="Catalog.UnitFactorTooSmall" xml:space="preserve">
+    <value>معامل كل وحدة غير أساسية يجب أن يكون 2 أو أكثر.</value>
+  </data>
+  <data name="Catalog.DuplicateUnit" xml:space="preserve">
+    <value>لا يمكن تكرار الوحدة نفسها في المنتج.</value>
+  </data>
+  <data name="Catalog.UnknownUnit" xml:space="preserve">
+    <value>إحدى الوحدات المختارة غير موجودة.</value>
+  </data>
+  <data name="Catalog.InvalidPrice" xml:space="preserve">
+    <value>السعر لا يمكن أن يكون سالباً.</value>
+  </data>
+  <data name="Catalog.BarcodeTooLong" xml:space="preserve">
+    <value>يجب ألا يتجاوز الباركود {0} حرفاً.</value>
+  </data>
+  <data name="Catalog.DuplicateBarcode" xml:space="preserve">
+    <value>الباركود مستخدم لمنتج أو وحدة أخرى.</value>
+  </data>
+  <data name="Catalog.UnitRequired" xml:space="preserve">
+    <value>اختر الوحدة.</value>
+  </data>
+  <data name="MudBlazor.MudNavGroup_ToggleExpand" xml:space="preserve">
+    <value>إظهار أو إخفاء {0}</value>
+  </data>
+  <data name="MudBlazor.MudInput_Increment" xml:space="preserve">
+    <value>زيادة</value>
+  </data>
+  <data name="MudBlazor.MudInput_Decrement" xml:space="preserve">
+    <value>إنقاص</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-@inject IUserManagementService UserManagement
+@inject ServiceRunner Services
 
 <MudDialog>
     <DialogContent>
@@ -87,8 +87,8 @@
         {
             var roles = _selectedRoles.ToList();
             var result = IsNew
-                ? await UserManagement.CreateUserAsync(new CreateUserRequest(_userName, _fullName, _temporaryPassword, roles))
-                : await UserManagement.UpdateUserAsync(new UpdateUserRequest(User!.Id, _fullName, _isActive, roles));
+                ? await Services.For<IUserManagementService>().RunAsync(s => s.CreateUserAsync(new CreateUserRequest(_userName, _fullName, _temporaryPassword, roles)))
+                : await Services.For<IUserManagementService>().RunAsync(s => s.UpdateUserAsync(new UpdateUserRequest(User!.Id, _fullName, _isActive, roles)));
 
             if (result.IsFailure)
             {

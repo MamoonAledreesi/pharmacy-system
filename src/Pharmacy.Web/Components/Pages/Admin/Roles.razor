@@ -1,6 +1,6 @@
 @page "/admin/roles"
 @attribute [Authorize(Policy = Permissions.UsersManage)]
-@inject IUserManagementService UserManagement
+@inject ServiceRunner Services
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
@@ -60,7 +60,7 @@
     private async Task LoadAsync()
     {
         _loading = true;
-        var roles = await UserManagement.GetRolesAsync();
+        var roles = await Services.For<IUserManagementService>().RunAsync(s => s.GetRolesAsync());
         _roles = roles.IsSuccess ? roles.Value : [];
         _loading = false;
     }
@@ -86,7 +86,7 @@
             return;
         }
 
-        var result = await UserManagement.DeleteRoleAsync(role.Id);
+        var result = await Services.For<IUserManagementService>().RunAsync(s => s.DeleteRoleAsync(role.Id));
         Snackbar.Add(result.IsSuccess ? L["Roles.Deleted"] : L.Message(result.Error!), result.IsSuccess ? Severity.Success : Severity.Error);
         await LoadAsync();
     }

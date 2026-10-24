@@ -1,6 +1,6 @@
 @page "/admin/users"
 @attribute [Authorize(Policy = Permissions.UsersManage)]
-@inject IUserManagementService UserManagement
+@inject ServiceRunner Services
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
@@ -65,8 +65,8 @@
     private async Task LoadAsync()
     {
         _loading = true;
-        var users = await UserManagement.GetUsersAsync();
-        var roles = await UserManagement.GetRolesAsync();
+        var users = await Services.For<IUserManagementService>().RunAsync(s => s.GetUsersAsync());
+        var roles = await Services.For<IUserManagementService>().RunAsync(s => s.GetRolesAsync());
         _users = users.IsSuccess ? users.Value : [];
         _roles = roles.IsSuccess ? roles.Value : [];
         _loading = false;
@@ -105,7 +105,7 @@
 
     private async Task UnlockAsync(UserSummary user)
     {
-        var result = await UserManagement.UnlockAsync(user.Id);
+        var result = await Services.For<IUserManagementService>().RunAsync(s => s.UnlockAsync(user.Id));
         Snackbar.Add(result.IsSuccess ? L["Users.Unlocked"] : L.Message(result.Error!), result.IsSuccess ? Severity.Success : Severity.Error);
         await LoadAsync();
     }

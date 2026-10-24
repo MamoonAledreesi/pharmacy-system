@@ -24,6 +24,15 @@ public class SupportedCulturesTests
     }
 
     [Fact]
+    public void Arabic_ParsesAndFormatsPricesWithAPeriod()
+    {
+        var arabic = SupportedCultures.CreateOptions().DefaultRequestCulture.Culture;
+
+        decimal.Parse("1,234.50", NumberStyles.Number, arabic).ShouldBe(1234.50m);
+        12.5m.ToString("N2", arabic).ShouldBe("12.50");
+    }
+
+    [Fact]
     public void TextDirection_FollowsCulture()
     {
         SupportedCultures.IsRightToLeft(new CultureInfo(SupportedCultures.Arabic)).ShouldBeTrue();

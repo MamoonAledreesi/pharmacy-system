@@ -10,6 +10,7 @@ using Pharmacy.Application.Abstractions;
 using Pharmacy.Infrastructure;
 using Pharmacy.Infrastructure.Persistence;
 using Pharmacy.Web.Authentication;
+using Pharmacy.Web.Common;
 using Pharmacy.Web.Components;
 using Pharmacy.Web.Localization;
 using Serilog;
@@ -72,6 +73,7 @@ try
     builder.Services.AddScoped<ICurrentUser>(provider => provider.GetRequiredService<CurrentUserAccessor>());
     builder.Services.AddScoped<CircuitHandler, CurrentUserCircuitHandler>();
     builder.Services.AddScoped<SignInService>();
+    builder.Services.AddScoped<ServiceRunner>();
     builder.Services.AddSingleton<SetupState>();
 
     var app = builder.Build();

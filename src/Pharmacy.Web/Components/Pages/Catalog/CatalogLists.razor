@@ -1,0 +1,19 @@
+@page "/catalog/lists"
+@attribute [Authorize(Policy = Permissions.CatalogView)]
+
+<PageTitle>@L["Nav.CatalogLists"] - @L["App.Name"]</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">@L["Nav.CatalogLists"]</MudText>
+
+<MudTabs Elevation="1" Rounded="true" TabPanelsClass="pa-4">
+    <MudTabPanel Text="@L["Catalog.Categories"]">
+        <LookupList TLookup="Category" />
+    </MudTabPanel>
+    <MudTabPanel Text="@L["Catalog.Units"]">
+        <MudText Typo="Typo.body2" Class="mb-3">@L["Catalog.UnitsIntro"]</MudText>
+        <LookupList TLookup="UnitOfMeasure" />
+    </MudTabPanel>
+    <MudTabPanel Text="@L["Catalog.DosageForms"]">
+        <LookupList TLookup="DosageForm" />
+    </MudTabPanel>
+</MudTabs>

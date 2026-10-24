@@ -57,7 +57,31 @@ internal sealed class IdentityTableConfiguration :
 {
     public void Configure(EntityTypeBuilder<IdentityUserRole<int>> builder) => builder.ToTable("UserRoles", Schemas.Identity);
 
-    public void Configure(EntityTypeBuilder<IdentityRoleClaim<int>> builder) => builder.ToTable("RoleClaims", Schemas.Identity);
+    public void Configure(EntityTypeBuilder<IdentityRoleClaim<int>> builder)
+    {
+        builder.ToTable("RoleClaims", Schemas.Identity);
+
+        // Default permissions of the built-in roles, granted when each feature is introduced.
+        // Administrators can change them afterwards. Ids are permanent: append new grants with new ids.
+        builder.HasData(DefaultGrants.Select((grant, index) => new IdentityRoleClaim<int>
+        {
+            Id = index + 1,
+            RoleId = grant.RoleId,
+            ClaimType = Permissions.ClaimType,
+            ClaimValue = grant.Permission,
+        }));
+    }
+
+    // Role ids as seeded in ApplicationRoleConfiguration: 2 Pharmacist, 3 Cashier, 4 Accountant, 5 StoreKeeper.
+    private static readonly (int RoleId, string Permission)[] DefaultGrants =
+    [
+        (2, Permissions.CatalogView),
+        (2, Permissions.CatalogManage),
+        (3, Permissions.CatalogView),
+        (4, Permissions.CatalogView),
+        (5, Permissions.CatalogView),
+        (5, Permissions.CatalogManage),
+    ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);
 

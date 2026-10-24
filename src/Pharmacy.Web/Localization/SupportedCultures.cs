@@ -16,6 +16,9 @@ public static class SupportedCultures
 
     public static bool IsRightToLeft(CultureInfo culture) => culture.TextInfo.IsRightToLeft;
 
+    /// <summary>True when the current UI language is Arabic; picks between the Arabic and English data fields.</summary>
+    public static bool IsArabicUi => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == Arabic;
+
     public static RequestLocalizationOptions CreateOptions()
     {
         CultureInfo[] cultures = [CreateArabic(), new CultureInfo(English)];
@@ -32,12 +35,19 @@ public static class SupportedCultures
         return options;
     }
 
-    // The neutral "ar" culture defaults to the Um Al-Qura (Hijri) calendar.
-    // Invoices, expiry dates, and reports use Gregorian dates.
     private static CultureInfo CreateArabic()
     {
         var arabic = new CultureInfo(Arabic);
+
+        // The neutral "ar" culture defaults to the Um Al-Qura (Hijri) calendar.
+        // Invoices, expiry dates, and reports use Gregorian dates.
         arabic.DateTimeFormat.Calendar = new GregorianCalendar();
+
+        // "ar" uses the Arabic decimal separator (٫), so a price typed as "12.50" would not parse.
+        // Prices and quantities use "." for decimals and "," for thousands in both languages.
+        var numbers = arabic.NumberFormat;
+        numbers.NumberDecimalSeparator = numbers.CurrencyDecimalSeparator = numbers.PercentDecimalSeparator = ".";
+        numbers.NumberGroupSeparator = numbers.CurrencyGroupSeparator = numbers.PercentGroupSeparator = ",";
         return arabic;
     }
 }

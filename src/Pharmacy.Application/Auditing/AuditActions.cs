@@ -22,10 +22,17 @@ public static class AuditActions
 
     public const string SettingsUpdated = "Settings.Updated";
 
+    public const string ProductCreated = "Catalog.ProductCreated";
+    public const string ProductUpdated = "Catalog.ProductUpdated";
+    public const string ProductStatusChanged = "Catalog.ProductStatusChanged";
+    public const string LookupCreated = "Catalog.LookupCreated";
+    public const string LookupUpdated = "Catalog.LookupUpdated";
+
     public static IReadOnlyList<string> All { get; } =
     [
         LoginSucceeded, LoginFailed, LockedOut, Logout, PasswordChanged, SetupCompleted,
         UserCreated, UserUpdated, UserPasswordReset, UserUnlocked,
         RoleCreated, RoleUpdated, RoleDeleted, SettingsUpdated,
+        ProductCreated, ProductUpdated, ProductStatusChanged, LookupCreated, LookupUpdated,
     ];
 }

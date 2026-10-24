@@ -1,6 +1,6 @@
 @page "/settings"
 @attribute [Authorize(Policy = Permissions.SettingsManage)]
-@inject PharmacySettingsService SettingsService
+@inject ServiceRunner Services
 @inject ISnackbar Snackbar
 
 <PageTitle>@L["Settings.Title"] - @L["App.Name"]</PageTitle>
@@ -91,7 +91,7 @@
     protected override async Task OnInitializedAsync()
     {
         // The page is already restricted by policy; the service checks the permission again.
-        var current = await SettingsService.GetForEditAsync();
+        var current = await Services.For<PharmacySettingsService>().RunAsync(s => s.GetForEditAsync());
         if (current.IsFailure)
         {
             return;
@@ -117,7 +117,7 @@
         _saving = true;
         try
         {
-            var result = await SettingsService.UpdateAsync(_form.ToData(), _rowVersion);
+            var result = await Services.For<PharmacySettingsService>().RunAsync(s => s.UpdateAsync(_form.ToData(), _rowVersion));
             if (result.IsFailure)
             {
                 var error = result.Error!;
@@ -126,7 +126,7 @@
             }
 
             // Reload so the next save carries the new concurrency token.
-            var reloaded = await SettingsService.GetForEditAsync();
+            var reloaded = await Services.For<PharmacySettingsService>().RunAsync(s => s.GetForEditAsync());
             if (reloaded.IsSuccess)
             {
                 _rowVersion = reloaded.Value.RowVersion;

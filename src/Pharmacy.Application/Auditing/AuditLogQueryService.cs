@@ -10,8 +10,6 @@ public sealed record AuditLogFilter(DateTime? FromUtc, DateTime? ToUtc, string? 
 
 public sealed record AuditLogRow(long Id, DateTime OccurredAtUtc, string UserName, string Action, string? Target, string? Details);
 
-public sealed record PagedResult<T>(IReadOnlyList<T> Items, int TotalCount);
-
 public sealed class AuditLogQueryService(IPharmacyDbContext db, ICurrentUser currentUser)
 {
     public const int MaxPageSize = 200;

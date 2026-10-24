@@ -1,0 +1,363 @@
+@page "/catalog/products/new"
+@page "/catalog/products/{Id:int}"
+@attribute [Authorize(Policy = Permissions.CatalogView)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IAuthorizationService AuthorizationService
+
+<PageTitle>@Title - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="catalog/products" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@Title</MudText>
+    @if (_isActive is false)
+    {
+        <MudChip T="string" Size="Size.Small">@L["Users.Inactive"]</MudChip>
+    }
+</div>
+
+@if (_notFound)
+{
+    <MudAlert Severity="Severity.Warning">@L["Errors.NotFound"]</MudAlert>
+    return;
+}
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+@if (_error is not null)
+{
+    <MudAlert Severity="Severity.Error" Class="mb-3" ShowCloseIcon="true" CloseIconClicked="() => _error = null">@_error</MudAlert>
+}
+
+<MudForm @ref="_form" ReadOnly="!_canManage">
+    <MudGrid>
+        <MudItem xs="12" lg="7">
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6" GutterBottom="true">@L["Products.Details"]</MudText>
+                <MudGrid Spacing="2">
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_details.TradeNameArabic" Label="@L["Products.TradeNameArabic"]" MaxLength="Product.TradeNameMaxLength" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="_details.TradeNameEnglish" Label="@L["Products.TradeNameEnglish"]" MaxLength="Product.TradeNameMaxLength" Style="direction: ltr" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.caption">@L["Products.TradeNameHint"]</MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="8">
+                        <MudTextField @bind-Value="_details.ScientificName" Label="@L["Products.ScientificName"]" MaxLength="Product.ScientificNameMaxLength" Style="direction: ltr" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudTextField @bind-Value="_details.Strength" Label="@L["Products.Strength"]" Placeholder="500 mg" MaxLength="Product.StrengthMaxLength" Style="direction: ltr" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="int?" @bind-Value="_details.CategoryId" Label="@L["Products.Category"]" Required="true" RequiredError="@L[CatalogErrors.CategoryRequired]">
+                            @foreach (var category in _categories)
+                            {
+                                <MudSelectItem T="int?" Value="category.Id">@category.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="int?" @bind-Value="_details.DosageFormId" Label="@L["Products.DosageForm"]" Clearable="true">
+                            @foreach (var form in _dosageForms)
+                            {
+                                <MudSelectItem T="int?" Value="form.Id">@form.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="_details.Manufacturer" Label="@L["Products.Manufacturer"]" MaxLength="Product.ManufacturerMaxLength" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4" Class="d-flex align-center">
+                        <MudSwitch @bind-Value="_details.TracksExpiry" Color="Color.Primary" Label="@L["Products.TracksExpiry"]" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudNumericField T="int?" @bind-Value="_details.MinimumStock" Label="@L["Products.MinimumStock"]" Min="0"
+                                         HelperText="@L["Products.InBaseUnits", BaseUnitName]" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        <MudNumericField T="int?" @bind-Value="_details.NearExpiryDays" Label="@L["Products.NearExpiryDays"]" Min="1" Max="Product.MaxNearExpiryDays"
+                                         HelperText="@L["Products.NearExpiryDaysHint"]" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="_details.Notes" Label="@L["Products.Notes"]" Lines="2" MaxLength="Product.NotesMaxLength" />
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" lg="5">
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6">@L["Products.Units"]</MudText>
+                <MudText Typo="Typo.caption" Class="d-block mb-3">@L["Products.UnitsIntro"]</MudText>
+
+                <MudRadioGroup T="Guid" @bind-Value="_baseRowKey">
+                    @foreach (var row in _units)
+                    {
+                        <div class="product-unit-row">
+                            <MudRadio T="Guid" Value="row.Key" Color="Color.Primary" Dense="true"
+                                      AriaLabel="@L["Products.BaseUnit"]" title="@L["Products.BaseUnit"]" />
+                            <MudSelect T="int?" @bind-Value="row.UnitOfMeasureId" Label="@L["Products.Unit"]" Required="true" RequiredError="@L["Catalog.UnitRequired"]" Margin="Margin.Dense" Class="unit-select">
+                                @foreach (var unit in _unitsOfMeasure)
+                                {
+                                    <MudSelectItem T="int?" Value="unit.Id">@unit.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                                }
+                            </MudSelect>
+                            <MudNumericField T="int" Value="IsBase(row) ? 1 : row.Factor" ValueChanged="value => row.Factor = value"
+                                             Disabled="IsBase(row)" Min="1" Label="@L["Products.Factor"]" Margin="Margin.Dense" Class="unit-number" />
+                            <MudNumericField T="decimal?" @bind-Value="row.DefaultSellingPrice" Min="0" Format="N2"
+                                             Label="@L["Products.DefaultPrice"]" Margin="Margin.Dense" Class="unit-number" />
+                            <MudTextField @bind-Value="row.Barcode" Label="@L["Products.Barcode"]" Margin="Margin.Dense"
+                                          MaxLength="ProductUnit.BarcodeMaxLength" Class="unit-barcode" Style="direction: ltr" />
+                            @if (_canManage && _units.Count > 1)
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                                               aria-label="@L["Products.RemoveUnit"]" title="@L["Products.RemoveUnit"]" OnClick="() => RemoveUnit(row)" />
+                            }
+                        </div>
+                        @if (!IsBase(row) && row.Factor > 1)
+                        {
+                            <MudText Typo="Typo.caption" Class="unit-conversion">
+                                @L["Products.Conversion", UnitName(row.UnitOfMeasureId), row.Factor, BaseUnitName]
+                            </MudText>
+                        }
+                    }
+                </MudRadioGroup>
+
+                @if (_canManage)
+                {
+                    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Add" OnClick="AddUnit" Class="mt-2">@L["Products.AddUnit"]</MudButton>
+                }
+                <MudText Typo="Typo.caption" Class="d-block mt-2">@L["Products.BaseUnitHint"]</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    @if (_canManage)
+    {
+        <div class="d-flex gap-2 mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Disabled="_saving" OnClick="SaveAsync">
+                @L["Settings.Save"]
+            </MudButton>
+            @if (Id is not null && _isActive is { } active)
+            {
+                <MudButton Variant="Variant.Outlined" Color="@(active ? Color.Warning : Color.Success)" Disabled="_saving" OnClick="() => SetActiveAsync(!active)">
+                    @(active ? L["Products.Deactivate"] : L["Products.Activate"])
+                </MudButton>
+            }
+        </div>
+    }
+</MudForm>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private MudForm? _form;
+    private DetailsForm _details = new();
+    private List<UnitRow> _units = [];
+    private Guid _baseRowKey;
+    private byte[] _rowVersion = [];
+    private bool? _isActive;
+    private IReadOnlyList<LookupItem> _categories = [];
+    private IReadOnlyList<LookupItem> _dosageForms = [];
+    private IReadOnlyList<LookupItem> _unitsOfMeasure = [];
+    private bool _canManage;
+    private bool _loading = true;
+    private bool _notFound;
+    private bool _saving;
+    private string? _error;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    private string Title => Id is null ? L["Products.Add"] : L["Products.Edit"];
+
+    private string BaseUnitName => _units.FirstOrDefault(IsBase) is { } row ? UnitName(row.UnitOfMeasureId) : string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _loading = true;
+        var user = (await AuthenticationState).User;
+        _canManage = (await AuthorizationService.AuthorizeAsync(user, Permissions.CatalogManage)).Succeeded;
+
+        if (Id is null)
+        {
+            _details = new DetailsForm { TracksExpiry = true };
+            _units = [];
+            _rowVersion = [];
+            _isActive = null;
+            AddUnit();
+        }
+        else
+        {
+            var product = await Services.For<ProductService>().RunAsync(s => s.GetForEditAsync(Id.Value));
+            if (product.IsFailure)
+            {
+                _notFound = true;
+                _loading = false;
+                return;
+            }
+
+            _details = DetailsForm.From(product.Value.Details);
+            _units = [.. product.Value.Units.Select(UnitRow.From)];
+            _baseRowKey = _units.First(u => u.IsBaseOnLoad).Key;
+            _rowVersion = product.Value.RowVersion;
+            _isActive = product.Value.IsActive;
+        }
+
+        await LoadListsAsync();
+        _loading = false;
+    }
+
+    // Active items, plus inactive ones the product already uses so they still display.
+    private async Task LoadListsAsync()
+    {
+        _categories = Usable(await Services.For<LookupService<Category>>().RunAsync(s => s.GetAllAsync(includeInactive: true)), [_details.CategoryId ?? 0]);
+        _dosageForms = Usable(await Services.For<LookupService<DosageForm>>().RunAsync(s => s.GetAllAsync(includeInactive: true)), [_details.DosageFormId ?? 0]);
+        _unitsOfMeasure = Usable(await Services.For<LookupService<UnitOfMeasure>>().RunAsync(s => s.GetAllAsync(includeInactive: true)), [.. _units.Select(u => u.UnitOfMeasureId ?? 0)]);
+
+        static IReadOnlyList<LookupItem> Usable(Result<IReadOnlyList<LookupItem>> items, int[] inUse) =>
+            items.IsSuccess ? [.. items.Value.Where(i => i.IsActive || inUse.Contains(i.Id))] : [];
+    }
+
+    private bool IsBase(UnitRow row) => row.Key == _baseRowKey;
+
+    private string UnitName(int? unitOfMeasureId) =>
+        _unitsOfMeasure.FirstOrDefault(u => u.Id == unitOfMeasureId)?.DisplayName(SupportedCultures.IsArabicUi) ?? "?";
+
+    private void AddUnit()
+    {
+        var row = new UnitRow { Factor = _units.Count == 0 ? 1 : 2 };
+        _units.Add(row);
+        if (_units.Count == 1)
+        {
+            _baseRowKey = row.Key;
+        }
+    }
+
+    private void RemoveUnit(UnitRow row)
+    {
+        _units.Remove(row);
+        if (IsBase(row))
+        {
+            _baseRowKey = _units[0].Key;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        await _form!.ValidateAsync();
+        if (!_form.IsValid)
+        {
+            return;
+        }
+
+        _saving = true;
+        _error = null;
+        try
+        {
+            var details = _details.ToDetails();
+            var units = _units.Select(u => u.ToData(IsBase(u))).ToList();
+            var result = Id is null
+                ? await Services.For<ProductService>().RunAsync(s => s.CreateAsync(details, units))
+                : await Services.For<ProductService>().RunAsync(s => s.UpdateAsync(Id.Value, details, units, _rowVersion));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            Snackbar.Add(L["Common.Saved"], Severity.Success);
+            Navigation.NavigateTo(result is Result<int> created ? $"catalog/products/{created.Value}" : $"catalog/products/{Id}");
+            if (Id is not null)
+            {
+                await OnParametersSetAsync();
+            }
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    private async Task SetActiveAsync(bool isActive)
+    {
+        var result = await Services.For<ProductService>().RunAsync(s => s.SetActiveAsync(Id!.Value, isActive));
+        if (result.IsFailure)
+        {
+            _error = L.Message(result.Error!);
+            return;
+        }
+
+        Snackbar.Add(L["Common.Saved"], Severity.Success);
+        await OnParametersSetAsync();
+    }
+
+    /// <summary>Mutable form model; the domain types stay immutable.</summary>
+    private sealed class DetailsForm
+    {
+        public string? TradeNameArabic { get; set; }
+        public string? TradeNameEnglish { get; set; }
+        public string? ScientificName { get; set; }
+        public string? Strength { get; set; }
+        public string? Manufacturer { get; set; }
+        public int? DosageFormId { get; set; }
+        public int? CategoryId { get; set; }
+        public string? Notes { get; set; }
+        public bool TracksExpiry { get; set; }
+        public int? MinimumStock { get; set; }
+        public int? NearExpiryDays { get; set; }
+
+        public static DetailsForm From(ProductDetails d) => new()
+        {
+            TradeNameArabic = d.TradeNameArabic,
+            TradeNameEnglish = d.TradeNameEnglish,
+            ScientificName = d.ScientificName,
+            Strength = d.Strength,
+            Manufacturer = d.Manufacturer,
+            DosageFormId = d.DosageFormId,
+            CategoryId = d.CategoryId,
+            Notes = d.Notes,
+            TracksExpiry = d.TracksExpiry,
+            MinimumStock = d.MinimumStock,
+            NearExpiryDays = d.NearExpiryDays,
+        };
+
+        public ProductDetails ToDetails() => new(
+            TradeNameArabic, TradeNameEnglish, ScientificName, Strength, Manufacturer, DosageFormId,
+            CategoryId ?? 0, Notes, TracksExpiry, MinimumStock, NearExpiryDays);
+    }
+
+    private sealed class UnitRow
+    {
+        public Guid Key { get; } = Guid.NewGuid();
+        public int? Id { get; init; }
+        public bool IsBaseOnLoad { get; init; }
+        public int? UnitOfMeasureId { get; set; }
+        public int Factor { get; set; } = 1;
+        public decimal? DefaultSellingPrice { get; set; }
+        public string? Barcode { get; set; }
+
+        public static UnitRow From(ProductUnitData u) => new()
+        {
+            Id = u.Id,
+            IsBaseOnLoad = u.IsBase,
+            UnitOfMeasureId = u.UnitOfMeasureId,
+            Factor = u.Factor,
+            DefaultSellingPrice = u.DefaultSellingPrice,
+            Barcode = u.Barcode,
+        };
+
+        public ProductUnitData ToData(bool isBase) =>
+            new(Id, UnitOfMeasureId ?? 0, isBase, isBase ? 1 : Factor, DefaultSellingPrice, Barcode);
+    }
+}

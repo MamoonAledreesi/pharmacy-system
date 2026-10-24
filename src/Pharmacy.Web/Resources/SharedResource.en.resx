@@ -612,4 +612,238 @@
   <data name="MudBlazor.Converter_InvalidDateTime" xml:space="preserve">
     <value>Not a valid date</value>
   </data>
+  <data name="Nav.ProductList" xml:space="preserve">
+    <value>Product list</value>
+  </data>
+  <data name="Nav.CatalogLists" xml:space="preserve">
+    <value>Reference lists</value>
+  </data>
+  <data name="Catalog.Categories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="Catalog.Units" xml:space="preserve">
+    <value>Units of measure</value>
+  </data>
+  <data name="Catalog.UnitsIntro" xml:space="preserve">
+    <value>The units available to products. Each product chooses its own units and conversion factors.</value>
+  </data>
+  <data name="Catalog.DosageForms" xml:space="preserve">
+    <value>Dosage forms</value>
+  </data>
+  <data name="Catalog.AddItem" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Catalog.EditItem" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Catalog.NameArabic" xml:space="preserve">
+    <value>Arabic name</value>
+  </data>
+  <data name="Catalog.NameEnglish" xml:space="preserve">
+    <value>English name</value>
+  </data>
+  <data name="Products.Add" xml:space="preserve">
+    <value>Add product</value>
+  </data>
+  <data name="Products.Edit" xml:space="preserve">
+    <value>Edit product</value>
+  </data>
+  <data name="Products.BackToList" xml:space="preserve">
+    <value>Back to the list</value>
+  </data>
+  <data name="Products.Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Products.SearchHint" xml:space="preserve">
+    <value>Trade name, scientific name, or barcode</value>
+  </data>
+  <data name="Products.ShowInactive" xml:space="preserve">
+    <value>Show inactive</value>
+  </data>
+  <data name="Products.NoResults" xml:space="preserve">
+    <value>No matching products.</value>
+  </data>
+  <data name="Products.TradeName" xml:space="preserve">
+    <value>Trade name</value>
+  </data>
+  <data name="Products.TradeNameArabic" xml:space="preserve">
+    <value>Trade name (Arabic)</value>
+  </data>
+  <data name="Products.TradeNameEnglish" xml:space="preserve">
+    <value>Trade name (English)</value>
+  </data>
+  <data name="Products.TradeNameHint" xml:space="preserve">
+    <value>Enter the trade name in at least one language.</value>
+  </data>
+  <data name="Products.ScientificName" xml:space="preserve">
+    <value>Scientific name (active ingredient)</value>
+  </data>
+  <data name="Products.Strength" xml:space="preserve">
+    <value>Strength</value>
+  </data>
+  <data name="Products.DosageForm" xml:space="preserve">
+    <value>Dosage form</value>
+  </data>
+  <data name="Products.Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Products.Manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="Products.TracksExpiry" xml:space="preserve">
+    <value>Has an expiry date</value>
+  </data>
+  <data name="Products.MinimumStock" xml:space="preserve">
+    <value>Minimum stock</value>
+  </data>
+  <data name="Products.InBaseUnits" xml:space="preserve">
+    <value>In the base unit: {0}</value>
+  </data>
+  <data name="Products.NearExpiryDays" xml:space="preserve">
+    <value>Near-expiry alert (days)</value>
+  </data>
+  <data name="Products.NearExpiryDaysHint" xml:space="preserve">
+    <value>Leave empty to use the pharmacy-wide setting</value>
+  </data>
+  <data name="Products.Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Products.Details" xml:space="preserve">
+    <value>Product details</value>
+  </data>
+  <data name="Products.Units" xml:space="preserve">
+    <value>Units</value>
+  </data>
+  <data name="Products.UnitsIntro" xml:space="preserve">
+    <value>Choose the base unit (the smallest unit sold), then larger units and how many base units each contains.</value>
+  </data>
+  <data name="Products.Unit" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="Products.Factor" xml:space="preserve">
+    <value>Factor</value>
+  </data>
+  <data name="Products.DefaultPrice" xml:space="preserve">
+    <value>Suggested price</value>
+  </data>
+  <data name="Products.Barcode" xml:space="preserve">
+    <value>Barcode (optional)</value>
+  </data>
+  <data name="Products.BaseUnit" xml:space="preserve">
+    <value>Base unit</value>
+  </data>
+  <data name="Products.BaseUnitHint" xml:space="preserve">
+    <value>The selected circle marks the base unit used for stock and costs.</value>
+  </data>
+  <data name="Products.AddUnit" xml:space="preserve">
+    <value>Add unit</value>
+  </data>
+  <data name="Products.RemoveUnit" xml:space="preserve">
+    <value>Remove unit</value>
+  </data>
+  <data name="Products.Conversion" xml:space="preserve">
+    <value>1 {0} = {1} {2}</value>
+  </data>
+  <data name="Products.Deactivate" xml:space="preserve">
+    <value>Deactivate product</value>
+  </data>
+  <data name="Products.Activate" xml:space="preserve">
+    <value>Activate product</value>
+  </data>
+  <data name="PermissionModules.Catalog" xml:space="preserve">
+    <value>Medicines &amp; products</value>
+  </data>
+  <data name="Permissions.Catalog.View" xml:space="preserve">
+    <value>View products and lists</value>
+  </data>
+  <data name="Permissions.Catalog.Manage" xml:space="preserve">
+    <value>Manage products and lists</value>
+  </data>
+  <data name="AuditActions.Catalog.ProductCreated" xml:space="preserve">
+    <value>Product created</value>
+  </data>
+  <data name="AuditActions.Catalog.ProductUpdated" xml:space="preserve">
+    <value>Product updated</value>
+  </data>
+  <data name="AuditActions.Catalog.ProductStatusChanged" xml:space="preserve">
+    <value>Product activated/deactivated</value>
+  </data>
+  <data name="AuditActions.Catalog.LookupCreated" xml:space="preserve">
+    <value>List item created</value>
+  </data>
+  <data name="AuditActions.Catalog.LookupUpdated" xml:space="preserve">
+    <value>List item updated</value>
+  </data>
+  <data name="Catalog.NameArabicRequired" xml:space="preserve">
+    <value>The Arabic name is required.</value>
+  </data>
+  <data name="Catalog.NameEnglishRequired" xml:space="preserve">
+    <value>The English name is required.</value>
+  </data>
+  <data name="Catalog.NameTooLong" xml:space="preserve">
+    <value>The name must not exceed {0} characters.</value>
+  </data>
+  <data name="Catalog.NameTaken" xml:space="preserve">
+    <value>An item with this name already exists.</value>
+  </data>
+  <data name="Catalog.TradeNameRequired" xml:space="preserve">
+    <value>Enter the trade name in Arabic or English.</value>
+  </data>
+  <data name="Catalog.FieldTooLong" xml:space="preserve">
+    <value>A field exceeds the allowed length ({0} characters).</value>
+  </data>
+  <data name="Catalog.CategoryRequired" xml:space="preserve">
+    <value>Select a category.</value>
+  </data>
+  <data name="Catalog.UnknownCategory" xml:space="preserve">
+    <value>The selected category does not exist.</value>
+  </data>
+  <data name="Catalog.UnknownDosageForm" xml:space="preserve">
+    <value>The selected dosage form does not exist.</value>
+  </data>
+  <data name="Catalog.InvalidMinimumStock" xml:space="preserve">
+    <value>The minimum stock cannot be negative.</value>
+  </data>
+  <data name="Catalog.InvalidNearExpiryDays" xml:space="preserve">
+    <value>The near-expiry alert must be between 1 and {0} days.</value>
+  </data>
+  <data name="Catalog.UnitsRequired" xml:space="preserve">
+    <value>Add at least one unit.</value>
+  </data>
+  <data name="Catalog.ExactlyOneBaseUnit" xml:space="preserve">
+    <value>Choose exactly one base unit.</value>
+  </data>
+  <data name="Catalog.BaseUnitFactorMustBeOne" xml:space="preserve">
+    <value>The base unit factor must be 1.</value>
+  </data>
+  <data name="Catalog.UnitFactorTooSmall" xml:space="preserve">
+    <value>Each non-base unit must have a factor of 2 or more.</value>
+  </data>
+  <data name="Catalog.DuplicateUnit" xml:space="preserve">
+    <value>The same unit cannot be added twice.</value>
+  </data>
+  <data name="Catalog.UnknownUnit" xml:space="preserve">
+    <value>One of the selected units does not exist.</value>
+  </data>
+  <data name="Catalog.InvalidPrice" xml:space="preserve">
+    <value>The price cannot be negative.</value>
+  </data>
+  <data name="Catalog.BarcodeTooLong" xml:space="preserve">
+    <value>The barcode must not exceed {0} characters.</value>
+  </data>
+  <data name="Catalog.DuplicateBarcode" xml:space="preserve">
+    <value>The barcode is already used by another product or unit.</value>
+  </data>
+  <data name="Catalog.UnitRequired" xml:space="preserve">
+    <value>Select a unit.</value>
+  </data>
+  <data name="MudBlazor.MudNavGroup_ToggleExpand" xml:space="preserve">
+    <value>Show or hide {0}</value>
+  </data>
+  <data name="MudBlazor.MudInput_Increment" xml:space="preserve">
+    <value>Increase</value>
+  </data>
+  <data name="MudBlazor.MudInput_Decrement" xml:space="preserve">
+    <value>Decrease</value>
+  </data>
 </root>

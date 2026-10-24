@@ -46,6 +46,50 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RoleClaims", "identity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "permission",
+                            ClaimValue = "Catalog.View",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "permission",
+                            ClaimValue = "Catalog.Manage",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "permission",
+                            ClaimValue = "Catalog.View",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClaimType = "permission",
+                            ClaimValue = "Catalog.View",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClaimType = "permission",
+                            ClaimValue = "Catalog.View",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ClaimType = "permission",
+                            ClaimValue = "Catalog.Manage",
+                            RoleId = 5
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -173,6 +217,390 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                     b.HasIndex("Action", "OccurredAtUtc");
 
                     b.ToTable("AuditLog", "audit");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Catalog.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NameArabic")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NameEnglish")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NameArabic")
+                        .IsUnique();
+
+                    b.HasIndex("NameEnglish")
+                        .IsUnique();
+
+                    b.ToTable("Categories", "catalog");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsActive = true,
+                            NameArabic = "أدوية عامة",
+                            NameEnglish = "General medicines"
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Catalog.DosageForm", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NameArabic")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NameEnglish")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NameArabic")
+                        .IsUnique();
+
+                    b.HasIndex("NameEnglish")
+                        .IsUnique();
+
+                    b.ToTable("DosageForms", "catalog");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsActive = true,
+                            NameArabic = "أقراص",
+                            NameEnglish = "Tablets"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsActive = true,
+                            NameArabic = "كبسولات",
+                            NameEnglish = "Capsules"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsActive = true,
+                            NameArabic = "شراب",
+                            NameEnglish = "Syrup"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IsActive = true,
+                            NameArabic = "حقن",
+                            NameEnglish = "Injection"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IsActive = true,
+                            NameArabic = "كريم",
+                            NameEnglish = "Cream"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsActive = true,
+                            NameArabic = "مرهم",
+                            NameEnglish = "Ointment"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsActive = true,
+                            NameArabic = "قطرة",
+                            NameEnglish = "Drops"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsActive = true,
+                            NameArabic = "بخاخ",
+                            NameEnglish = "Spray"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsActive = true,
+                            NameArabic = "تحاميل",
+                            NameEnglish = "Suppositories"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IsActive = true,
+                            NameArabic = "مسحوق",
+                            NameEnglish = "Powder"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            IsActive = true,
+                            NameArabic = "أخرى",
+                            NameEnglish = "Other"
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Catalog.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DosageFormId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Manufacturer")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int?>("MinimumStock")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NearExpiryDays")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("ScientificName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SearchText")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Strength")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("TracksExpiry")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TradeNameArabic")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("TradeNameEnglish")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("DosageFormId");
+
+                    b.HasIndex("IsActive", "TradeNameEnglish");
+
+                    b.ToTable("Products", "catalog", t =>
+                        {
+                            t.HasCheckConstraint("CK_Products_MinimumStock", "[MinimumStock] IS NULL OR [MinimumStock] >= 0");
+
+                            t.HasCheckConstraint("CK_Products_NearExpiryDays", "[NearExpiryDays] IS NULL OR [NearExpiryDays] > 0");
+
+                            t.HasCheckConstraint("CK_Products_TradeName", "[TradeNameArabic] IS NOT NULL OR [TradeNameEnglish] IS NOT NULL");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Catalog.ProductUnit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Barcode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal?>("DefaultSellingPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Factor")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsBase")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitOfMeasureId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Barcode")
+                        .IsUnique()
+                        .HasFilter("[Barcode] IS NOT NULL");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UnitOfMeasureId");
+
+                    b.ToTable("ProductUnits", "catalog", t =>
+                        {
+                            t.HasCheckConstraint("CK_ProductUnits_Factor", "[Factor] >= 1 AND ([IsBase] = 0 OR [Factor] = 1)");
+
+                            t.HasCheckConstraint("CK_ProductUnits_Price", "[DefaultSellingPrice] IS NULL OR [DefaultSellingPrice] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Catalog.UnitOfMeasure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NameArabic")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NameEnglish")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NameArabic")
+                        .IsUnique();
+
+                    b.HasIndex("NameEnglish")
+                        .IsUnique();
+
+                    b.ToTable("UnitsOfMeasure", "catalog");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsActive = true,
+                            NameArabic = "حبة",
+                            NameEnglish = "Tablet"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsActive = true,
+                            NameArabic = "كبسولة",
+                            NameEnglish = "Capsule"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsActive = true,
+                            NameArabic = "شريط",
+                            NameEnglish = "Strip"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IsActive = true,
+                            NameArabic = "علبة",
+                            NameEnglish = "Box"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IsActive = true,
+                            NameArabic = "باكت",
+                            NameEnglish = "Pack"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsActive = true,
+                            NameArabic = "زجاجة",
+                            NameEnglish = "Bottle"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsActive = true,
+                            NameArabic = "أمبولة",
+                            NameEnglish = "Ampoule"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsActive = true,
+                            NameArabic = "أنبوب",
+                            NameEnglish = "Tube"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsActive = true,
+                            NameArabic = "كيس",
+                            NameEnglish = "Sachet"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IsActive = true,
+                            NameArabic = "قطعة",
+                            NameEnglish = "Piece"
+                        });
                 });
 
             modelBuilder.Entity("Pharmacy.Domain.Settings.PharmacySettings", b =>
@@ -448,6 +876,40 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Catalog.Product", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Catalog.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.DosageForm", null)
+                        .WithMany()
+                        .HasForeignKey("DosageFormId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Catalog.ProductUnit", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Catalog.Product", null)
+                        .WithMany("Units")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.UnitOfMeasure", null)
+                        .WithMany()
+                        .HasForeignKey("UnitOfMeasureId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Catalog.Product", b =>
+                {
+                    b.Navigation("Units");
                 });
 #pragma warning restore 612, 618
         }

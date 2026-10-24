@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Abstractions;
 using Pharmacy.Domain.Auditing;
+using Pharmacy.Domain.Catalog;
 using Pharmacy.Domain.Settings;
 using Pharmacy.Infrastructure.Identity;
 
@@ -21,6 +22,14 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
     public DbSet<PharmacySettings> PharmacySettings => Set<PharmacySettings>();
 
     public DbSet<AuditLogEntry> AuditLogEntries => Set<AuditLogEntry>();
+
+    public DbSet<Product> Products => Set<Product>();
+
+    public DbSet<Category> Categories => Set<Category>();
+
+    public DbSet<UnitOfMeasure> UnitsOfMeasure => Set<UnitOfMeasure>();
+
+    public DbSet<DosageForm> DosageForms => Set<DosageForm>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

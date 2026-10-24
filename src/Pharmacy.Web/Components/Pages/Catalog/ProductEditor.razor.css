@@ -1,0 +1,26 @@
+/* One row per product unit: base-unit radio, unit, factor, price, barcode, remove. */
+.product-unit-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.product-unit-row ::deep .unit-select {
+    flex: 1 1 8rem;
+}
+
+.product-unit-row ::deep .unit-number {
+    flex: 0 1 6rem;
+}
+
+.product-unit-row ::deep .unit-barcode {
+    flex: 1 1 8rem;
+}
+
+.unit-conversion {
+    display: block;
+    margin-inline-start: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--mud-palette-primary);
+}

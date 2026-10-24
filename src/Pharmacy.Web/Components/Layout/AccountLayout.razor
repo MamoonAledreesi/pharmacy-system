@@ -1,5 +1,5 @@
 @inherits LayoutComponentBase
-@inject PharmacySettingsService SettingsService
+@inject ServiceRunner Services
 
 @* Static (server-rendered) layout for sign-in pages: forms post normally so the auth cookie can be written. *@
 <MudThemeProvider Theme="_theme" IsDarkMode="_isDarkMode" />
@@ -31,7 +31,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var settings = await SettingsService.GetCurrentAsync();
+        var settings = await Services.For<PharmacySettingsService>().RunAsync(s => s.GetCurrentAsync());
         _theme = PharmacyTheme.For(settings.PrimaryColor);
         // "Match device" needs JavaScript, which static pages do not run; it renders light here.
         _isDarkMode = settings.ThemeMode == ThemeMode.Dark;

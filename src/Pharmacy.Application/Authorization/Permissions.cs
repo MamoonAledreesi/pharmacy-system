@@ -13,8 +13,11 @@ public static class Permissions
     public const string UsersManage = "Users.Manage";
     public const string SettingsManage = "Settings.Manage";
     public const string AuditLogView = "AuditLog.View";
+    public const string CatalogView = "Catalog.View";
+    public const string CatalogManage = "Catalog.Manage";
 
-    public static IReadOnlyList<string> All { get; } = [UsersManage, SettingsManage, AuditLogView];
+    public static IReadOnlyList<string> All { get; } =
+        [CatalogView, CatalogManage, UsersManage, SettingsManage, AuditLogView];
 
     public static bool IsDefined(string permission) => All.Contains(permission, StringComparer.Ordinal);
 

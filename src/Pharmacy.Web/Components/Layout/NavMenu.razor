@@ -3,6 +3,13 @@
         @L["Nav.Dashboard"]
     </MudNavLink>
 
+    <AuthorizeView Policy="@Permissions.CatalogView">
+        <MudNavGroup Title="@L["Nav.Products"]" Icon="@Icons.Material.Filled.Medication" Expanded="true">
+            <MudNavLink Href="catalog/products" Match="NavLinkMatch.Prefix">@L["Nav.ProductList"]</MudNavLink>
+            <MudNavLink Href="catalog/lists">@L["Nav.CatalogLists"]</MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
+
     @* Module entries are enabled as each module is delivered (see the roadmap). *@
     @foreach (var (key, icon) in _upcomingModules)
     {
@@ -27,7 +34,6 @@
 @code {
     private static readonly (string Key, string Icon)[] _upcomingModules =
     [
-        ("Nav.Products", Icons.Material.Filled.Medication),
         ("Nav.Inventory", Icons.Material.Filled.Inventory),
         ("Nav.Purchases", Icons.Material.Filled.LocalShipping),
         ("Nav.Sales", Icons.Material.Filled.PointOfSale),

@@ -1,0 +1,123 @@
+@page "/catalog/products"
+@attribute [Authorize(Policy = Permissions.CatalogView)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+
+<PageTitle>@L["Nav.ProductList"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudText Typo="Typo.h4">@L["Nav.ProductList"]</MudText>
+    <MudSpacer />
+    <AuthorizeView Policy="@Permissions.CatalogManage">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Href="catalog/products/new">
+            @L["Products.Add"]
+        </MudButton>
+    </AuthorizeView>
+</div>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="6">
+            <MudTextField T="string" Value="_searchText" ValueChanged="OnSearchChangedAsync" Immediate="true" DebounceInterval="300"
+                          Label="@L["Products.Search"]" Placeholder="@L["Products.SearchHint"]" Clearable="true"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" autofocus />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="4">
+            <MudSelect T="int?" Value="_categoryId" ValueChanged="OnCategoryChangedAsync" Label="@L["Products.Category"]" Clearable="true">
+                @foreach (var category in _categories)
+                {
+                    <MudSelectItem T="int?" Value="category.Id">@category.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="2" Class="d-flex align-center">
+            <MudSwitch T="bool" Value="_includeInactive" ValueChanged="OnIncludeInactiveChangedAsync" Color="Color.Primary" Label="@L["Products.ShowInactive"]" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudTable @ref="_table" T="ProductListItem" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25"
+          OnRowClick="args => Open(args.Item!)" RowClass="cursor-pointer">
+    <HeaderContent>
+        <MudTh>@L["Products.TradeName"]</MudTh>
+        <MudTh>@L["Products.ScientificName"]</MudTh>
+        <MudTh>@L["Products.DosageForm"]</MudTh>
+        <MudTh>@L["Products.Category"]</MudTh>
+        <MudTh>@L["Products.Units"]</MudTh>
+        <MudTh>@L["Users.Status"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Products.TradeName"]">
+            <MudText Typo="Typo.body2"><b>@context.DisplayName(SupportedCultures.IsArabicUi)</b></MudText>
+            <MudText Typo="Typo.caption">@context.DisplayName(!SupportedCultures.IsArabicUi)</MudText>
+        </MudTd>
+        <MudTd DataLabel="@L["Products.ScientificName"]">
+            <span dir="ltr">@context.ScientificName @context.Strength</span>
+        </MudTd>
+        <MudTd DataLabel="@L["Products.DosageForm"]">@context.DosageForm?.For(SupportedCultures.IsArabicUi)</MudTd>
+        <MudTd DataLabel="@L["Products.Category"]">@context.Category.For(SupportedCultures.IsArabicUi)</MudTd>
+        <MudTd DataLabel="@L["Products.Units"]">@UnitsSummary(context)</MudTd>
+        <MudTd DataLabel="@L["Users.Status"]">
+            @if (!context.IsActive)
+            {
+                <MudChip T="string" Size="Size.Small">@L["Users.Inactive"]</MudChip>
+            }
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Products.NoResults"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<ProductListItem>? _table;
+    private IReadOnlyList<LookupItem> _categories = [];
+    private string? _searchText;
+    private int? _categoryId;
+    private bool _includeInactive;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var categories = await Services.For<LookupService<Category>>().RunAsync(s => s.GetAllAsync(includeInactive: false));
+        _categories = categories.IsSuccess ? categories.Value : [];
+    }
+
+    private async Task<TableData<ProductListItem>> LoadAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var result = await Services.For<ProductQueryService>().RunAsync(s => s.SearchAsync(
+            new ProductQuery(_searchText, _categoryId, _includeInactive, state.Page, state.PageSize), cancellationToken));
+        return result.IsSuccess
+            ? new TableData<ProductListItem> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<ProductListItem> { Items = [], TotalItems = 0 };
+    }
+
+    private Task OnSearchChangedAsync(string? text)
+    {
+        _searchText = text;
+        return ReloadAsync();
+    }
+
+    private Task OnCategoryChangedAsync(int? categoryId)
+    {
+        _categoryId = categoryId;
+        return ReloadAsync();
+    }
+
+    private Task OnIncludeInactiveChangedAsync(bool include)
+    {
+        _includeInactive = include;
+        return ReloadAsync();
+    }
+
+    private Task ReloadAsync() => _table?.ReloadServerData() ?? Task.CompletedTask;
+
+    private void Open(ProductListItem product) => Navigation.NavigateTo($"catalog/products/{product.Id}");
+
+    // e.g. "شريط · علبة (3)": the base unit, then larger units with how many base units they hold.
+    private static string UnitsSummary(ProductListItem product) =>
+        string.Join(" · ", product.Units.Select(u =>
+            u.IsBase ? u.Unit.For(SupportedCultures.IsArabicUi) : $"{u.Unit.For(SupportedCultures.IsArabicUi)} ({u.Factor})"));
+}
