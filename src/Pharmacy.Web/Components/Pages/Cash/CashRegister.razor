@@ -1,0 +1,127 @@
+@page "/cash"
+@attribute [Authorize(Policy = Permissions.CashView)]
+@inject ServiceRunner Services
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IAuthorizationService AuthorizationService
+@inject CurrentUserAccessor CurrentUser
+
+<PageTitle>@L["Nav.CashRegister"] - @L["App.Name"]</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">@L["Nav.CashRegister"]</MudText>
+
+@if (_state is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+@if (_state.Current is not { } shift)
+{
+    <MudPaper Class="pa-6 text-center" Elevation="1">
+        <MudIcon Icon="@Icons.Material.Filled.PointOfSale" Size="Size.Large" Color="Color.Default" />
+        <MudText Typo="Typo.h6" Class="mt-2">@L["Cash.NoOpenShift"]</MudText>
+        <MudText Typo="Typo.body2" Class="mb-4">@L["Cash.NoOpenShiftHint"]</MudText>
+        @if (_canOpen)
+        {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.LockOpen" OnClick="OpenShiftAsync">
+                @L["Cash.OpenShift"]
+            </MudButton>
+        }
+    </MudPaper>
+}
+else
+{
+    @if (shift.IsStale)
+    {
+        <MudAlert Severity="Severity.Warning" Class="mb-3">@L["Cash.StaleShift", shift.OpenedBy, LocalizerExtensions.LocalTime(shift.OpenedAtUtc)]</MudAlert>
+    }
+
+    <div class="d-flex flex-wrap align-center gap-2 mb-3">
+        @if (_canManual)
+        {
+            <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Filled.Add" OnClick="() => ManualAsync(CashDirection.In, shift)">
+                @L["Cash.ManualIn"]
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Filled.Remove" OnClick="() => ManualAsync(CashDirection.Out, shift)">
+                @L["Cash.ManualOut"]
+            </MudButton>
+        }
+        <MudSpacer />
+        @if (CanClose(shift))
+        {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Lock" OnClick="() => CloseShiftAsync(shift)">
+                @L["Cash.CloseShift"]
+            </MudButton>
+        }
+    </div>
+
+    <ShiftCard Shift="shift" />
+
+    <MudText Typo="Typo.h6" Class="mt-5" GutterBottom="true">@L["Cash.ShiftMovements"]</MudText>
+    <CashMovementsTable @key="shift.Id" @ref="_movements" ShiftId="shift.Id" />
+}
+
+@code {
+    private CashRegisterState? _state;
+    private CashMovementsTable? _movements;
+    private bool _canOpen;
+    private bool _canManual;
+    private bool _canForceClose;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+        _canOpen = (await AuthorizationService.AuthorizeAsync(user, Permissions.CashOpenShift)).Succeeded;
+        _canManual = (await AuthorizationService.AuthorizeAsync(user, Permissions.CashManualMovement)).Succeeded;
+        _canForceClose = (await AuthorizationService.AuthorizeAsync(user, Permissions.CashForceClose)).Succeeded;
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        var result = await Services.For<CashQueryService>().RunAsync(s => s.GetRegisterStateAsync());
+        _state = result.IsSuccess ? result.Value : new CashRegisterState(null, 0m);
+    }
+
+    // The user who opened the shift closes it; closing someone else's (a forgotten one) needs the force-close permission.
+    private bool IsOpener(ShiftSummary shift) => CurrentUser.UserName is { } name && name == shift.OpenedBy;
+
+    private bool CanClose(ShiftSummary shift) => _canForceClose || (_canOpen && IsOpener(shift));
+
+    private async Task OpenShiftAsync()
+    {
+        var parameters = new DialogParameters<OpenShiftDialog> { { d => d.SuggestedOpeningBalance, _state!.SuggestedOpeningBalance } };
+        await ShowAsync<OpenShiftDialog>(L["Cash.OpenShift"], parameters, "Cash.ShiftOpenedMessage");
+    }
+
+    private async Task CloseShiftAsync(ShiftSummary shift)
+    {
+        var parameters = new DialogParameters<CloseShiftDialog> { { d => d.Shift, shift }, { d => d.Forced, !IsOpener(shift) } };
+        await ShowAsync<CloseShiftDialog>(L["Cash.CloseShift"], parameters, "Cash.ShiftClosedMessage");
+    }
+
+    private async Task ManualAsync(CashDirection direction, ShiftSummary shift)
+    {
+        var parameters = new DialogParameters<ManualCashDialog> { { d => d.Direction, direction }, { d => d.CurrentBalance, shift.CurrentBalance } };
+        await ShowAsync<ManualCashDialog>(direction == CashDirection.In ? L["Cash.ManualIn"] : L["Cash.ManualOut"], parameters, "Common.Saved");
+    }
+
+    private async Task ShowAsync<TDialog>(string title, DialogParameters<TDialog> parameters, string savedMessageKey)
+        where TDialog : Microsoft.AspNetCore.Components.IComponent
+    {
+        var dialog = await DialogService.ShowAsync<TDialog>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L[savedMessageKey], Severity.Success);
+            await LoadAsync();
+            if (_movements is not null)
+            {
+                await _movements.ReloadAsync();
+            }
+        }
+    }
+}

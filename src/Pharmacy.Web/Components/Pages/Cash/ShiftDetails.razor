@@ -1,0 +1,43 @@
+@page "/cash/shifts/{ShiftId:int}"
+@attribute [Authorize(Policy = Permissions.CashView)]
+@inject ServiceRunner Services
+
+<PageTitle>@L["Cash.ShiftDetails"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="cash/shifts" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@L["Cash.ShiftDetails"] #@ShiftId</MudText>
+</div>
+
+@if (_notFound)
+{
+    <MudAlert Severity="Severity.Warning">@L["Errors.NotFound"]</MudAlert>
+    return;
+}
+
+@if (_shift is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+<ShiftCard Shift="_shift" />
+
+<MudText Typo="Typo.h6" Class="mt-5" GutterBottom="true">@L["Cash.ShiftMovements"]</MudText>
+<CashMovementsTable @key="_shift.Id" ShiftId="_shift.Id" />
+
+@code {
+    [Parameter]
+    public int ShiftId { get; set; }
+
+    private ShiftSummary? _shift;
+    private bool _notFound;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Services.For<CashQueryService>().RunAsync(s => s.GetShiftAsync(ShiftId));
+        _notFound = result.IsFailure;
+        _shift = result.IsSuccess ? result.Value : null;
+    }
+}

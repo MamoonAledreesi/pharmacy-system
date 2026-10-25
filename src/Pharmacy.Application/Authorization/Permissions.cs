@@ -20,11 +20,16 @@ public static class Permissions
     public const string InventoryOpeningStock = "Inventory.OpeningStock";
     public const string InventoryAdjust = "Inventory.Adjust";
     public const string InventoryWriteOff = "Inventory.WriteOff";
+    public const string CashView = "Cash.View";
+    public const string CashOpenShift = "Cash.OpenShift";
+    public const string CashManualMovement = "Cash.ManualMovement";
+    public const string CashForceClose = "Cash.ForceClose";
 
     public static IReadOnlyList<string> All { get; } =
         [
             CatalogView, CatalogManage,
             InventoryView, InventoryViewCost, InventoryOpeningStock, InventoryAdjust, InventoryWriteOff,
+            CashView, CashOpenShift, CashManualMovement, CashForceClose,
             UsersManage, SettingsManage, AuditLogView,
         ];
 

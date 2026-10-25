@@ -94,6 +94,16 @@ internal sealed class IdentityTableConfiguration :
         (5, Permissions.InventoryOpeningStock),
         (2, Permissions.InventoryViewCost),
         (4, Permissions.InventoryViewCost),
+
+        // Cash register (Task 4). Force-closing someone else's shift is left to administrators unless granted.
+        (2, Permissions.CashView),
+        (3, Permissions.CashView),
+        (4, Permissions.CashView),
+        (2, Permissions.CashOpenShift),
+        (3, Permissions.CashOpenShift),
+        (4, Permissions.CashOpenShift),
+        (2, Permissions.CashManualMovement),
+        (4, Permissions.CashManualMovement),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

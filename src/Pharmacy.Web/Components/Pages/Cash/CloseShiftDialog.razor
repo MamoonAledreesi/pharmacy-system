@@ -1,0 +1,87 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        @if (Forced)
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true" Class="mb-3">
+                @L["Cash.ForceCloseWarning", Shift.OpenedBy]
+            </MudAlert>
+        }
+
+        <MudText Typo="Typo.body1" Class="mb-2">
+            @L["Cash.ExpectedBalance"]: <b dir="ltr">@MoneyFormat.Format(Shift.CurrentBalance)</b>
+        </MudText>
+
+        <MudNumericField T="decimal?" @bind-Value="_counted" Label="@L["Cash.CountedBalance"]" Min="0" Format="0.00"
+                         HelperText="@L["Cash.CountedHint"]" Immediate="true" />
+
+        @if (_counted is { } counted)
+        {
+            var difference = counted - Shift.CurrentBalance;
+            <MudAlert Severity="@(difference == 0 ? Severity.Success : Severity.Warning)" Dense="true" Class="mt-2">
+                @(difference == 0
+                    ? L["Cash.NoDifference"]
+                    : $"{(difference < 0 ? L["Cash.Shortage"] : L["Cash.Overage"])}: {MoneyFormat.Format(Math.Abs(difference))}")
+            </MudAlert>
+        }
+
+        <MudTextField @bind-Value="_note" Label="@(NoteRequired ? L["Cash.NoteRequiredLabel"] : L["Cash.Note"])"
+                      MaxLength="CashMovement.NoteMaxLength" Lines="2" Class="mt-2" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_saving || _counted is null)" OnClick="SaveAsync">
+            @L["Cash.CloseShift"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public ShiftSummary Shift { get; set; } = default!;
+
+    /// <summary>True when the shift was opened by someone else (a forgotten shift closed by a manager).</summary>
+    [Parameter]
+    public bool Forced { get; set; }
+
+    // One id per opened dialog: a double click or a retry is applied only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private decimal? _counted;
+    private string? _note;
+    private string? _error;
+    private bool _saving;
+
+    private bool NoteRequired => Forced || (_counted is { } counted && counted != Shift.CurrentBalance);
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var request = new CloseShiftRequest(_operationId, Shift.Id, _counted ?? 0m, _note);
+            var result = await Services.For<CashService>().RunAsync(s => s.CloseShiftAsync(request));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

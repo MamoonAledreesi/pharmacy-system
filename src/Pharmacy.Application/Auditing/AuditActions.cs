@@ -34,6 +34,11 @@ public static class AuditActions
     public const string StockReleased = "Inventory.Released";
     public const string StockWrittenOff = "Inventory.WrittenOff";
 
+    public const string CashShiftOpened = "Cash.ShiftOpened";
+    public const string CashShiftClosed = "Cash.ShiftClosed";
+    public const string CashShiftForceClosed = "Cash.ShiftForceClosed";
+    public const string CashManualMovement = "Cash.ManualMovement";
+
     public static IReadOnlyList<string> All { get; } =
     [
         LoginSucceeded, LoginFailed, LockedOut, Logout, PasswordChanged, SetupCompleted,
@@ -41,5 +46,6 @@ public static class AuditActions
         RoleCreated, RoleUpdated, RoleDeleted, SettingsUpdated,
         ProductCreated, ProductUpdated, ProductStatusChanged, LookupCreated, LookupUpdated,
         StockOpening, StockAdjusted, StockQuarantined, StockReleased, StockWrittenOff,
+        CashShiftOpened, CashShiftClosed, CashShiftForceClosed, CashManualMovement,
     ];
 }

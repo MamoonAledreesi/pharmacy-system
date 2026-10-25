@@ -14,6 +14,14 @@
         <MudNavLink Href="inventory" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Inventory">@L["Nav.Inventory"]</MudNavLink>
     </AuthorizeView>
 
+    <AuthorizeView Policy="@Permissions.CashView">
+        <MudNavGroup Title="@L["Nav.Cash"]" Icon="@Icons.Material.Filled.AccountBalanceWallet">
+            <MudNavLink Href="cash" Match="NavLinkMatch.All">@L["Nav.CashRegister"]</MudNavLink>
+            <MudNavLink Href="cash/shifts" Match="NavLinkMatch.Prefix">@L["Nav.CashShifts"]</MudNavLink>
+            <MudNavLink Href="cash/daily">@L["Nav.CashDaily"]</MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
+
     @* Module entries are enabled as each module is delivered (see the roadmap). *@
     @foreach (var (key, icon) in _upcomingModules)
     {
@@ -41,7 +49,6 @@
         ("Nav.Purchases", Icons.Material.Filled.LocalShipping),
         ("Nav.Sales", Icons.Material.Filled.PointOfSale),
         ("Nav.Customers", Icons.Material.Filled.People),
-        ("Nav.Cash", Icons.Material.Filled.AccountBalanceWallet),
         ("Nav.Reports", Icons.Material.Filled.Assessment),
     ];
 }

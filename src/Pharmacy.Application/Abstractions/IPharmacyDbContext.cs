@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Pharmacy.Domain.Auditing;
+using Pharmacy.Domain.Cash;
 using Pharmacy.Domain.Catalog;
 using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
@@ -30,6 +31,10 @@ public interface IPharmacyDbContext
 
     DbSet<StockMovement> StockMovements { get; }
 
+    DbSet<CashShift> CashShifts { get; }
+
+    DbSet<CashMovement> CashMovements { get; }
+
     DbSet<TEntity> Set<TEntity>()
         where TEntity : class;
 
@@ -51,4 +56,14 @@ public interface IPharmacyDbContext
     /// <see cref="ExecuteInTransactionAsync{TResult}"/>; the returned batches are tracked for update.
     /// </summary>
     Task<List<Batch>> LoadBatchesForUpdateAsync(int productId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Loads the open cash shift (if any) and locks it until the surrounding transaction ends, so concurrent cash
+    /// movements are applied one after another and the drawer balance stays exact. Call inside
+    /// <see cref="ExecuteInTransactionAsync{TResult}"/>; the shift is tracked for update.
+    /// </summary>
+    Task<CashShift?> LoadOpenShiftForUpdateAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>Loads a shift by id and locks it until the surrounding transaction ends (tracked for update).</summary>
+    Task<CashShift?> LoadShiftForUpdateAsync(int shiftId, CancellationToken cancellationToken = default);
 }

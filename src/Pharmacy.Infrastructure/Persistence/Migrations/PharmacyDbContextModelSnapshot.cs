@@ -166,6 +166,62 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Inventory.ViewCost",
                             RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 18,
+                            ClaimType = "permission",
+                            ClaimValue = "Cash.View",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 19,
+                            ClaimType = "permission",
+                            ClaimValue = "Cash.View",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 20,
+                            ClaimType = "permission",
+                            ClaimValue = "Cash.View",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 21,
+                            ClaimType = "permission",
+                            ClaimValue = "Cash.OpenShift",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 22,
+                            ClaimType = "permission",
+                            ClaimValue = "Cash.OpenShift",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 23,
+                            ClaimType = "permission",
+                            ClaimValue = "Cash.OpenShift",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 24,
+                            ClaimType = "permission",
+                            ClaimValue = "Cash.ManualMovement",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 25,
+                            ClaimType = "permission",
+                            ClaimValue = "Cash.ManualMovement",
+                            RoleId = 4
                         });
                 });
 
@@ -294,6 +350,176 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                     b.HasIndex("Action", "OccurredAtUtc");
 
                     b.ToTable("AuditLog", "audit");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Cash.CashMovement", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("BalanceAfter")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("ReferenceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ReferenceType")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("ShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccurredAtUtc");
+
+                    b.HasIndex("OperationId")
+                        .IsUnique()
+                        .HasFilter("[OperationId] IS NOT NULL");
+
+                    b.HasIndex("ReferenceType", "ReferenceId")
+                        .HasFilter("[ReferenceType] IS NOT NULL");
+
+                    b.HasIndex("ShiftId", "Id");
+
+                    b.ToTable("CashMovements", "cash", t =>
+                        {
+                            t.HasCheckConstraint("CK_CashMovements_Amount", "[Amount] <> 0");
+
+                            t.HasCheckConstraint("CK_CashMovements_BalanceAfter", "[BalanceAfter] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Cash.CashShift", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CloseNote")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<Guid?>("CloseOperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ClosedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ClosedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClosedByUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<decimal?>("CountedBalance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("CurrentBalance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Difference")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("OpenOperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OpenedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("OpenedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OpenedByUserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<decimal>("OpeningBalance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("OpeningNote")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<decimal>("PreviousCountedBalance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<bool>("WasForceClosed")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CloseOperationId")
+                        .IsUnique()
+                        .HasFilter("[CloseOperationId] IS NOT NULL");
+
+                    b.HasIndex("IsOpen")
+                        .IsUnique()
+                        .HasDatabaseName("UX_CashShifts_OneOpen")
+                        .HasFilter("[IsOpen] = 1");
+
+                    b.HasIndex("OpenOperationId")
+                        .IsUnique()
+                        .HasFilter("[OpenOperationId] IS NOT NULL");
+
+                    b.HasIndex("OpenedAtUtc");
+
+                    b.ToTable("CashShifts", "cash", t =>
+                        {
+                            t.HasCheckConstraint("CK_CashShifts_Balances", "[OpeningBalance] >= 0 AND [CurrentBalance] >= 0 AND [PreviousCountedBalance] >= 0");
+
+                            t.HasCheckConstraint("CK_CashShifts_OpenOrClosed", "([IsOpen] = 1 AND [ClosedAtUtc] IS NULL AND [CountedBalance] IS NULL AND [Difference] IS NULL) OR ([IsOpen] = 0 AND [ClosedAtUtc] IS NOT NULL AND [CountedBalance] IS NOT NULL AND [Difference] IS NOT NULL)");
+                        });
                 });
 
             modelBuilder.Entity("Pharmacy.Domain.Catalog.Category", b =>
@@ -1103,6 +1329,17 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Cash.CashMovement", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Cash.CashShift", "Shift")
+                        .WithMany()
+                        .HasForeignKey("ShiftId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Shift");
                 });
 
             modelBuilder.Entity("Pharmacy.Domain.Catalog.Product", b =>

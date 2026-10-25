@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Abstractions;
 using Pharmacy.Domain.Auditing;
+using Pharmacy.Domain.Cash;
 using Pharmacy.Domain.Catalog;
 using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
@@ -37,6 +38,10 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
 
     public DbSet<StockMovement> StockMovements => Set<StockMovement>();
 
+    public DbSet<CashShift> CashShifts => Set<CashShift>();
+
+    public DbSet<CashMovement> CashMovements => Set<CashMovement>();
+
     public Task<TResult> ExecuteInTransactionAsync<TResult>(Func<Task<TResult>> work, CancellationToken cancellationToken = default)
         where TResult : Result =>
         this.InTransactionAsync(work, cancellationToken);
@@ -49,6 +54,20 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
         Batches
             .FromSqlInterpolated($"SELECT * FROM inventory.Batches WITH (UPDLOCK, ROWLOCK) WHERE ProductId = {productId}")
             .ToListAsync(cancellationToken);
+
+    // UPDLOCK keeps the shift row locked until the transaction ends, so two cash movements cannot both read the
+    // old drawer balance and both be applied to it. At most one shift is open (a unique index guarantees it).
+    public async Task<CashShift?> LoadOpenShiftForUpdateAsync(CancellationToken cancellationToken = default) =>
+        (await CashShifts
+            .FromSqlInterpolated($"SELECT * FROM cash.CashShifts WITH (UPDLOCK, ROWLOCK) WHERE IsOpen = 1")
+            .ToListAsync(cancellationToken))
+        .SingleOrDefault();
+
+    public async Task<CashShift?> LoadShiftForUpdateAsync(int shiftId, CancellationToken cancellationToken = default) =>
+        (await CashShifts
+            .FromSqlInterpolated($"SELECT * FROM cash.CashShifts WITH (UPDLOCK, ROWLOCK) WHERE Id = {shiftId}")
+            .ToListAsync(cancellationToken))
+        .SingleOrDefault();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

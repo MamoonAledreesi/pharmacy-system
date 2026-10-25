@@ -1,0 +1,70 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudText Typo="Typo.body2" Class="mb-2">@L["Cash.LastCounted", MoneyFormat.Format(SuggestedOpeningBalance)]</MudText>
+
+        <MudNumericField T="decimal?" @bind-Value="_openingBalance" Label="@L["Cash.OpeningBalance"]" Min="0" Format="0.00"
+                         HelperText="@L["Cash.OpeningBalanceHint"]" Immediate="true" />
+
+        @if (Differs)
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true" Class="mt-2">@L["Cash.OpeningDiffersWarning"]</MudAlert>
+        }
+
+        <MudTextField @bind-Value="_note" Label="@(Differs ? L["Cash.NoteRequiredLabel"] : L["Cash.Note"])"
+                      MaxLength="CashMovement.NoteMaxLength" Lines="2" Class="mt-2" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_saving" OnClick="SaveAsync">@L["Cash.OpenShift"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    /// <summary>What the previous shift counted; offered as the default opening balance.</summary>
+    [Parameter]
+    public decimal SuggestedOpeningBalance { get; set; }
+
+    // One id per opened dialog: a double click or a retry is applied only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private decimal? _openingBalance;
+    private string? _note;
+    private string? _error;
+    private bool _saving;
+
+    private bool Differs => (_openingBalance ?? 0m) != SuggestedOpeningBalance;
+
+    protected override void OnInitialized() => _openingBalance = SuggestedOpeningBalance;
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var request = new OpenShiftRequest(_operationId, _openingBalance ?? 0m, _note);
+            var result = await Services.For<CashService>().RunAsync(s => s.OpenShiftAsync(request));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

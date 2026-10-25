@@ -37,7 +37,7 @@
     <value>العملاء والديون</value>
   </data>
   <data name="Nav.Cash" xml:space="preserve">
-    <value>الخزينة والمصروفات</value>
+    <value>الخزينة</value>
   </data>
   <data name="Nav.Reports" xml:space="preserve">
     <value>التقارير</value>
@@ -1148,5 +1148,233 @@
   </data>
   <data name="Inventory.NoteTooLong" xml:space="preserve">
     <value>الملاحظة يجب ألا تتجاوز {0} حرفاً.</value>
+  </data>
+  <data name="Nav.CashRegister" xml:space="preserve">
+    <value>صندوق الخزينة</value>
+  </data>
+  <data name="Nav.CashShifts" xml:space="preserve">
+    <value>الورديات</value>
+  </data>
+  <data name="Nav.CashDaily" xml:space="preserve">
+    <value>الملخص اليومي</value>
+  </data>
+  <data name="Cash.NoOpenShift" xml:space="preserve">
+    <value>لا توجد وردية مفتوحة.</value>
+  </data>
+  <data name="Cash.NoOpenShiftHint" xml:space="preserve">
+    <value>افتح وردية لبدء تسجيل حركات النقد.</value>
+  </data>
+  <data name="Cash.OpenShift" xml:space="preserve">
+    <value>فتح وردية</value>
+  </data>
+  <data name="Cash.CloseShift" xml:space="preserve">
+    <value>إغلاق الوردية</value>
+  </data>
+  <data name="Cash.StaleShift" xml:space="preserve">
+    <value>الوردية التي فتحها {0} بتاريخ {1} ما زالت مفتوحة. يرجى إغلاقها.</value>
+  </data>
+  <data name="Cash.ManualIn" xml:space="preserve">
+    <value>إيداع نقد</value>
+  </data>
+  <data name="Cash.ManualOut" xml:space="preserve">
+    <value>صرف نقد</value>
+  </data>
+  <data name="Cash.ShiftMovements" xml:space="preserve">
+    <value>حركات الخزينة</value>
+  </data>
+  <data name="Cash.ShiftOpenedMessage" xml:space="preserve">
+    <value>تم فتح الوردية.</value>
+  </data>
+  <data name="Cash.ShiftClosedMessage" xml:space="preserve">
+    <value>تم إغلاق الوردية.</value>
+  </data>
+  <data name="Cash.ShiftDetails" xml:space="preserve">
+    <value>تفاصيل الوردية</value>
+  </data>
+  <data name="Cash.Opened" xml:space="preserve">
+    <value>وقت الفتح</value>
+  </data>
+  <data name="Cash.ClosedAt" xml:space="preserve">
+    <value>وقت الإغلاق</value>
+  </data>
+  <data name="Cash.OpenedBy" xml:space="preserve">
+    <value>فتحها</value>
+  </data>
+  <data name="Cash.ClosedBy" xml:space="preserve">
+    <value>أغلقها</value>
+  </data>
+  <data name="Cash.OpeningBalance" xml:space="preserve">
+    <value>الرصيد الافتتاحي</value>
+  </data>
+  <data name="Cash.ExpectedBalance" xml:space="preserve">
+    <value>النقد المتوقع</value>
+  </data>
+  <data name="Cash.CountedBalance" xml:space="preserve">
+    <value>النقد المعدود</value>
+  </data>
+  <data name="Cash.Difference" xml:space="preserve">
+    <value>الفرق</value>
+  </data>
+  <data name="Cash.ForceClosed" xml:space="preserve">
+    <value>أُغلقت بواسطة المدير</value>
+  </data>
+  <data name="Cash.StatusOpen" xml:space="preserve">
+    <value>مفتوحة</value>
+  </data>
+  <data name="Cash.NoShifts" xml:space="preserve">
+    <value>لا توجد ورديات.</value>
+  </data>
+  <data name="Cash.PreviousDay" xml:space="preserve">
+    <value>اليوم السابق</value>
+  </data>
+  <data name="Cash.NextDay" xml:space="preserve">
+    <value>اليوم التالي</value>
+  </data>
+  <data name="Cash.Day" xml:space="preserve">
+    <value>اليوم</value>
+  </data>
+  <data name="Cash.TotalIn" xml:space="preserve">
+    <value>الداخل</value>
+  </data>
+  <data name="Cash.TotalOut" xml:space="preserve">
+    <value>الخارج</value>
+  </data>
+  <data name="Cash.Net" xml:space="preserve">
+    <value>الصافي</value>
+  </data>
+  <data name="Cash.ByType" xml:space="preserve">
+    <value>حسب نوع الحركة</value>
+  </data>
+  <data name="Cash.Count" xml:space="preserve">
+    <value>العدد</value>
+  </data>
+  <data name="Cash.NoMovementsThatDay" xml:space="preserve">
+    <value>لا توجد حركات نقدية في هذا اليوم.</value>
+  </data>
+  <data name="Cash.ShiftsThatDay" xml:space="preserve">
+    <value>ورديات اليوم</value>
+  </data>
+  <data name="Cash.Details" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="Cash.ShiftOpenSince" xml:space="preserve">
+    <value>مفتوحة منذ {0}</value>
+  </data>
+  <data name="Cash.ShiftPeriod" xml:space="preserve">
+    <value>وردية مغلقة</value>
+  </data>
+  <data name="Cash.OpeningDiffers" xml:space="preserve">
+    <value>الرصيد الافتتاحي يختلف عن آخر نقد معدود ({0}).</value>
+  </data>
+  <data name="Cash.CloseNote" xml:space="preserve">
+    <value>ملاحظة الإغلاق</value>
+  </data>
+  <data name="Cash.Shortage" xml:space="preserve">
+    <value>عجز</value>
+  </data>
+  <data name="Cash.Overage" xml:space="preserve">
+    <value>زيادة</value>
+  </data>
+  <data name="Cash.NoDifference" xml:space="preserve">
+    <value>لا فرق</value>
+  </data>
+  <data name="Cash.Amount" xml:space="preserve">
+    <value>المبلغ</value>
+  </data>
+  <data name="Cash.BalanceAfter" xml:space="preserve">
+    <value>الرصيد بعد</value>
+  </data>
+  <data name="Cash.Note" xml:space="preserve">
+    <value>ملاحظة</value>
+  </data>
+  <data name="Cash.NoMovements" xml:space="preserve">
+    <value>لا توجد حركات نقدية بعد.</value>
+  </data>
+  <data name="Cash.NoteRequiredLabel" xml:space="preserve">
+    <value>ملاحظة</value>
+  </data>
+  <data name="Cash.ManualNoteHint" xml:space="preserve">
+    <value>اذكر سبب حركة النقد.</value>
+  </data>
+  <data name="Cash.LastCounted" xml:space="preserve">
+    <value>النقد المعدود عند آخر إغلاق: {0}</value>
+  </data>
+  <data name="Cash.OpeningBalanceHint" xml:space="preserve">
+    <value>النقد الموجود في الدرج عند بدء الوردية.</value>
+  </data>
+  <data name="Cash.OpeningDiffersWarning" xml:space="preserve">
+    <value>يختلف عن آخر نقد معدود. الملاحظة مطلوبة.</value>
+  </data>
+  <data name="Cash.ForceCloseWarning" xml:space="preserve">
+    <value>أنت تغلق وردية فتحها {0}. السبب مطلوب.</value>
+  </data>
+  <data name="Cash.CountedHint" xml:space="preserve">
+    <value>عدّ النقد الموجود في الدرج.</value>
+  </data>
+  <data name="Cash.ShiftAlreadyOpen" xml:space="preserve">
+    <value>توجد وردية مفتوحة بالفعل.</value>
+  </data>
+  <data name="Cash.ShiftClosed" xml:space="preserve">
+    <value>هذه الوردية مغلقة بالفعل.</value>
+  </data>
+  <data name="Cash.UnknownShift" xml:space="preserve">
+    <value>لم يتم العثور على الوردية.</value>
+  </data>
+  <data name="Cash.InvalidAmount" xml:space="preserve">
+    <value>يجب أن يكون المبلغ أكبر من صفر.</value>
+  </data>
+  <data name="Cash.AmountTooLarge" xml:space="preserve">
+    <value>لا يمكن أن يتجاوز المبلغ {0:N2}.</value>
+  </data>
+  <data name="Cash.InsufficientCash" xml:space="preserve">
+    <value>الدرج يحتوي على {0:N2} فقط.</value>
+  </data>
+  <data name="Cash.NoteRequired" xml:space="preserve">
+    <value>الملاحظة مطلوبة.</value>
+  </data>
+  <data name="Cash.NoteTooLong" xml:space="preserve">
+    <value>يجب ألا تتجاوز الملاحظة {0} حرفاً.</value>
+  </data>
+  <data name="Cash.OpeningDifferenceNoteRequired" xml:space="preserve">
+    <value>الرصيد الافتتاحي يختلف عن آخر نقد معدود، لذا الملاحظة مطلوبة.</value>
+  </data>
+  <data name="Cash.CloseDifferenceNoteRequired" xml:space="preserve">
+    <value>النقد المعدود يختلف عن المتوقع، لذا الملاحظة مطلوبة.</value>
+  </data>
+  <data name="Cash.ForceCloseReasonRequired" xml:space="preserve">
+    <value>إغلاق وردية مستخدم آخر يتطلب ذكر السبب.</value>
+  </data>
+  <data name="CashMovementTypes.ManualIn" xml:space="preserve">
+    <value>إيداع يدوي</value>
+  </data>
+  <data name="CashMovementTypes.ManualOut" xml:space="preserve">
+    <value>صرف يدوي</value>
+  </data>
+  <data name="PermissionModules.Cash" xml:space="preserve">
+    <value>الخزينة</value>
+  </data>
+  <data name="Permissions.Cash.View" xml:space="preserve">
+    <value>عرض الخزينة والورديات</value>
+  </data>
+  <data name="Permissions.Cash.OpenShift" xml:space="preserve">
+    <value>فتح الورديات وإغلاقها</value>
+  </data>
+  <data name="Permissions.Cash.ManualMovement" xml:space="preserve">
+    <value>إيداع وصرف نقد يدوي</value>
+  </data>
+  <data name="Permissions.Cash.ForceClose" xml:space="preserve">
+    <value>إغلاق ورديات المستخدمين الآخرين</value>
+  </data>
+  <data name="AuditActions.Cash.ShiftOpened" xml:space="preserve">
+    <value>فتح وردية</value>
+  </data>
+  <data name="AuditActions.Cash.ShiftClosed" xml:space="preserve">
+    <value>إغلاق وردية</value>
+  </data>
+  <data name="AuditActions.Cash.ShiftForceClosed" xml:space="preserve">
+    <value>إغلاق وردية بواسطة المدير</value>
+  </data>
+  <data name="AuditActions.Cash.ManualMovement" xml:space="preserve">
+    <value>حركة نقد يدوية</value>
   </data>
 </root>

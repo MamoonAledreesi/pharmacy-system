@@ -37,7 +37,7 @@
     <value>Customers &amp; Debts</value>
   </data>
   <data name="Nav.Cash" xml:space="preserve">
-    <value>Cash &amp; Expenses</value>
+    <value>Cash</value>
   </data>
   <data name="Nav.Reports" xml:space="preserve">
     <value>Reports</value>
@@ -1148,5 +1148,233 @@
   </data>
   <data name="Inventory.NoteTooLong" xml:space="preserve">
     <value>The note must not exceed {0} characters.</value>
+  </data>
+  <data name="Nav.CashRegister" xml:space="preserve">
+    <value>Cash register</value>
+  </data>
+  <data name="Nav.CashShifts" xml:space="preserve">
+    <value>Shifts</value>
+  </data>
+  <data name="Nav.CashDaily" xml:space="preserve">
+    <value>Daily summary</value>
+  </data>
+  <data name="Cash.NoOpenShift" xml:space="preserve">
+    <value>There is no open shift.</value>
+  </data>
+  <data name="Cash.NoOpenShiftHint" xml:space="preserve">
+    <value>Open a shift to start recording cash movements.</value>
+  </data>
+  <data name="Cash.OpenShift" xml:space="preserve">
+    <value>Open shift</value>
+  </data>
+  <data name="Cash.CloseShift" xml:space="preserve">
+    <value>Close shift</value>
+  </data>
+  <data name="Cash.StaleShift" xml:space="preserve">
+    <value>The shift opened by {0} on {1} is still open. Please close it.</value>
+  </data>
+  <data name="Cash.ManualIn" xml:space="preserve">
+    <value>Cash in</value>
+  </data>
+  <data name="Cash.ManualOut" xml:space="preserve">
+    <value>Cash out</value>
+  </data>
+  <data name="Cash.ShiftMovements" xml:space="preserve">
+    <value>Cash movements</value>
+  </data>
+  <data name="Cash.ShiftOpenedMessage" xml:space="preserve">
+    <value>The shift was opened.</value>
+  </data>
+  <data name="Cash.ShiftClosedMessage" xml:space="preserve">
+    <value>The shift was closed.</value>
+  </data>
+  <data name="Cash.ShiftDetails" xml:space="preserve">
+    <value>Shift details</value>
+  </data>
+  <data name="Cash.Opened" xml:space="preserve">
+    <value>Opened</value>
+  </data>
+  <data name="Cash.ClosedAt" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="Cash.OpenedBy" xml:space="preserve">
+    <value>Opened by</value>
+  </data>
+  <data name="Cash.ClosedBy" xml:space="preserve">
+    <value>Closed by</value>
+  </data>
+  <data name="Cash.OpeningBalance" xml:space="preserve">
+    <value>Opening balance</value>
+  </data>
+  <data name="Cash.ExpectedBalance" xml:space="preserve">
+    <value>Expected cash</value>
+  </data>
+  <data name="Cash.CountedBalance" xml:space="preserve">
+    <value>Counted cash</value>
+  </data>
+  <data name="Cash.Difference" xml:space="preserve">
+    <value>Difference</value>
+  </data>
+  <data name="Cash.ForceClosed" xml:space="preserve">
+    <value>Closed by a manager</value>
+  </data>
+  <data name="Cash.StatusOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="Cash.NoShifts" xml:space="preserve">
+    <value>No shifts.</value>
+  </data>
+  <data name="Cash.PreviousDay" xml:space="preserve">
+    <value>Previous day</value>
+  </data>
+  <data name="Cash.NextDay" xml:space="preserve">
+    <value>Next day</value>
+  </data>
+  <data name="Cash.Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="Cash.TotalIn" xml:space="preserve">
+    <value>Cash in</value>
+  </data>
+  <data name="Cash.TotalOut" xml:space="preserve">
+    <value>Cash out</value>
+  </data>
+  <data name="Cash.Net" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="Cash.ByType" xml:space="preserve">
+    <value>By movement type</value>
+  </data>
+  <data name="Cash.Count" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="Cash.NoMovementsThatDay" xml:space="preserve">
+    <value>No cash movements on this day.</value>
+  </data>
+  <data name="Cash.ShiftsThatDay" xml:space="preserve">
+    <value>Shifts that day</value>
+  </data>
+  <data name="Cash.Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Cash.ShiftOpenSince" xml:space="preserve">
+    <value>Open since {0}</value>
+  </data>
+  <data name="Cash.ShiftPeriod" xml:space="preserve">
+    <value>Closed shift</value>
+  </data>
+  <data name="Cash.OpeningDiffers" xml:space="preserve">
+    <value>The opening balance differs from the last counted cash ({0}).</value>
+  </data>
+  <data name="Cash.CloseNote" xml:space="preserve">
+    <value>Closing note</value>
+  </data>
+  <data name="Cash.Shortage" xml:space="preserve">
+    <value>Shortage</value>
+  </data>
+  <data name="Cash.Overage" xml:space="preserve">
+    <value>Overage</value>
+  </data>
+  <data name="Cash.NoDifference" xml:space="preserve">
+    <value>No difference</value>
+  </data>
+  <data name="Cash.Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="Cash.BalanceAfter" xml:space="preserve">
+    <value>Balance after</value>
+  </data>
+  <data name="Cash.Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Cash.NoMovements" xml:space="preserve">
+    <value>No cash movements yet.</value>
+  </data>
+  <data name="Cash.NoteRequiredLabel" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Cash.ManualNoteHint" xml:space="preserve">
+    <value>Say why the cash was moved.</value>
+  </data>
+  <data name="Cash.LastCounted" xml:space="preserve">
+    <value>Cash counted at the last close: {0}</value>
+  </data>
+  <data name="Cash.OpeningBalanceHint" xml:space="preserve">
+    <value>The cash in the drawer when the shift starts.</value>
+  </data>
+  <data name="Cash.OpeningDiffersWarning" xml:space="preserve">
+    <value>This differs from the last counted cash. A note is required.</value>
+  </data>
+  <data name="Cash.ForceCloseWarning" xml:space="preserve">
+    <value>You are closing a shift opened by {0}. A reason is required.</value>
+  </data>
+  <data name="Cash.CountedHint" xml:space="preserve">
+    <value>Count the cash in the drawer.</value>
+  </data>
+  <data name="Cash.ShiftAlreadyOpen" xml:space="preserve">
+    <value>A shift is already open.</value>
+  </data>
+  <data name="Cash.ShiftClosed" xml:space="preserve">
+    <value>This shift is already closed.</value>
+  </data>
+  <data name="Cash.UnknownShift" xml:space="preserve">
+    <value>The shift was not found.</value>
+  </data>
+  <data name="Cash.InvalidAmount" xml:space="preserve">
+    <value>The amount must be greater than zero.</value>
+  </data>
+  <data name="Cash.AmountTooLarge" xml:space="preserve">
+    <value>The amount cannot exceed {0:N2}.</value>
+  </data>
+  <data name="Cash.InsufficientCash" xml:space="preserve">
+    <value>The drawer holds only {0:N2}.</value>
+  </data>
+  <data name="Cash.NoteRequired" xml:space="preserve">
+    <value>A note is required.</value>
+  </data>
+  <data name="Cash.NoteTooLong" xml:space="preserve">
+    <value>The note cannot exceed {0} characters.</value>
+  </data>
+  <data name="Cash.OpeningDifferenceNoteRequired" xml:space="preserve">
+    <value>The opening balance differs from the last counted cash, so a note is required.</value>
+  </data>
+  <data name="Cash.CloseDifferenceNoteRequired" xml:space="preserve">
+    <value>The counted cash differs from the expected cash, so a note is required.</value>
+  </data>
+  <data name="Cash.ForceCloseReasonRequired" xml:space="preserve">
+    <value>Closing another user's shift requires a reason.</value>
+  </data>
+  <data name="CashMovementTypes.ManualIn" xml:space="preserve">
+    <value>Manual cash in</value>
+  </data>
+  <data name="CashMovementTypes.ManualOut" xml:space="preserve">
+    <value>Manual cash out</value>
+  </data>
+  <data name="PermissionModules.Cash" xml:space="preserve">
+    <value>Cash register</value>
+  </data>
+  <data name="Permissions.Cash.View" xml:space="preserve">
+    <value>View cash register and shifts</value>
+  </data>
+  <data name="Permissions.Cash.OpenShift" xml:space="preserve">
+    <value>Open and close own shifts</value>
+  </data>
+  <data name="Permissions.Cash.ManualMovement" xml:space="preserve">
+    <value>Manual cash in/out</value>
+  </data>
+  <data name="Permissions.Cash.ForceClose" xml:space="preserve">
+    <value>Close other users' shifts</value>
+  </data>
+  <data name="AuditActions.Cash.ShiftOpened" xml:space="preserve">
+    <value>Shift opened</value>
+  </data>
+  <data name="AuditActions.Cash.ShiftClosed" xml:space="preserve">
+    <value>Shift closed</value>
+  </data>
+  <data name="AuditActions.Cash.ShiftForceClosed" xml:space="preserve">
+    <value>Shift closed by a manager</value>
+  </data>
+  <data name="AuditActions.Cash.ManualMovement" xml:space="preserve">
+    <value>Manual cash movement</value>
   </data>
 </root>

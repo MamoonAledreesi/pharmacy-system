@@ -1,0 +1,91 @@
+@* The facts of one shift: who opened it, the cash that came in and went out, and (once closed) the count. *@
+<MudPaper Class="pa-4" Elevation="1">
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="8">
+            <MudText Typo="Typo.subtitle2">
+                @(Shift.IsOpen ? L["Cash.ShiftOpenSince", LocalizerExtensions.LocalTime(Shift.OpenedAtUtc)] : L["Cash.ShiftPeriod"])
+                · <span dir="ltr">@Shift.OpenedBy</span>
+            </MudText>
+            @if (!Shift.IsOpen)
+            {
+                <MudText Typo="Typo.body2">
+                    @LocalizerExtensions.LocalTime(Shift.OpenedAtUtc) → @LocalizerExtensions.LocalTime(Shift.ClosedAtUtc!.Value)
+                    · @L["Cash.ClosedBy"] <span dir="ltr">@Shift.ClosedBy</span>
+                    @if (Shift.WasForceClosed)
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Cash.ForceClosed"]</MudChip>
+                    }
+                </MudText>
+            }
+
+            <MudSimpleTable Dense="true" Hover="false" Class="mt-3" Elevation="0">
+                <tbody>
+                    <tr>
+                        <td>@L["Cash.OpeningBalance"]</td>
+                        <td dir="ltr">@MoneyFormat.Format(Shift.OpeningBalance)</td>
+                    </tr>
+                    <tr>
+                        <td>@L["Cash.TotalIn"]</td>
+                        <td dir="ltr" class="delta-positive">+@MoneyFormat.Format(Shift.TotalIn)</td>
+                    </tr>
+                    <tr>
+                        <td>@L["Cash.TotalOut"]</td>
+                        <td dir="ltr" class="delta-negative">-@MoneyFormat.Format(Shift.TotalOut)</td>
+                    </tr>
+                    <tr>
+                        <td><b>@L["Cash.ExpectedBalance"]</b></td>
+                        <td dir="ltr"><b>@MoneyFormat.Format(Shift.CurrentBalance)</b></td>
+                    </tr>
+                    @if (!Shift.IsOpen)
+                    {
+                        <tr>
+                            <td>@L["Cash.CountedBalance"]</td>
+                            <td dir="ltr">@MoneyFormat.Format(Shift.Counted ?? 0m)</td>
+                        </tr>
+                        <tr>
+                            <td><b>@L["Cash.Difference"]</b></td>
+                            <td dir="ltr">
+                                @if (Shift.Difference is { } difference)
+                                {
+                                    <b class="@DifferenceClass(difference)">@MoneyFormat.FormatSigned(difference)</b>
+                                    <span> @DifferenceLabel(difference)</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            @if (Shift.OpeningBalance != Shift.PreviousCounted)
+            {
+                <MudAlert Severity="Severity.Info" Dense="true" Class="mb-2">
+                    @L["Cash.OpeningDiffers", MoneyFormat.Format(Shift.PreviousCounted)]
+                    @if (!string.IsNullOrWhiteSpace(Shift.OpeningNote))
+                    {
+                        <div>@Shift.OpeningNote</div>
+                    }
+                </MudAlert>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Shift.CloseNote))
+            {
+                <MudAlert Severity="@(Shift.Difference is 0m ? Severity.Normal : Severity.Warning)" Dense="true">
+                    <b>@L["Cash.CloseNote"]:</b> @Shift.CloseNote
+                </MudAlert>
+            }
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired]
+    public ShiftSummary Shift { get; set; } = default!;
+
+    private static string DifferenceClass(decimal difference) =>
+        difference < 0 ? "delta-negative" : difference > 0 ? "delta-positive" : string.Empty;
+
+    private string DifferenceLabel(decimal difference) =>
+        difference < 0 ? L["Cash.Shortage"] : difference > 0 ? L["Cash.Overage"] : L["Cash.NoDifference"];
+}

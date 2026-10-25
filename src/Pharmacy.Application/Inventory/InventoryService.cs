@@ -221,20 +221,9 @@ public sealed class InventoryService(
         }, Result.Failure);
     }
 
-    private async Task<TResult> RunAsync<TResult>(Func<Task<TResult>> work, Func<Error, TResult> failure)
-        where TResult : Result
-    {
-        try
-        {
-            return await db.ExecuteInTransactionAsync(work);
-        }
-        catch (Exception ex) when (ex is DbUpdateConcurrencyException or DbUpdateException)
-        {
-            // Two people changed the same stock (or created the same new batch) at the same moment.
-            // Nothing was saved; the user can simply try again.
-            return failure(new Error(CommonErrors.ConcurrencyConflict));
-        }
-    }
+    private Task<TResult> RunAsync<TResult>(Func<Task<TResult>> work, Func<Error, TResult> failure)
+        where TResult : Result =>
+        db.RunGuardedAsync(work, failure);
 
     private static Error? ValidateReason(string? reasonCode, string? note, IReadOnlyList<string> allowed, bool required)
     {

@@ -1,0 +1,48 @@
+@inject ServiceRunner Services
+
+<MudTable @ref="_table" T="CashMovementRow" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25">
+    <HeaderContent>
+        <MudTh>@L["Audit.Time"]</MudTh>
+        <MudTh>@L["Inventory.MovementType"]</MudTh>
+        <MudTh>@L["Cash.Amount"]</MudTh>
+        <MudTh>@L["Cash.BalanceAfter"]</MudTh>
+        <MudTh>@L["Cash.Note"]</MudTh>
+        <MudTh>@L["Login.UserName"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Audit.Time"]">@LocalizerExtensions.LocalTime(context.OccurredAtUtc)</MudTd>
+        <MudTd DataLabel="@L["Inventory.MovementType"]">@L[$"CashMovementTypes.{context.Type}"]</MudTd>
+        <MudTd DataLabel="@L["Cash.Amount"]"><span dir="ltr" class="@MoneyFormat.SignClass(context.Amount)">@MoneyFormat.FormatSigned(context.Amount)</span></MudTd>
+        <MudTd DataLabel="@L["Cash.BalanceAfter"]"><span dir="ltr">@MoneyFormat.Format(context.BalanceAfter)</span></MudTd>
+        <MudTd DataLabel="@L["Cash.Note"]">@context.Note</MudTd>
+        <MudTd DataLabel="@L["Login.UserName"]"><span dir="ltr">@context.UserName</span></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Cash.NoMovements"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<CashMovementRow>? _table;
+
+    /// <summary>The shift whose movements are listed.</summary>
+    [Parameter, EditorRequired]
+    public int ShiftId { get; set; }
+
+    public Task ReloadAsync() => _table?.ReloadServerData() ?? Task.CompletedTask;
+
+    private Task<TableData<CashMovementRow>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<CashMovementRow>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var query = new CashMovementQuery(ShiftId, null, state.Page, state.PageSize);
+        var result = await Services.For<CashQueryService>().RunAsync(s => s.SearchMovementsAsync(query, cancellationToken));
+        return result.IsSuccess
+            ? new TableData<CashMovementRow> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<CashMovementRow> { Items = [], TotalItems = 0 };
+    }
+}

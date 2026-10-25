@@ -1,0 +1,68 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudText Typo="Typo.body2" Class="mb-2">
+            @L["Cash.ExpectedBalance"]: <b dir="ltr">@MoneyFormat.Format(CurrentBalance)</b>
+        </MudText>
+
+        <MudNumericField T="decimal?" @bind-Value="_amount" Label="@L["Cash.Amount"]" Min="0" Format="0.00" Immediate="true" />
+
+        <MudTextField @bind-Value="_note" Label="@L["Cash.NoteRequiredLabel"]" MaxLength="CashMovement.NoteMaxLength" Lines="2"
+                      HelperText="@L["Cash.ManualNoteHint"]" Class="mt-2" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="@(Direction == CashDirection.In ? Color.Success : Color.Error)"
+                   Disabled="@(_saving || _amount is null)" OnClick="SaveAsync">
+            @(Direction == CashDirection.In ? L["Cash.ManualIn"] : L["Cash.ManualOut"])
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public CashDirection Direction { get; set; }
+
+    /// <summary>The expected cash in the drawer, shown so a payment is not entered blindly.</summary>
+    [Parameter]
+    public decimal CurrentBalance { get; set; }
+
+    // One id per opened dialog: a double click or a retry is applied only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private decimal? _amount;
+    private string? _note;
+    private string? _error;
+    private bool _saving;
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var request = new ManualCashRequest(_operationId, Direction, _amount ?? 0m, _note);
+            var result = await Services.For<CashService>().RunAsync(s => s.RecordManualMovementAsync(request));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

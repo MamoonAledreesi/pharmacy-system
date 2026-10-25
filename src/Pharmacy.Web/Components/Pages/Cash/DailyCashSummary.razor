@@ -1,0 +1,125 @@
+@page "/cash/daily"
+@attribute [Authorize(Policy = Permissions.CashView)]
+@inject ServiceRunner Services
+@inject TimeProvider Clock
+
+<PageTitle>@L["Nav.CashDaily"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex flex-wrap align-center mb-4 gap-3">
+    <MudText Typo="Typo.h4">@L["Nav.CashDaily"]</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ChevronRight : Icons.Material.Filled.ChevronLeft)"
+                   aria-label="@L["Cash.PreviousDay"]" title="@L["Cash.PreviousDay"]" OnClick="() => MoveDayAsync(-1)" />
+    <MudDatePicker Date="_date" DateChanged="OnDateChangedAsync" Label="@L["Cash.Day"]" Style="max-width: 11rem" />
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ChevronLeft : Icons.Material.Filled.ChevronRight)"
+                   aria-label="@L["Cash.NextDay"]" title="@L["Cash.NextDay"]" OnClick="() => MoveDayAsync(1)" />
+</div>
+
+@if (_summary is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+<MudGrid Spacing="3" Class="mb-4">
+    <MudItem xs="12" sm="4">
+        <MudPaper Class="pa-4" Elevation="1">
+            <MudText Typo="Typo.caption">@L["Cash.TotalIn"]</MudText>
+            <MudText Typo="Typo.h5" Class="delta-positive"><span dir="ltr">+@MoneyFormat.Format(_summary.TotalIn)</span></MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="4">
+        <MudPaper Class="pa-4" Elevation="1">
+            <MudText Typo="Typo.caption">@L["Cash.TotalOut"]</MudText>
+            <MudText Typo="Typo.h5" Class="delta-negative"><span dir="ltr">-@MoneyFormat.Format(_summary.TotalOut)</span></MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="4">
+        <MudPaper Class="pa-4" Elevation="1">
+            <MudText Typo="Typo.caption">@L["Cash.Net"]</MudText>
+            <MudText Typo="Typo.h5"><span dir="ltr">@MoneyFormat.Format(_summary.Net)</span></MudText>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+<MudText Typo="Typo.h6" GutterBottom="true">@L["Cash.ByType"]</MudText>
+<MudTable Items="_summary.ByType" Dense="true" Hover="true" Elevation="1" Class="mb-5">
+    <HeaderContent>
+        <MudTh>@L["Inventory.MovementType"]</MudTh>
+        <MudTh>@L["Cash.Count"]</MudTh>
+        <MudTh>@L["Cash.TotalIn"]</MudTh>
+        <MudTh>@L["Cash.TotalOut"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Inventory.MovementType"]">@L[$"CashMovementTypes.{context.Type}"]</MudTd>
+        <MudTd DataLabel="@L["Cash.Count"]">@context.Count</MudTd>
+        <MudTd DataLabel="@L["Cash.TotalIn"]"><span dir="ltr">@MoneyFormat.Format(context.In)</span></MudTd>
+        <MudTd DataLabel="@L["Cash.TotalOut"]"><span dir="ltr">@MoneyFormat.Format(context.Out)</span></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Cash.NoMovementsThatDay"]</MudText>
+    </NoRecordsContent>
+</MudTable>
+
+<MudText Typo="Typo.h6" GutterBottom="true">@L["Cash.ShiftsThatDay"]</MudText>
+<MudTable Items="_summary.Shifts" Dense="true" Hover="true" Elevation="1">
+    <HeaderContent>
+        <MudTh>@L["Cash.Opened"]</MudTh>
+        <MudTh>@L["Cash.OpenedBy"]</MudTh>
+        <MudTh>@L["Cash.OpeningBalance"]</MudTh>
+        <MudTh>@L["Cash.CountedBalance"]</MudTh>
+        <MudTh>@L["Cash.Difference"]</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Cash.Opened"]">@LocalizerExtensions.LocalTime(context.OpenedAtUtc)</MudTd>
+        <MudTd DataLabel="@L["Cash.OpenedBy"]"><span dir="ltr">@context.OpenedBy</span></MudTd>
+        <MudTd DataLabel="@L["Cash.OpeningBalance"]"><span dir="ltr">@MoneyFormat.Format(context.OpeningBalance)</span></MudTd>
+        <MudTd DataLabel="@L["Cash.CountedBalance"]">
+            @if (context.IsOpen)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Success">@L["Cash.StatusOpen"]</MudChip>
+            }
+            else
+            {
+                <span dir="ltr">@MoneyFormat.Format(context.Counted ?? 0m)</span>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Cash.Difference"]">
+            @if (context.Difference is { } difference)
+            {
+                <span dir="ltr" class="@MoneyFormat.SignClass(difference)">@(difference == 0 ? MoneyFormat.Format(0m) : MoneyFormat.FormatSigned(difference))</span>
+            }
+        </MudTd>
+        <MudTd><MudButton Size="Size.Small" Href="@($"cash/shifts/{context.Id}")">@L["Cash.Details"]</MudButton></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Cash.NoShifts"]</MudText>
+    </NoRecordsContent>
+</MudTable>
+
+@code {
+    private DateTime? _date;
+    private Pharmacy.Application.Cash.DailySummary? _summary;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _date = Clock.GetLocalNow().DateTime.Date;
+        await LoadAsync();
+    }
+
+    private async Task OnDateChangedAsync(DateTime? date)
+    {
+        _date = date ?? Clock.GetLocalNow().DateTime.Date;
+        await LoadAsync();
+    }
+
+    private Task MoveDayAsync(int days) => OnDateChangedAsync((_date ?? Clock.GetLocalNow().DateTime.Date).AddDays(days));
+
+    private async Task LoadAsync()
+    {
+        var day = DateOnly.FromDateTime(_date ?? Clock.GetLocalNow().DateTime.Date);
+        var result = await Services.For<CashQueryService>().RunAsync(s => s.GetDailySummaryAsync(day));
+        _summary = result.IsSuccess ? result.Value : new Pharmacy.Application.Cash.DailySummary(day, 0m, 0m, [], []);
+    }
+}

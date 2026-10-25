@@ -1,0 +1,76 @@
+@page "/cash/shifts"
+@attribute [Authorize(Policy = Permissions.CashView)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+
+<PageTitle>@L["Nav.CashShifts"] - @L["App.Name"]</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">@L["Nav.CashShifts"]</MudText>
+
+<MudTable T="ShiftSummary" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25"
+          OnRowClick="args => Open(args.Item!)" RowClass="cursor-pointer">
+    <HeaderContent>
+        <MudTh>@L["Cash.Opened"]</MudTh>
+        <MudTh>@L["Cash.ClosedAt"]</MudTh>
+        <MudTh>@L["Cash.OpenedBy"]</MudTh>
+        <MudTh>@L["Cash.OpeningBalance"]</MudTh>
+        <MudTh>@L["Cash.ExpectedBalance"]</MudTh>
+        <MudTh>@L["Cash.CountedBalance"]</MudTh>
+        <MudTh>@L["Cash.Difference"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Cash.Opened"]">@LocalizerExtensions.LocalTime(context.OpenedAtUtc)</MudTd>
+        <MudTd DataLabel="@L["Cash.ClosedAt"]">
+            @if (context.ClosedAtUtc is { } closedAt)
+            {
+                @LocalizerExtensions.LocalTime(closedAt)
+                @if (context.WasForceClosed)
+                {
+                    <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Cash.ForceClosed"]</MudChip>
+                }
+            }
+            else
+            {
+                <MudChip T="string" Size="Size.Small" Color="@(context.IsStale ? Color.Warning : Color.Success)">@L["Cash.StatusOpen"]</MudChip>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Cash.OpenedBy"]"><span dir="ltr">@context.OpenedBy</span></MudTd>
+        <MudTd DataLabel="@L["Cash.OpeningBalance"]"><span dir="ltr">@MoneyFormat.Format(context.OpeningBalance)</span></MudTd>
+        <MudTd DataLabel="@L["Cash.ExpectedBalance"]"><span dir="ltr">@MoneyFormat.Format(context.CurrentBalance)</span></MudTd>
+        <MudTd DataLabel="@L["Cash.CountedBalance"]">
+            <span dir="ltr">@(context.Counted is { } counted ? MoneyFormat.Format(counted) : "—")</span>
+        </MudTd>
+        <MudTd DataLabel="@L["Cash.Difference"]">
+            @if (context.Difference is { } difference)
+            {
+                <span dir="ltr" class="@MoneyFormat.SignClass(difference)">@(difference == 0 ? MoneyFormat.Format(0m) : MoneyFormat.FormatSigned(difference))</span>
+            }
+            else
+            {
+                <span>—</span>
+            }
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Cash.NoShifts"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private Task<TableData<ShiftSummary>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<ShiftSummary>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var query = new ShiftQuery(state.Page, state.PageSize);
+        var result = await Services.For<CashQueryService>().RunAsync(s => s.SearchShiftsAsync(query, cancellationToken));
+        return result.IsSuccess
+            ? new TableData<ShiftSummary> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<ShiftSummary> { Items = [], TotalItems = 0 };
+    }
+
+    private void Open(ShiftSummary shift) => Navigation.NavigateTo($"cash/shifts/{shift.Id}");
+}
