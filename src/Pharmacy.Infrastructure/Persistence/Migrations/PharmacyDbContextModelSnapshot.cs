@@ -432,6 +432,13 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Sales.LateReturn",
                             RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 56,
+                            ClaimType = "permission",
+                            ClaimValue = "Purchasing.Return",
+                            RoleId = 5
                         });
                 });
 
@@ -1432,6 +1439,137 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("CK_PurchaseInvoiceLines_Costs", "[CostPerUnit] >= 0 AND [BaseUnitCost] >= 0 AND [LineTotal] >= 0");
 
                             t.HasCheckConstraint("CK_PurchaseInvoiceLines_Quantities", "[Quantity] > 0 AND [BaseQuantity] > 0 AND [UnitFactor] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseReturn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("CashRefund")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("DebtReduction")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
+
+                    b.HasIndex("OperationId")
+                        .IsUnique();
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("PurchaseReturns", "purchasing", t =>
+                        {
+                            t.HasCheckConstraint("CK_PurchaseReturns_Amounts", "[Total] > 0 AND [DebtReduction] >= 0 AND [CashRefund] >= 0 AND [DebtReduction] + [CashRefund] = [Total]");
+
+                            t.HasCheckConstraint("CK_PurchaseReturns_DebtNeedsSupplier", "[DebtReduction] = 0 OR [SupplierId] IS NOT NULL");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseReturnLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BaseQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BatchId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("FromQuarantine")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("InvoiceLineId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReturnId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitFactor")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Value")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
+
+                    b.HasIndex("InvoiceLineId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductUnitId");
+
+                    b.HasIndex("ReturnId");
+
+                    b.ToTable("PurchaseReturnLines", "purchasing", t =>
+                        {
+                            t.HasCheckConstraint("CK_PurchaseReturnLines_Quantities", "[Quantity] > 0 AND [BaseQuantity] > 0 AND [UnitFactor] > 0");
+
+                            t.HasCheckConstraint("CK_PurchaseReturnLines_Value", "[Value] >= 0");
                         });
                 });
 
@@ -2593,6 +2731,53 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseReturn", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Purchasing.PurchaseInvoice", null)
+                        .WithMany()
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Purchasing.Supplier", null)
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseReturnLine", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Inventory.Batch", null)
+                        .WithMany()
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Purchasing.PurchaseInvoiceLine", null)
+                        .WithMany()
+                        .HasForeignKey("InvoiceLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.ProductUnit", null)
+                        .WithMany()
+                        .HasForeignKey("ProductUnitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Purchasing.PurchaseReturn", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("ReturnId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Pharmacy.Domain.Purchasing.SupplierAccountEntry", b =>
                 {
                     b.HasOne("Pharmacy.Domain.Purchasing.Supplier", "Supplier")
@@ -2747,6 +2932,11 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                 });
 
             modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseInvoice", b =>
+                {
+                    b.Navigation("Lines");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseReturn", b =>
                 {
                     b.Navigation("Lines");
                 });

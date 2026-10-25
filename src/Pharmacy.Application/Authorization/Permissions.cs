@@ -28,6 +28,7 @@ public static class Permissions
     public const string SuppliersManage = "Suppliers.Manage";
     public const string PurchasingView = "Purchasing.View";
     public const string PurchasingCreate = "Purchasing.Create";
+    public const string PurchasingReturn = "Purchasing.Return";
     public const string PayablesPay = "Payables.Pay";
     public const string PayablesReverse = "Payables.Reverse";
     public const string PayablesSetOpeningBalance = "Payables.SetOpeningBalance";
@@ -49,7 +50,7 @@ public static class Permissions
             CatalogView, CatalogManage,
             InventoryView, InventoryViewCost, InventoryOpeningStock, InventoryAdjust, InventoryWriteOff,
             CashView, CashOpenShift, CashManualMovement, CashForceClose,
-            SuppliersView, SuppliersManage, PurchasingView, PurchasingCreate,
+            SuppliersView, SuppliersManage, PurchasingView, PurchasingCreate, PurchasingReturn,
             PayablesPay, PayablesReverse, PayablesSetOpeningBalance,
             CustomersView, CustomersManage, ReceivablesCollect, ReceivablesReverse, ReceivablesSetOpeningBalance,
             SalesView, SalesCreate, SalesViewCost, SalesGrantHighDiscount, SalesSellBelowCost, SalesReturn, SalesLateReturn,

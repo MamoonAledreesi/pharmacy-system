@@ -1,3 +1,4 @@
+using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Sales;
 

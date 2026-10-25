@@ -2202,4 +2202,88 @@
   <data name="Sales.LateReturnReasonRequired" xml:space="preserve">
     <value>Write the reason for the late return.</value>
   </data>
+  <data name="Nav.PurchaseReturns" xml:space="preserve">
+    <value>Purchase returns</value>
+  </data>
+  <data name="Purchases.ReturnTitle" xml:space="preserve">
+    <value>Purchase return</value>
+  </data>
+  <data name="Purchases.ReturnGoods" xml:space="preserve">
+    <value>Return to supplier</value>
+  </data>
+  <data name="Purchases.InvoiceReturns" xml:space="preserve">
+    <value>Returns of this invoice</value>
+  </data>
+  <data name="Purchases.Received" xml:space="preserve">
+    <value>Received</value>
+  </data>
+  <data name="Purchases.CanReturn" xml:space="preserve">
+    <value>Can still return (base units)</value>
+  </data>
+  <data name="Purchases.BatchHolds" xml:space="preserve">
+    <value>Batch holds now (shelf / quarantine)</value>
+  </data>
+  <data name="Purchases.FromQuarantine" xml:space="preserve">
+    <value>From quarantine</value>
+  </data>
+  <data name="Purchases.ReturnReason" xml:space="preserve">
+    <value>Reason for the return (required)</value>
+  </data>
+  <data name="Purchases.ReturnSearch" xml:space="preserve">
+    <value>Search by return number, invoice, or supplier</value>
+  </data>
+  <data name="Purchases.NoReturns" xml:space="preserve">
+    <value>No purchase returns found.</value>
+  </data>
+  <data name="Purchases.DebtReduction" xml:space="preserve">
+    <value>Off what is owed</value>
+  </data>
+  <data name="Purchases.CashReceived" xml:space="preserve">
+    <value>Cash received</value>
+  </data>
+  <data name="Purchases.ReturnConfirmText" xml:space="preserve">
+    <value>The return is worth {0}. {1} comes off what you owe the supplier and {2} is received in cash into the drawer.</value>
+  </data>
+  <data name="StockMovementTypes.PurchaseReturn" xml:space="preserve">
+    <value>Purchase return (shelf)</value>
+  </data>
+  <data name="StockMovementTypes.PurchaseReturnQuarantined" xml:space="preserve">
+    <value>Purchase return (quarantine)</value>
+  </data>
+  <data name="CashMovementTypes.PurchaseRefund" xml:space="preserve">
+    <value>Purchase refund</value>
+  </data>
+  <data name="SupplierEntryTypes.PurchaseReturn" xml:space="preserve">
+    <value>Purchase return</value>
+  </data>
+  <data name="Permissions.Purchasing.Return" xml:space="preserve">
+    <value>Return goods to suppliers</value>
+  </data>
+  <data name="AuditActions.Purchasing.PurchaseReturned" xml:space="preserve">
+    <value>Purchase return posted</value>
+  </data>
+  <data name="Purchasing.ReturnNoLines" xml:space="preserve">
+    <value>Enter a quantity for at least one item.</value>
+  </data>
+  <data name="Purchasing.UnknownInvoice" xml:space="preserve">
+    <value>The purchase invoice was not found.</value>
+  </data>
+  <data name="Purchasing.UnknownInvoiceLine" xml:space="preserve">
+    <value>The item is not on this invoice.</value>
+  </data>
+  <data name="Purchasing.DuplicateReturnLine" xml:space="preserve">
+    <value>An item appears twice in the return.</value>
+  </data>
+  <data name="Purchasing.ReturnReasonRequired" xml:space="preserve">
+    <value>Write the reason for the return.</value>
+  </data>
+  <data name="Purchasing.InvalidReturnAmount" xml:space="preserve">
+    <value>The return amount is not valid.</value>
+  </data>
+  <data name="Purchasing.ReturnQuantityExceeds" xml:space="preserve">
+    <value>More than can be returned: only {0} (base units) are left to return from this invoice.</value>
+  </data>
+  <data name="Purchasing.BatchStockTooLow" xml:space="preserve">
+    <value>The batch holds only {0} (base units), because part of it was sold or set aside.</value>
+  </data>
 </root>

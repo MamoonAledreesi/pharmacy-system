@@ -8,6 +8,15 @@
     <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
                    Href="purchases" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
     <MudText Typo="Typo.h4">@L["Purchases.Invoice"] <span dir="ltr">@_invoice?.Number</span></MudText>
+    <MudSpacer />
+    @if (_invoice is not null)
+    {
+        <AuthorizeView Policy="@Permissions.PurchasingReturn">
+            <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.AssignmentReturn" Href="@($"purchases/{_invoice.Id}/return")">
+                @L["Purchases.ReturnGoods"]
+            </MudButton>
+        </AuthorizeView>
+    }
 </div>
 
 @if (_notFound)
@@ -80,8 +89,31 @@
     </RowTemplate>
 </MudTable>
 
+
+@if (_returns.Count > 0)
+{
+    <MudText Typo="Typo.h6" Class="mt-5" GutterBottom="true">@L["Purchases.InvoiceReturns"]</MudText>
+    <MudTable Items="_returns" T="PurchaseReturnListItem" Dense="true" Hover="true" Elevation="1">
+        <HeaderContent>
+            <MudTh>@L["Purchases.Number"]</MudTh>
+            <MudTh>@L["Audit.Time"]</MudTh>
+            <MudTh>@L["Purchases.Total"]</MudTh>
+            <MudTh>@L["Purchases.DebtReduction"]</MudTh>
+            <MudTh>@L["Purchases.CashReceived"]</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="@L["Purchases.Number"]"><MudLink Href="@($"purchases/returns/{context.Id}")"><span dir="ltr">@context.Number</span></MudLink></MudTd>
+            <MudTd DataLabel="@L["Audit.Time"]">@LocalizerExtensions.LocalTime(context.CreatedAtUtc)</MudTd>
+            <MudTd DataLabel="@L["Purchases.Total"]"><span dir="ltr">@MoneyFormat.Format(context.Total)</span></MudTd>
+            <MudTd DataLabel="@L["Purchases.DebtReduction"]"><span dir="ltr">@MoneyFormat.Format(context.DebtReduction)</span></MudTd>
+            <MudTd DataLabel="@L["Purchases.CashReceived"]"><span dir="ltr">@MoneyFormat.Format(context.CashRefund)</span></MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
 @code {
     private PurchaseDetail? _invoice;
+    private IReadOnlyList<PurchaseReturnListItem> _returns = [];
     private bool _notFound;
 
     [Parameter]
@@ -92,5 +124,7 @@
         var result = await Services.For<PurchaseQueryService>().RunAsync(s => s.GetAsync(InvoiceId));
         _notFound = result.IsFailure;
         _invoice = result.IsSuccess ? result.Value : null;
+        var returns = await Services.For<PurchaseReturnQueryService>().RunAsync(s => s.SearchAsync(new PurchaseReturnQuery(null, InvoiceId, null, null, 0, PurchaseReturnQueryService.MaxPageSize)));
+        _returns = returns.IsSuccess ? returns.Value.Items : [];
     }
 }

@@ -32,12 +32,15 @@ public enum CashMovementType
 
     /// <summary>Cash handed back to a customer for goods they returned.</summary>
     SaleRefund = 8,
+
+    /// <summary>Cash a supplier handed back for goods the pharmacy returned.</summary>
+    PurchaseRefund = 9,
 }
 
 public static class CashMovementTypes
 {
     /// <summary>Types that bring cash into the drawer.</summary>
-    public static IReadOnlySet<CashMovementType> Receipts { get; } = new HashSet<CashMovementType> { CashMovementType.ManualIn, CashMovementType.SupplierPaymentReversal, CashMovementType.DebtCollection, CashMovementType.SalePayment };
+    public static IReadOnlySet<CashMovementType> Receipts { get; } = new HashSet<CashMovementType> { CashMovementType.ManualIn, CashMovementType.SupplierPaymentReversal, CashMovementType.DebtCollection, CashMovementType.SalePayment, CashMovementType.PurchaseRefund };
 
     /// <summary>Types that take cash out of the drawer.</summary>
     public static IReadOnlySet<CashMovementType> Payments { get; } = new HashSet<CashMovementType> { CashMovementType.ManualOut, CashMovementType.PurchasePayment, CashMovementType.SupplierPayment, CashMovementType.DebtCollectionReversal, CashMovementType.SaleRefund };

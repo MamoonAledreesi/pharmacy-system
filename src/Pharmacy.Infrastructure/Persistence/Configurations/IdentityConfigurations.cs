@@ -143,6 +143,9 @@ internal sealed class IdentityTableConfiguration :
         (2, Permissions.SalesReturn),
         (3, Permissions.SalesReturn),
         (2, Permissions.SalesLateReturn),
+
+        // Purchase returns (Task 9). The store keeper sends goods back to suppliers.
+        (5, Permissions.PurchasingReturn),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

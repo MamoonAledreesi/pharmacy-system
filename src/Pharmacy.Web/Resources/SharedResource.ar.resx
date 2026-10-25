@@ -2202,4 +2202,88 @@
   <data name="Sales.LateReturnReasonRequired" xml:space="preserve">
     <value>اكتب سبب الإرجاع المتأخر.</value>
   </data>
+  <data name="Nav.PurchaseReturns" xml:space="preserve">
+    <value>مرتجعات الشراء</value>
+  </data>
+  <data name="Purchases.ReturnTitle" xml:space="preserve">
+    <value>مرتجع شراء</value>
+  </data>
+  <data name="Purchases.ReturnGoods" xml:space="preserve">
+    <value>إرجاع للمورد</value>
+  </data>
+  <data name="Purchases.InvoiceReturns" xml:space="preserve">
+    <value>مرتجعات هذه الفاتورة</value>
+  </data>
+  <data name="Purchases.Received" xml:space="preserve">
+    <value>المستلم</value>
+  </data>
+  <data name="Purchases.CanReturn" xml:space="preserve">
+    <value>المتاح للإرجاع (وحدات أساسية)</value>
+  </data>
+  <data name="Purchases.BatchHolds" xml:space="preserve">
+    <value>رصيد الدفعة الآن (رف / حجر)</value>
+  </data>
+  <data name="Purchases.FromQuarantine" xml:space="preserve">
+    <value>من الحجر</value>
+  </data>
+  <data name="Purchases.ReturnReason" xml:space="preserve">
+    <value>سبب الإرجاع (مطلوب)</value>
+  </data>
+  <data name="Purchases.ReturnSearch" xml:space="preserve">
+    <value>بحث برقم المرتجع أو الفاتورة أو المورد</value>
+  </data>
+  <data name="Purchases.NoReturns" xml:space="preserve">
+    <value>لا توجد مرتجعات شراء.</value>
+  </data>
+  <data name="Purchases.DebtReduction" xml:space="preserve">
+    <value>من المستحق للمورد</value>
+  </data>
+  <data name="Purchases.CashReceived" xml:space="preserve">
+    <value>نقد مقبوض</value>
+  </data>
+  <data name="Purchases.ReturnConfirmText" xml:space="preserve">
+    <value>قيمة المرتجع {0}. يُخصم {1} مما تدين به للمورد ويُقبض {2} نقداً في الدرج.</value>
+  </data>
+  <data name="StockMovementTypes.PurchaseReturn" xml:space="preserve">
+    <value>مرتجع شراء (من الرف)</value>
+  </data>
+  <data name="StockMovementTypes.PurchaseReturnQuarantined" xml:space="preserve">
+    <value>مرتجع شراء (من الحجر)</value>
+  </data>
+  <data name="CashMovementTypes.PurchaseRefund" xml:space="preserve">
+    <value>نقد مسترد من مورد</value>
+  </data>
+  <data name="SupplierEntryTypes.PurchaseReturn" xml:space="preserve">
+    <value>مرتجع شراء</value>
+  </data>
+  <data name="Permissions.Purchasing.Return" xml:space="preserve">
+    <value>إرجاع البضاعة للموردين</value>
+  </data>
+  <data name="AuditActions.Purchasing.PurchaseReturned" xml:space="preserve">
+    <value>ترحيل مرتجع شراء</value>
+  </data>
+  <data name="Purchasing.ReturnNoLines" xml:space="preserve">
+    <value>أدخل كمية لصنف واحد على الأقل.</value>
+  </data>
+  <data name="Purchasing.UnknownInvoice" xml:space="preserve">
+    <value>لم يتم العثور على فاتورة الشراء.</value>
+  </data>
+  <data name="Purchasing.UnknownInvoiceLine" xml:space="preserve">
+    <value>الصنف غير موجود في هذه الفاتورة.</value>
+  </data>
+  <data name="Purchasing.DuplicateReturnLine" xml:space="preserve">
+    <value>صنف مكرر في المرتجع.</value>
+  </data>
+  <data name="Purchasing.ReturnReasonRequired" xml:space="preserve">
+    <value>اكتب سبب الإرجاع.</value>
+  </data>
+  <data name="Purchasing.InvalidReturnAmount" xml:space="preserve">
+    <value>قيمة المرتجع غير صالحة.</value>
+  </data>
+  <data name="Purchasing.ReturnQuantityExceeds" xml:space="preserve">
+    <value>أكثر من المتاح للإرجاع: المتبقي من هذه الفاتورة {0} (وحدات أساسية).</value>
+  </data>
+  <data name="Purchasing.BatchStockTooLow" xml:space="preserve">
+    <value>الدفعة تحتوي {0} فقط (وحدات أساسية) لأن جزءاً منها بِيع أو حُجز.</value>
+  </data>
 </root>

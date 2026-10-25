@@ -117,6 +117,12 @@ public sealed class Batch
             ? Apply(StockMovementType.SaleReturnQuarantined, quantity, availableDelta: 0, quarantineDelta: quantity, context)
             : Apply(StockMovementType.SaleReturn, quantity, availableDelta: quantity, quarantineDelta: 0, context);
 
+    /// <summary>Sends goods back to the supplier, taking them from the shelf stock or from quarantine.</summary>
+    public Result<StockMovement> ReturnToSupplier(int quantity, bool fromQuarantine, MovementContext context) =>
+        fromQuarantine
+            ? Apply(StockMovementType.PurchaseReturnQuarantined, quantity, availableDelta: 0, quarantineDelta: -quantity, context)
+            : Apply(StockMovementType.PurchaseReturn, quantity, availableDelta: -quantity, quarantineDelta: 0, context);
+
     /// <summary>Sets sellable stock aside so it can no longer be sold.</summary>
     public Result<StockMovement> Quarantine(int quantity, MovementContext context) =>
         Apply(StockMovementType.QuarantineIn, quantity, availableDelta: -quantity, quarantineDelta: quantity, context);

@@ -96,7 +96,7 @@ public sealed class Supplier
     /// <summary>The pharmacy paid: the balance goes down, and never below zero.</summary>
     public Result<SupplierAccountEntry> Decrease(SupplierEntryType type, decimal amount, AccountContext context)
     {
-        if (type != SupplierEntryType.Payment)
+        if (type is not (SupplierEntryType.Payment or SupplierEntryType.PurchaseReturn))
         {
             throw new ArgumentOutOfRangeException(nameof(type), type, "Not an entry that decreases the balance.");
         }

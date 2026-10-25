@@ -1,9 +1,9 @@
-namespace Pharmacy.Domain.Sales;
+namespace Pharmacy.Domain.Common;
 
-/// <summary>How a return is settled: what comes off the customer's debt and what is handed back in cash.</summary>
+/// <summary>How a return is settled: what comes off the debt and what moves in cash.</summary>
 public sealed record RefundSplit(decimal DebtReduction, decimal CashRefund);
 
-/// <summary>The money rules of a sales return.</summary>
+/// <summary>The money rules of a return (to a customer or to a supplier): how it is valued and how it is settled.</summary>
 public static class ReturnPricing
 {
     /// <summary>
@@ -17,11 +17,11 @@ public static class ReturnPricing
         var remaining = lineBaseQuantity - alreadyReturnedBaseQuantity;
         return returningBaseQuantity == remaining
             ? lineNetTotal - alreadyReturnedValue
-            : decimal.Round(lineNetTotal * returningBaseQuantity / lineBaseQuantity, SalePricing.Decimals, MidpointRounding.AwayFromZero);
+            : decimal.Round(lineNetTotal * returningBaseQuantity / lineBaseQuantity, 2, MidpointRounding.AwayFromZero);
     }
 
     /// <summary>
-    /// The unified refund rule. The customer's debt for this invoice is reduced first, but never by more than the credit
+    /// The unified refund rule. The debt for this invoice is reduced first, but never by more than the credit
     /// part of the invoice that earlier returns have not already reduced, and never below zero; the rest is paid back in cash.
     /// </summary>
     public static RefundSplit Split(decimal returnAmount, decimal creditPortionRemaining, decimal customerBalance)

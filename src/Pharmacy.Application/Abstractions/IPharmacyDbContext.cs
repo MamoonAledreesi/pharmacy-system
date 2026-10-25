@@ -46,6 +46,8 @@ public interface IPharmacyDbContext
 
     DbSet<PurchaseInvoice> PurchaseInvoices { get; }
 
+    DbSet<PurchaseReturn> PurchaseReturns { get; }
+
     DbSet<DocumentSequence> DocumentSequences { get; }
 
     DbSet<Customer> Customers { get; }
@@ -101,6 +103,9 @@ public interface IPharmacyDbContext
     /// after another and cannot both give back the same goods. Returns false when the invoice does not exist.
     /// </summary>
     Task<bool> LockSalesInvoiceAsync(int invoiceId, CancellationToken cancellationToken = default);
+
+    /// <summary>Locks a purchase invoice until the surrounding transaction ends, so two returns of it are applied one after another.</summary>
+    Task<bool> LockPurchaseInvoiceAsync(int invoiceId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Takes the next number of a document kind for a year, locking its sequence until the surrounding transaction

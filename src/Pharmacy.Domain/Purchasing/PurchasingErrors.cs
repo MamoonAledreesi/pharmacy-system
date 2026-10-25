@@ -28,4 +28,17 @@ public static class PurchasingErrors
     public const string ReasonRequired = "Purchasing.ReasonRequired";
     public const string NoteTooLong = "Purchasing.NoteTooLong";
     public const string OpeningBalanceAlreadySet = "Purchasing.OpeningBalanceAlreadySet";
+
+    public const string ReturnNoLines = "Purchasing.ReturnNoLines";
+    public const string UnknownInvoice = "Purchasing.UnknownInvoice";
+    public const string UnknownInvoiceLine = "Purchasing.UnknownInvoiceLine";
+    public const string DuplicateReturnLine = "Purchasing.DuplicateReturnLine";
+    public const string ReturnReasonRequired = "Purchasing.ReturnReasonRequired";
+    public const string InvalidReturnAmount = "Purchasing.InvalidReturnAmount";
+
+    /// <summary>More was asked back than was received and not yet returned. Argument 0 is what is left (base units).</summary>
+    public const string ReturnQuantityExceeds = "Purchasing.ReturnQuantityExceeds";
+
+    /// <summary>The batch no longer holds that much, because some was sold. Argument 0 is what the batch holds (base units).</summary>
+    public const string BatchStockTooLow = "Purchasing.BatchStockTooLow";
 }

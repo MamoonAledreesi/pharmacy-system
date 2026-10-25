@@ -26,7 +26,8 @@
         <MudNavGroup Title="@L["Nav.Purchases"]" Icon="@Icons.Material.Filled.LocalShipping">
             <MudNavLink Href="suppliers" Match="NavLinkMatch.Prefix">@L["Nav.Suppliers"]</MudNavLink>
             <AuthorizeView Policy="@Permissions.PurchasingView" Context="purchasing">
-                <MudNavLink Href="purchases" Match="NavLinkMatch.Prefix">@L["Nav.PurchaseInvoices"]</MudNavLink>
+                <MudNavLink Href="purchases" Match="NavLinkMatch.All">@L["Nav.PurchaseInvoices"]</MudNavLink>
+                <MudNavLink Href="purchases/returns" Match="NavLinkMatch.Prefix">@L["Nav.PurchaseReturns"]</MudNavLink>
             </AuthorizeView>
         </MudNavGroup>
     </AuthorizeView>

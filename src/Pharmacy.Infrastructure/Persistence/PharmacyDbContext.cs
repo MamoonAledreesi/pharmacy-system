@@ -53,6 +53,8 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
 
     public DbSet<PurchaseInvoice> PurchaseInvoices => Set<PurchaseInvoice>();
 
+    public DbSet<PurchaseReturn> PurchaseReturns => Set<PurchaseReturn>();
+
     public DbSet<DocumentSequence> DocumentSequences => Set<DocumentSequence>();
 
     public DbSet<Customer> Customers => Set<Customer>();
@@ -112,6 +114,12 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
     public async Task<bool> LockSalesInvoiceAsync(int invoiceId, CancellationToken cancellationToken = default) =>
         (await Database
             .SqlQuery<int>($"SELECT Id AS Value FROM sales.SalesInvoices WITH (UPDLOCK, ROWLOCK) WHERE Id = {invoiceId}")
+            .ToListAsync(cancellationToken)).Count > 0;
+
+    // UPDLOCK keeps the invoice row locked until the transaction ends, so two returns of one purchase run one after another.
+    public async Task<bool> LockPurchaseInvoiceAsync(int invoiceId, CancellationToken cancellationToken = default) =>
+        (await Database
+            .SqlQuery<int>($"SELECT Id AS Value FROM purchasing.PurchaseInvoices WITH (UPDLOCK, ROWLOCK) WHERE Id = {invoiceId}")
             .ToListAsync(cancellationToken)).Count > 0;
 
     // The sequence row is locked until the transaction ends, so two invoices never get the same number, and a

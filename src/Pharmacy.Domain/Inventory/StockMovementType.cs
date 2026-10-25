@@ -35,4 +35,10 @@ public enum StockMovementType
 
     /// <summary>Goods a customer returned that are damaged or expired; they are set aside in quarantine.</summary>
     SaleReturnQuarantined = 10,
+
+    /// <summary>Goods sent back to a supplier from the shelf stock.</summary>
+    PurchaseReturn = 11,
+
+    /// <summary>Goods sent back to a supplier from quarantine (for example damaged goods).</summary>
+    PurchaseReturnQuarantined = 12,
 }

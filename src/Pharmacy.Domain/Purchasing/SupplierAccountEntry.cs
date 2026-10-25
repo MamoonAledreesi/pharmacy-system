@@ -13,6 +13,9 @@ public enum SupplierEntryType
 
     /// <summary>A payment that was entered by mistake and taken back.</summary>
     PaymentReversal = 3,
+
+    /// <summary>Goods sent back to the supplier, taken off what the pharmacy owes.</summary>
+    PurchaseReturn = 4,
 }
 
 /// <summary>Who did it, when, and why; supplied by the caller for every supplier account entry.</summary>
