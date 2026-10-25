@@ -439,6 +439,48 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Purchasing.Return",
                             RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 57,
+                            ClaimType = "permission",
+                            ClaimValue = "Expenses.View",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 58,
+                            ClaimType = "permission",
+                            ClaimValue = "Expenses.View",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 59,
+                            ClaimType = "permission",
+                            ClaimValue = "Expenses.Create",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 60,
+                            ClaimType = "permission",
+                            ClaimValue = "Expenses.Create",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 61,
+                            ClaimType = "permission",
+                            ClaimValue = "Expenses.Reverse",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 62,
+                            ClaimType = "permission",
+                            ClaimValue = "Expenses.Manage",
+                            RoleId = 4
                         });
                 });
 
@@ -1154,6 +1196,210 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("DocumentSequences", "config");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Expenses.Expense", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateOnly>("ExpenseDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsReversed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Payee")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<Guid?>("ReverseOperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ReverseReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime?>("ReversedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReversedByUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpenseDate");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
+
+                    b.HasIndex("OperationId")
+                        .IsUnique();
+
+                    b.HasIndex("ReverseOperationId")
+                        .IsUnique()
+                        .HasFilter("[ReverseOperationId] IS NOT NULL");
+
+                    b.HasIndex("CategoryId", "ExpenseDate");
+
+                    b.ToTable("Expenses", "expenses", t =>
+                        {
+                            t.HasCheckConstraint("CK_Expenses_Amount", "[Amount] > 0");
+
+                            t.HasCheckConstraint("CK_Expenses_Reversal", "([IsReversed] = 0 AND [ReversedAtUtc] IS NULL AND [ReverseReason] IS NULL) OR ([IsReversed] = 1 AND [ReversedAtUtc] IS NOT NULL AND [ReverseReason] IS NOT NULL)");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Expenses.ExpenseCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NameArabic")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NameEnglish")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NameArabic")
+                        .IsUnique();
+
+                    b.HasIndex("NameEnglish")
+                        .IsUnique();
+
+                    b.ToTable("ExpenseCategories", "expenses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsActive = true,
+                            NameArabic = "إيجار",
+                            NameEnglish = "Rent"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsActive = true,
+                            NameArabic = "كهرباء",
+                            NameEnglish = "Electricity"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsActive = true,
+                            NameArabic = "ماء",
+                            NameEnglish = "Water"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IsActive = true,
+                            NameArabic = "اتصالات وإنترنت",
+                            NameEnglish = "Phone and internet"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IsActive = true,
+                            NameArabic = "رواتب وأجور",
+                            NameEnglish = "Salaries and wages"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsActive = true,
+                            NameArabic = "نظافة",
+                            NameEnglish = "Cleaning"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsActive = true,
+                            NameArabic = "صيانة",
+                            NameEnglish = "Maintenance"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsActive = true,
+                            NameArabic = "مستلزمات مكتبية",
+                            NameEnglish = "Office supplies"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsActive = true,
+                            NameArabic = "نقل وتوصيل",
+                            NameEnglish = "Transport and delivery"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IsActive = true,
+                            NameArabic = "رسوم حكومية",
+                            NameEnglish = "Government fees"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            IsActive = true,
+                            NameArabic = "أخرى",
+                            NameEnglish = "Other"
+                        });
                 });
 
             modelBuilder.Entity("Pharmacy.Domain.Inventory.Batch", b =>
@@ -2667,6 +2913,15 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                     b.HasOne("Pharmacy.Domain.Catalog.UnitOfMeasure", null)
                         .WithMany()
                         .HasForeignKey("UnitOfMeasureId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Expenses.Expense", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Expenses.ExpenseCategory", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

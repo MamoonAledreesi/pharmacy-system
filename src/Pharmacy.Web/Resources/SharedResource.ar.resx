@@ -2286,4 +2286,115 @@
   <data name="Purchasing.BatchStockTooLow" xml:space="preserve">
     <value>الدفعة تحتوي {0} فقط (وحدات أساسية) لأن جزءاً منها بِيع أو حُجز.</value>
   </data>
+  <data name="Nav.Expenses" xml:space="preserve">
+    <value>المصروفات</value>
+  </data>
+  <data name="Nav.ExpenseCategories" xml:space="preserve">
+    <value>فئات المصروفات</value>
+  </data>
+  <data name="Expenses.New" xml:space="preserve">
+    <value>مصروف جديد</value>
+  </data>
+  <data name="Expenses.Search" xml:space="preserve">
+    <value>بحث بالرقم أو الوصف أو المستفيد</value>
+  </data>
+  <data name="Expenses.Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="Expenses.Date" xml:space="preserve">
+    <value>تاريخ المصروف</value>
+  </data>
+  <data name="Expenses.Description" xml:space="preserve">
+    <value>الوصف</value>
+  </data>
+  <data name="Expenses.Payee" xml:space="preserve">
+    <value>المستفيد</value>
+  </data>
+  <data name="Expenses.PayeeOptional" xml:space="preserve">
+    <value>المستفيد (اختياري)</value>
+  </data>
+  <data name="Expenses.ShowReversed" xml:space="preserve">
+    <value>عرض الملغاة</value>
+  </data>
+  <data name="Expenses.PeriodTotal" xml:space="preserve">
+    <value>المصروف في الفترة (دون الملغاة)</value>
+  </data>
+  <data name="Expenses.NoResults" xml:space="preserve">
+    <value>لا توجد مصروفات.</value>
+  </data>
+  <data name="Expenses.Recorded" xml:space="preserve">
+    <value>تم تسجيل المصروف.</value>
+  </data>
+  <data name="Expenses.Reverse" xml:space="preserve">
+    <value>إلغاء المصروف</value>
+  </data>
+  <data name="Expenses.ReversedMessage" xml:space="preserve">
+    <value>تم إلغاء المصروف.</value>
+  </data>
+  <data name="Expenses.ReverseWarning" xml:space="preserve">
+    <value>سيتم إلغاء مصروف بمبلغ {0}: يعود النقد إلى الوردية المفتوحة.</value>
+  </data>
+  <data name="CashMovementTypes.ExpensePayment" xml:space="preserve">
+    <value>مصروف</value>
+  </data>
+  <data name="CashMovementTypes.ExpenseReversal" xml:space="preserve">
+    <value>إلغاء مصروف</value>
+  </data>
+  <data name="PermissionModules.Expenses" xml:space="preserve">
+    <value>المصروفات</value>
+  </data>
+  <data name="Permissions.Expenses.View" xml:space="preserve">
+    <value>عرض المصروفات</value>
+  </data>
+  <data name="Permissions.Expenses.Create" xml:space="preserve">
+    <value>تسجيل المصروفات</value>
+  </data>
+  <data name="Permissions.Expenses.Reverse" xml:space="preserve">
+    <value>إلغاء المصروفات</value>
+  </data>
+  <data name="Permissions.Expenses.Manage" xml:space="preserve">
+    <value>إدارة فئات المصروفات</value>
+  </data>
+  <data name="AuditActions.Expenses.Recorded" xml:space="preserve">
+    <value>تسجيل مصروف</value>
+  </data>
+  <data name="AuditActions.Expenses.Reversed" xml:space="preserve">
+    <value>إلغاء مصروف</value>
+  </data>
+  <data name="AuditActions.Expenses.CategoryCreated" xml:space="preserve">
+    <value>إنشاء فئة مصروفات</value>
+  </data>
+  <data name="AuditActions.Expenses.CategoryUpdated" xml:space="preserve">
+    <value>تعديل فئة مصروفات</value>
+  </data>
+  <data name="Expenses.UnknownCategory" xml:space="preserve">
+    <value>اختر الفئة.</value>
+  </data>
+  <data name="Expenses.InactiveCategory" xml:space="preserve">
+    <value>هذه الفئة غير نشطة.</value>
+  </data>
+  <data name="Expenses.InvalidAmount" xml:space="preserve">
+    <value>يجب أن يكون المبلغ أكبر من صفر وبخانتين عشريتين على الأكثر.</value>
+  </data>
+  <data name="Expenses.AmountTooLarge" xml:space="preserve">
+    <value>لا يمكن أن يتجاوز المبلغ {0:N0}.</value>
+  </data>
+  <data name="Expenses.DateInFuture" xml:space="preserve">
+    <value>لا يمكن أن يكون تاريخ المصروف في المستقبل.</value>
+  </data>
+  <data name="Expenses.DescriptionRequired" xml:space="preserve">
+    <value>اكتب فيما أُنفق المبلغ.</value>
+  </data>
+  <data name="Expenses.FieldTooLong" xml:space="preserve">
+    <value>أحد الحقول أطول من المسموح.</value>
+  </data>
+  <data name="Expenses.UnknownExpense" xml:space="preserve">
+    <value>لم يتم العثور على المصروف.</value>
+  </data>
+  <data name="Expenses.AlreadyReversed" xml:space="preserve">
+    <value>تم إلغاء هذا المصروف بالفعل.</value>
+  </data>
+  <data name="Expenses.ReasonRequired" xml:space="preserve">
+    <value>السبب مطلوب.</value>
+  </data>
 </root>

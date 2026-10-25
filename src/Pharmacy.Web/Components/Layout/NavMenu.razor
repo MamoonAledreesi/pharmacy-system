@@ -22,6 +22,10 @@
         </MudNavGroup>
     </AuthorizeView>
 
+    <AuthorizeView Policy="@Permissions.ExpensesView">
+        <MudNavLink Href="expenses" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Receipt">@L["Nav.Expenses"]</MudNavLink>
+    </AuthorizeView>
+
     <AuthorizeView Policy="@Permissions.SuppliersView">
         <MudNavGroup Title="@L["Nav.Purchases"]" Icon="@Icons.Material.Filled.LocalShipping">
             <MudNavLink Href="suppliers" Match="NavLinkMatch.Prefix">@L["Nav.Suppliers"]</MudNavLink>

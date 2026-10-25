@@ -1,0 +1,216 @@
+@page "/expenses"
+@attribute [Authorize(Policy = Permissions.ExpensesView)]
+@inject ServiceRunner Services
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject TimeProvider Clock
+
+<PageTitle>@L["Nav.Expenses"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudText Typo="Typo.h4">@L["Nav.Expenses"]</MudText>
+    <MudSpacer />
+    <AuthorizeView Policy="@Permissions.ExpensesManage">
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Category" Href="expenses/categories">
+            @L["Nav.ExpenseCategories"]
+        </MudButton>
+    </AuthorizeView>
+    <AuthorizeView Policy="@Permissions.ExpensesCreate">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddAsync">
+            @L["Expenses.New"]
+        </MudButton>
+    </AuthorizeView>
+</div>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="4">
+            <MudTextField T="string" Value="_searchText" ValueChanged="OnSearchChangedAsync" Immediate="true" DebounceInterval="300"
+                          Label="@L["Expenses.Search"]" Clearable="true"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" autofocus />
+        </MudItem>
+        <MudItem xs="12" sm="6" md="2">
+            <MudSelect T="int?" Value="_categoryId" ValueChanged="OnCategoryChangedAsync" Label="@L["Expenses.Category"]" Clearable="true">
+                @foreach (var category in _categories)
+                {
+                    <MudSelectItem T="int?" Value="category.Id">@category.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="6" md="2">
+            <MudDatePicker Date="_from" DateChanged="OnFromChangedAsync" Label="@L["Purchases.From"]" Clearable="true" />
+        </MudItem>
+        <MudItem xs="6" md="2">
+            <MudDatePicker Date="_to" DateChanged="OnToChangedAsync" Label="@L["Purchases.To"]" Clearable="true" />
+        </MudItem>
+        <MudItem xs="12" md="2" Class="d-flex align-center">
+            <MudSwitch T="bool" Value="_includeReversed" ValueChanged="OnIncludeReversedChangedAsync" Color="Color.Primary" Label="@L["Expenses.ShowReversed"]" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (_totals is { } totals)
+{
+    <MudPaper Class="pa-4 mb-4" Elevation="1">
+        <MudText Typo="Typo.caption">@L["Expenses.PeriodTotal"]</MudText>
+        <MudText Typo="Typo.h5" dir="ltr">@MoneyFormat.Format(totals.Total)</MudText>
+        <div class="d-flex flex-wrap gap-2 mt-2">
+            @foreach (var item in totals.ByCategory)
+            {
+                <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">
+                    @item.Category.For(SupportedCultures.IsArabicUi): <span dir="ltr">@MoneyFormat.Format(item.Total)</span>
+                </MudChip>
+            }
+        </div>
+    </MudPaper>
+}
+
+<MudTable @ref="_table" T="ExpenseListItem" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25">
+    <HeaderContent>
+        <MudTh>@L["Purchases.Number"]</MudTh>
+        <MudTh>@L["Expenses.Date"]</MudTh>
+        <MudTh>@L["Expenses.Category"]</MudTh>
+        <MudTh>@L["Expenses.Description"]</MudTh>
+        <MudTh>@L["Expenses.Payee"]</MudTh>
+        <MudTh>@L["Cash.Amount"]</MudTh>
+        <MudTh>@L["Login.UserName"]</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Purchases.Number"]">
+            <span dir="ltr">@context.Number</span>
+            @if (context.IsReversed)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Warning" title="@context.ReverseReason">@L["Payables.Reversed"]</MudChip>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Expenses.Date"]">@context.ExpenseDate.ToString("d", CultureInfo.CurrentCulture)</MudTd>
+        <MudTd DataLabel="@L["Expenses.Category"]">@context.Category.For(SupportedCultures.IsArabicUi)</MudTd>
+        <MudTd DataLabel="@L["Expenses.Description"]">@context.Description</MudTd>
+        <MudTd DataLabel="@L["Expenses.Payee"]">@context.Payee</MudTd>
+        <MudTd DataLabel="@L["Cash.Amount"]"><span dir="ltr" class="@(context.IsReversed ? "text-decoration-line-through" : string.Empty)">@MoneyFormat.Format(context.Amount)</span></MudTd>
+        <MudTd DataLabel="@L["Login.UserName"]"><span dir="ltr">@context.UserName</span></MudTd>
+        <MudTd>
+            @if (!context.IsReversed)
+            {
+                <AuthorizeView Policy="@Permissions.ExpensesReverse" Context="reversing">
+                    <MudButton Size="Size.Small" Color="Color.Error" OnClick="() => ReverseAsync(context)">@L["Expenses.Reverse"]</MudButton>
+                </AuthorizeView>
+            }
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Expenses.NoResults"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<ExpenseListItem>? _table;
+    private IReadOnlyList<LookupItem> _categories = [];
+    private ExpenseTotals? _totals;
+    private string? _searchText;
+    private int? _categoryId;
+    private DateTime? _from;
+    private DateTime? _to;
+    private bool _includeReversed;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // The month so far is what people look at first.
+        var today = Clock.GetLocalNow().DateTime.Date;
+        _from = new DateTime(today.Year, today.Month, 1);
+        _to = today;
+
+        var categories = await Services.For<ExpenseCategoryService>().RunAsync(s => s.GetAllAsync(includeInactive: true));
+        _categories = categories.IsSuccess ? categories.Value : [];
+        await LoadTotalsAsync();
+    }
+
+    private ExpenseQuery BuildQuery(int pageIndex, int pageSize) => new(
+        _searchText, _categoryId, _from is { } from ? DateOnly.FromDateTime(from) : null, _to is { } to ? DateOnly.FromDateTime(to) : null,
+        _includeReversed, pageIndex, pageSize);
+
+    private Task<TableData<ExpenseListItem>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<ExpenseListItem>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var query = BuildQuery(state.Page, state.PageSize);
+        var result = await Services.For<ExpenseQueryService>().RunAsync(s => s.SearchAsync(query, cancellationToken));
+        return result.IsSuccess
+            ? new TableData<ExpenseListItem> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<ExpenseListItem> { Items = [], TotalItems = 0 };
+    }
+
+    private async Task LoadTotalsAsync()
+    {
+        var query = BuildQuery(0, 1);
+        var result = await Services.For<ExpenseQueryService>().RunAsync(s => s.GetTotalsAsync(query));
+        _totals = result.IsSuccess ? result.Value : null;
+    }
+
+    private async Task ReloadAsync()
+    {
+        await LoadTotalsAsync();
+        if (_table is not null)
+        {
+            await _table.ReloadServerData();
+        }
+    }
+
+    private Task OnSearchChangedAsync(string? text)
+    {
+        _searchText = text;
+        return ReloadAsync();
+    }
+
+    private Task OnCategoryChangedAsync(int? categoryId)
+    {
+        _categoryId = categoryId;
+        return ReloadAsync();
+    }
+
+    private Task OnFromChangedAsync(DateTime? date)
+    {
+        _from = date;
+        return ReloadAsync();
+    }
+
+    private Task OnToChangedAsync(DateTime? date)
+    {
+        _to = date;
+        return ReloadAsync();
+    }
+
+    private Task OnIncludeReversedChangedAsync(bool include)
+    {
+        _includeReversed = include;
+        return ReloadAsync();
+    }
+
+    private async Task AddAsync()
+    {
+        var dialog = await DialogService.ShowAsync<ExpenseDialog>(
+            L["Expenses.New"], new DialogParameters(), new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Expenses.Recorded"], Severity.Success);
+            await ReloadAsync();
+        }
+    }
+
+    private async Task ReverseAsync(ExpenseListItem expense)
+    {
+        var parameters = new DialogParameters<ReverseExpenseDialog> { { d => d.ExpenseId, expense.Id }, { d => d.Amount, expense.Amount } };
+        var dialog = await DialogService.ShowAsync<ReverseExpenseDialog>(
+            L["Expenses.Reverse"], parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Expenses.ReversedMessage"], Severity.Success);
+            await ReloadAsync();
+        }
+    }
+}

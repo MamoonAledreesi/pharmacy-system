@@ -10,12 +10,15 @@ internal abstract class NamedLookupConfiguration<TLookup> : IEntityTypeConfigura
 {
     protected abstract string TableName { get; }
 
+    /// <summary>The schema of the table; the catalog lists live in the catalog schema.</summary>
+    protected virtual string Schema => Schemas.Catalog;
+
     /// <summary>Initial rows: (id, Arabic name, English name). Fixed ids keep the seed stable across migrations.</summary>
     protected virtual IReadOnlyList<(int Id, string Arabic, string English)> Seed => [];
 
     public void Configure(EntityTypeBuilder<TLookup> builder)
     {
-        builder.ToTable(TableName, Schemas.Catalog);
+        builder.ToTable(TableName, Schema);
         builder.HasKey(l => l.Id);
         builder.Property(l => l.NameArabic).HasMaxLength(NamedLookup.NameMaxLength).IsRequired();
         builder.Property(l => l.NameEnglish).HasMaxLength(NamedLookup.NameMaxLength).IsRequired();

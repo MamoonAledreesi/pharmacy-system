@@ -1,0 +1,93 @@
+@inject ServiceRunner Services
+@inject TimeProvider Clock
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudGrid Spacing="2">
+            <MudItem xs="12" sm="6">
+                <MudSelect T="int?" @bind-Value="_categoryId" Label="@L["Expenses.Category"]" Required="true">
+                    @foreach (var category in _categories)
+                    {
+                        <MudSelectItem T="int?" Value="category.Id">@category.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudDatePicker Date="_date" DateChanged="date => _date = date" Label="@L["Expenses.Date"]" MaxDate="Clock.GetLocalNow().DateTime.Date" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudNumericField T="decimal?" @bind-Value="_amount" Label="@L["Cash.Amount"]" Min="0" Format="0.00" Immediate="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_description" Label="@L["Expenses.Description"]" MaxLength="Expense.DescriptionMaxLength" Lines="2" Required="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_payee" Label="@L["Expenses.PayeeOptional"]" MaxLength="Expense.PayeeMaxLength" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_saving || _amount is null)" OnClick="SaveAsync">
+            @L["Settings.Save"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    // One id per opened dialog: a double click or a retry is applied only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private IReadOnlyList<LookupItem> _categories = [];
+    private int? _categoryId;
+    private DateTime? _date;
+    private decimal? _amount;
+    private string? _description;
+    private string? _payee;
+    private string? _error;
+    private bool _saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _date = Clock.GetLocalNow().DateTime.Date;
+        var categories = await Services.For<ExpenseCategoryService>().RunAsync(s => s.GetAllAsync(includeInactive: false));
+        _categories = categories.IsSuccess ? categories.Value : [];
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        if (_categoryId is not { } categoryId)
+        {
+            _error = L.Message(new Error(ExpensesErrors.UnknownCategory));
+            return;
+        }
+
+        _saving = true;
+        try
+        {
+            var date = DateOnly.FromDateTime(_date ?? Clock.GetLocalNow().DateTime.Date);
+            var request = new RecordExpenseRequest(_operationId, categoryId, _amount ?? 0m, date, _description, _payee);
+            var result = await Services.For<ExpenseService>().RunAsync(s => s.RecordAsync(request));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

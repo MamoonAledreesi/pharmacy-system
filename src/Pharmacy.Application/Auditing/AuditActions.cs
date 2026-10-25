@@ -43,6 +43,11 @@ public static class AuditActions
     public const string SupplierUpdated = "Purchasing.SupplierUpdated";
     public const string PurchaseCreated = "Purchasing.PurchaseCreated";
     public const string PurchaseReturned = "Purchasing.PurchaseReturned";
+
+    public const string ExpenseRecorded = "Expenses.Recorded";
+    public const string ExpenseReversed = "Expenses.Reversed";
+    public const string ExpenseCategoryCreated = "Expenses.CategoryCreated";
+    public const string ExpenseCategoryUpdated = "Expenses.CategoryUpdated";
     public const string SupplierPaid = "Payables.SupplierPaid";
     public const string SupplierPaymentReversed = "Payables.PaymentReversed";
     public const string SupplierOpeningBalance = "Payables.OpeningBalance";
@@ -67,7 +72,7 @@ public static class AuditActions
         ProductCreated, ProductUpdated, ProductStatusChanged, LookupCreated, LookupUpdated,
         StockOpening, StockAdjusted, StockQuarantined, StockReleased, StockWrittenOff,
         CashShiftOpened, CashShiftClosed, CashShiftForceClosed, CashManualMovement,
-        SupplierCreated, SupplierUpdated, PurchaseCreated, PurchaseReturned, SupplierPaid, SupplierPaymentReversed, SupplierOpeningBalance,
+        SupplierCreated, SupplierUpdated, PurchaseCreated, PurchaseReturned, ExpenseRecorded, ExpenseReversed, ExpenseCategoryCreated, ExpenseCategoryUpdated, SupplierPaid, SupplierPaymentReversed, SupplierOpeningBalance,
         CustomerCreated, CustomerUpdated, DebtCollected, CollectionReversed, CustomerOpeningBalance,
         SaleCreated, SaleBelowCost, SaleHighDiscount, SaleReturned, SaleLateReturn,
     ];

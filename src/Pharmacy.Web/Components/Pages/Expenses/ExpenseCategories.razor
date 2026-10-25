@@ -1,0 +1,66 @@
+@page "/expenses/categories"
+@attribute [Authorize(Policy = Permissions.ExpensesManage)]
+@inject ServiceRunner Services
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>@L["Nav.ExpenseCategories"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="expenses" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@L["Nav.ExpenseCategories"]</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="() => EditAsync(null)">
+        @L["Catalog.AddItem"]
+    </MudButton>
+</div>
+
+<MudTable Items="_items" Dense="true" Hover="true" Loading="_loading" Elevation="1">
+    <HeaderContent>
+        <MudTh>@L["Catalog.NameArabic"]</MudTh>
+        <MudTh>@L["Catalog.NameEnglish"]</MudTh>
+        <MudTh>@L["Users.Status"]</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Catalog.NameArabic"]">@context.NameArabic</MudTd>
+        <MudTd DataLabel="@L["Catalog.NameEnglish"]"><span dir="ltr">@context.NameEnglish</span></MudTd>
+        <MudTd DataLabel="@L["Users.Status"]">
+            <MudChip T="string" Size="Size.Small" Color="@(context.IsActive ? Color.Success : Color.Default)">
+                @(context.IsActive ? L["Users.Active"] : L["Users.Inactive"])
+            </MudChip>
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" aria-label="@L["Catalog.EditItem"]"
+                           title="@L["Catalog.EditItem"]" OnClick="() => EditAsync(context)" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private IReadOnlyList<LookupItem> _items = [];
+    private bool _loading = true;
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        var result = await Services.For<ExpenseCategoryService>().RunAsync(s => s.GetAllAsync(includeInactive: true));
+        _items = result.IsSuccess ? result.Value : [];
+        _loading = false;
+    }
+
+    private async Task EditAsync(LookupItem? item)
+    {
+        var parameters = new DialogParameters<ExpenseCategoryDialog> { { d => d.Item, item } };
+        var title = item is null ? L["Catalog.AddItem"] : L["Catalog.EditItem"];
+        var dialog = await DialogService.ShowAsync<ExpenseCategoryDialog>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.ExtraSmall, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Common.Saved"], Severity.Success);
+            await LoadAsync();
+        }
+    }
+}

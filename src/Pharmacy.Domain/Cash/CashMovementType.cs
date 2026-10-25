@@ -35,13 +35,19 @@ public enum CashMovementType
 
     /// <summary>Cash a supplier handed back for goods the pharmacy returned.</summary>
     PurchaseRefund = 9,
+
+    /// <summary>Cash spent on an expense (rent, electricity, wages, ...).</summary>
+    ExpensePayment = 10,
+
+    /// <summary>An expense that was entered by mistake and taken back.</summary>
+    ExpenseReversal = 11,
 }
 
 public static class CashMovementTypes
 {
     /// <summary>Types that bring cash into the drawer.</summary>
-    public static IReadOnlySet<CashMovementType> Receipts { get; } = new HashSet<CashMovementType> { CashMovementType.ManualIn, CashMovementType.SupplierPaymentReversal, CashMovementType.DebtCollection, CashMovementType.SalePayment, CashMovementType.PurchaseRefund };
+    public static IReadOnlySet<CashMovementType> Receipts { get; } = new HashSet<CashMovementType> { CashMovementType.ManualIn, CashMovementType.SupplierPaymentReversal, CashMovementType.DebtCollection, CashMovementType.SalePayment, CashMovementType.PurchaseRefund, CashMovementType.ExpenseReversal };
 
     /// <summary>Types that take cash out of the drawer.</summary>
-    public static IReadOnlySet<CashMovementType> Payments { get; } = new HashSet<CashMovementType> { CashMovementType.ManualOut, CashMovementType.PurchasePayment, CashMovementType.SupplierPayment, CashMovementType.DebtCollectionReversal, CashMovementType.SaleRefund };
+    public static IReadOnlySet<CashMovementType> Payments { get; } = new HashSet<CashMovementType> { CashMovementType.ManualOut, CashMovementType.PurchasePayment, CashMovementType.SupplierPayment, CashMovementType.DebtCollectionReversal, CashMovementType.SaleRefund, CashMovementType.ExpensePayment };
 }

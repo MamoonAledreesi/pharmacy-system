@@ -4,6 +4,7 @@ using Pharmacy.Domain.Auditing;
 using Pharmacy.Domain.Cash;
 using Pharmacy.Domain.Catalog;
 using Pharmacy.Domain.Common;
+using Pharmacy.Domain.Expenses;
 using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Purchasing;
 using Pharmacy.Domain.Receivables;
@@ -47,6 +48,10 @@ public interface IPharmacyDbContext
     DbSet<PurchaseInvoice> PurchaseInvoices { get; }
 
     DbSet<PurchaseReturn> PurchaseReturns { get; }
+
+    DbSet<ExpenseCategory> ExpenseCategories { get; }
+
+    DbSet<Expense> Expenses { get; }
 
     DbSet<DocumentSequence> DocumentSequences { get; }
 

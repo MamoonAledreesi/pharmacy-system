@@ -146,6 +146,14 @@ internal sealed class IdentityTableConfiguration :
 
         // Purchase returns (Task 9). The store keeper sends goods back to suppliers.
         (5, Permissions.PurchasingReturn),
+
+        // Expenses (Task 10). Cashiers record none by default; the accountant also manages categories and reversals.
+        (2, Permissions.ExpensesView),
+        (4, Permissions.ExpensesView),
+        (2, Permissions.ExpensesCreate),
+        (4, Permissions.ExpensesCreate),
+        (4, Permissions.ExpensesReverse),
+        (4, Permissions.ExpensesManage),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

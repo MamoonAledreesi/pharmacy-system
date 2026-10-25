@@ -1,0 +1,70 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudTextField @bind-Value="_nameArabic" Label="@L["Catalog.NameArabic"]" MaxLength="NamedLookup.NameMaxLength" Required="true" autofocus />
+        <MudTextField @bind-Value="_nameEnglish" Label="@L["Catalog.NameEnglish"]" MaxLength="NamedLookup.NameMaxLength" Required="true" Style="direction: ltr" Class="mt-2" />
+        @if (Item is not null)
+        {
+            <MudSwitch T="bool" @bind-Value="_isActive" Color="Color.Primary" Label="@L["Users.Active"]" Class="mt-2" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_saving" OnClick="SaveAsync">@L["Settings.Save"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    /// <summary>The category to edit; null creates a new one.</summary>
+    [Parameter]
+    public LookupItem? Item { get; set; }
+
+    private string? _nameArabic;
+    private string? _nameEnglish;
+    private bool _isActive = true;
+    private string? _error;
+    private bool _saving;
+
+    protected override void OnInitialized()
+    {
+        if (Item is { } item)
+        {
+            _nameArabic = item.NameArabic;
+            _nameEnglish = item.NameEnglish;
+            _isActive = item.IsActive;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var result = Item is { } item
+                ? await Services.For<ExpenseCategoryService>().RunAsync(s => s.UpdateAsync(item.Id, _nameArabic ?? string.Empty, _nameEnglish ?? string.Empty, _isActive))
+                : (Result)await Services.For<ExpenseCategoryService>().RunAsync(s => s.CreateAsync(_nameArabic ?? string.Empty, _nameEnglish ?? string.Empty));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

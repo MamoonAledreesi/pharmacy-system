@@ -13,4 +13,5 @@ internal static class Schemas
     public const string Payables = "payables";
     public const string Receivables = "receivables";
     public const string Sales = "sales";
+    public const string Expenses = "expenses";
 }

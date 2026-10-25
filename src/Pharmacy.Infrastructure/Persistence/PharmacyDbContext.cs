@@ -8,6 +8,7 @@ using Pharmacy.Domain.Catalog;
 using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Purchasing;
+using Pharmacy.Domain.Expenses;
 using Pharmacy.Domain.Receivables;
 using Pharmacy.Domain.Sales;
 using Pharmacy.Domain.Settings;
@@ -54,6 +55,10 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
     public DbSet<PurchaseInvoice> PurchaseInvoices => Set<PurchaseInvoice>();
 
     public DbSet<PurchaseReturn> PurchaseReturns => Set<PurchaseReturn>();
+
+    public DbSet<ExpenseCategory> ExpenseCategories => Set<ExpenseCategory>();
+
+    public DbSet<Expense> Expenses => Set<Expense>();
 
     public DbSet<DocumentSequence> DocumentSequences => Set<DocumentSequence>();
 

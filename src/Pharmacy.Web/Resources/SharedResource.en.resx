@@ -2286,4 +2286,115 @@
   <data name="Purchasing.BatchStockTooLow" xml:space="preserve">
     <value>The batch holds only {0} (base units), because part of it was sold or set aside.</value>
   </data>
+  <data name="Nav.Expenses" xml:space="preserve">
+    <value>Expenses</value>
+  </data>
+  <data name="Nav.ExpenseCategories" xml:space="preserve">
+    <value>Expense categories</value>
+  </data>
+  <data name="Expenses.New" xml:space="preserve">
+    <value>New expense</value>
+  </data>
+  <data name="Expenses.Search" xml:space="preserve">
+    <value>Search by number, description, or payee</value>
+  </data>
+  <data name="Expenses.Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Expenses.Date" xml:space="preserve">
+    <value>Expense date</value>
+  </data>
+  <data name="Expenses.Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Expenses.Payee" xml:space="preserve">
+    <value>Paid to</value>
+  </data>
+  <data name="Expenses.PayeeOptional" xml:space="preserve">
+    <value>Paid to (optional)</value>
+  </data>
+  <data name="Expenses.ShowReversed" xml:space="preserve">
+    <value>Show reversed</value>
+  </data>
+  <data name="Expenses.PeriodTotal" xml:space="preserve">
+    <value>Spent in the period (reversed expenses not counted)</value>
+  </data>
+  <data name="Expenses.NoResults" xml:space="preserve">
+    <value>No expenses found.</value>
+  </data>
+  <data name="Expenses.Recorded" xml:space="preserve">
+    <value>The expense was recorded.</value>
+  </data>
+  <data name="Expenses.Reverse" xml:space="preserve">
+    <value>Reverse expense</value>
+  </data>
+  <data name="Expenses.ReversedMessage" xml:space="preserve">
+    <value>The expense was reversed.</value>
+  </data>
+  <data name="Expenses.ReverseWarning" xml:space="preserve">
+    <value>The expense of {0} will be reversed: the cash returns to the open shift.</value>
+  </data>
+  <data name="CashMovementTypes.ExpensePayment" xml:space="preserve">
+    <value>Expense</value>
+  </data>
+  <data name="CashMovementTypes.ExpenseReversal" xml:space="preserve">
+    <value>Expense reversed</value>
+  </data>
+  <data name="PermissionModules.Expenses" xml:space="preserve">
+    <value>Expenses</value>
+  </data>
+  <data name="Permissions.Expenses.View" xml:space="preserve">
+    <value>View expenses</value>
+  </data>
+  <data name="Permissions.Expenses.Create" xml:space="preserve">
+    <value>Record expenses</value>
+  </data>
+  <data name="Permissions.Expenses.Reverse" xml:space="preserve">
+    <value>Reverse expenses</value>
+  </data>
+  <data name="Permissions.Expenses.Manage" xml:space="preserve">
+    <value>Manage expense categories</value>
+  </data>
+  <data name="AuditActions.Expenses.Recorded" xml:space="preserve">
+    <value>Expense recorded</value>
+  </data>
+  <data name="AuditActions.Expenses.Reversed" xml:space="preserve">
+    <value>Expense reversed</value>
+  </data>
+  <data name="AuditActions.Expenses.CategoryCreated" xml:space="preserve">
+    <value>Expense category created</value>
+  </data>
+  <data name="AuditActions.Expenses.CategoryUpdated" xml:space="preserve">
+    <value>Expense category updated</value>
+  </data>
+  <data name="Expenses.UnknownCategory" xml:space="preserve">
+    <value>Choose a category.</value>
+  </data>
+  <data name="Expenses.InactiveCategory" xml:space="preserve">
+    <value>This category is inactive.</value>
+  </data>
+  <data name="Expenses.InvalidAmount" xml:space="preserve">
+    <value>The amount must be greater than zero, with at most two decimals.</value>
+  </data>
+  <data name="Expenses.AmountTooLarge" xml:space="preserve">
+    <value>The amount cannot exceed {0:N0}.</value>
+  </data>
+  <data name="Expenses.DateInFuture" xml:space="preserve">
+    <value>The expense date cannot be in the future.</value>
+  </data>
+  <data name="Expenses.DescriptionRequired" xml:space="preserve">
+    <value>Write what the money was spent on.</value>
+  </data>
+  <data name="Expenses.FieldTooLong" xml:space="preserve">
+    <value>One of the fields is too long.</value>
+  </data>
+  <data name="Expenses.UnknownExpense" xml:space="preserve">
+    <value>The expense was not found.</value>
+  </data>
+  <data name="Expenses.AlreadyReversed" xml:space="preserve">
+    <value>This expense was already reversed.</value>
+  </data>
+  <data name="Expenses.ReasonRequired" xml:space="preserve">
+    <value>A reason is required.</value>
+  </data>
 </root>
