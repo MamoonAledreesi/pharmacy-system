@@ -8,6 +8,7 @@ using Pharmacy.Domain.Catalog;
 using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Purchasing;
+using Pharmacy.Domain.Receivables;
 using Pharmacy.Domain.Settings;
 using Pharmacy.Infrastructure.Identity;
 
@@ -53,6 +54,12 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
 
     public DbSet<DocumentSequence> DocumentSequences => Set<DocumentSequence>();
 
+    public DbSet<Customer> Customers => Set<Customer>();
+
+    public DbSet<CustomerAccountEntry> CustomerAccountEntries => Set<CustomerAccountEntry>();
+
+    public DbSet<DebtCollection> DebtCollections => Set<DebtCollection>();
+
     public Task<TResult> ExecuteInTransactionAsync<TResult>(Func<Task<TResult>> work, CancellationToken cancellationToken = default)
         where TResult : Result =>
         this.InTransactionAsync(work, cancellationToken);
@@ -85,6 +92,14 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
     public async Task<Supplier?> LoadSupplierForUpdateAsync(int supplierId, CancellationToken cancellationToken = default) =>
         (await Suppliers
             .FromSqlInterpolated($"SELECT * FROM purchasing.Suppliers WITH (UPDLOCK, ROWLOCK) WHERE Id = {supplierId}")
+            .ToListAsync(cancellationToken))
+        .SingleOrDefault();
+
+    // UPDLOCK keeps the customer row locked until the transaction ends, so two collections or sales cannot both read
+    // the old balance and both be applied to it.
+    public async Task<Customer?> LoadCustomerForUpdateAsync(int customerId, CancellationToken cancellationToken = default) =>
+        (await Customers
+            .FromSqlInterpolated($"SELECT * FROM receivables.Customers WITH (UPDLOCK, ROWLOCK) WHERE Id = {customerId}")
             .ToListAsync(cancellationToken))
         .SingleOrDefault();
 

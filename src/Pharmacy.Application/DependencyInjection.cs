@@ -4,6 +4,7 @@ using Pharmacy.Application.Cash;
 using Pharmacy.Application.Catalog;
 using Pharmacy.Application.Inventory;
 using Pharmacy.Application.Purchasing;
+using Pharmacy.Application.Receivables;
 using Pharmacy.Application.Settings;
 
 namespace Pharmacy.Application;
@@ -37,6 +38,10 @@ public static class DependencyInjection
         services.AddScoped<PurchaseService>();
         services.AddScoped<PurchaseQueryService>();
         services.AddScoped<PayablesService>();
+
+        services.AddScoped<CustomerService>();
+        services.AddScoped<CustomerQueryService>();
+        services.AddScoped<ReceivablesService>();
 
         return services;
     }

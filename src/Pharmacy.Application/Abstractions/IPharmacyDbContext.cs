@@ -6,6 +6,7 @@ using Pharmacy.Domain.Catalog;
 using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Purchasing;
+using Pharmacy.Domain.Receivables;
 using Pharmacy.Domain.Settings;
 
 namespace Pharmacy.Application.Abstractions;
@@ -46,6 +47,12 @@ public interface IPharmacyDbContext
 
     DbSet<DocumentSequence> DocumentSequences { get; }
 
+    DbSet<Customer> Customers { get; }
+
+    DbSet<CustomerAccountEntry> CustomerAccountEntries { get; }
+
+    DbSet<DebtCollection> DebtCollections { get; }
+
     DbSet<TEntity> Set<TEntity>()
         where TEntity : class;
 
@@ -80,6 +87,9 @@ public interface IPharmacyDbContext
 
     /// <summary>Loads a supplier and locks it until the surrounding transaction ends, so its balance changes one at a time (tracked for update).</summary>
     Task<Supplier?> LoadSupplierForUpdateAsync(int supplierId, CancellationToken cancellationToken = default);
+
+    /// <summary>Loads a customer and locks it until the surrounding transaction ends, so its balance changes one at a time (tracked for update).</summary>
+    Task<Customer?> LoadCustomerForUpdateAsync(int customerId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Takes the next number of a document kind for a year, locking its sequence until the surrounding transaction

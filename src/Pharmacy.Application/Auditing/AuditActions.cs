@@ -46,6 +46,12 @@ public static class AuditActions
     public const string SupplierPaymentReversed = "Payables.PaymentReversed";
     public const string SupplierOpeningBalance = "Payables.OpeningBalance";
 
+    public const string CustomerCreated = "Receivables.CustomerCreated";
+    public const string CustomerUpdated = "Receivables.CustomerUpdated";
+    public const string DebtCollected = "Receivables.DebtCollected";
+    public const string CollectionReversed = "Receivables.CollectionReversed";
+    public const string CustomerOpeningBalance = "Receivables.OpeningBalance";
+
     public static IReadOnlyList<string> All { get; } =
     [
         LoginSucceeded, LoginFailed, LockedOut, Logout, PasswordChanged, SetupCompleted,
@@ -55,5 +61,6 @@ public static class AuditActions
         StockOpening, StockAdjusted, StockQuarantined, StockReleased, StockWrittenOff,
         CashShiftOpened, CashShiftClosed, CashShiftForceClosed, CashManualMovement,
         SupplierCreated, SupplierUpdated, PurchaseCreated, SupplierPaid, SupplierPaymentReversed, SupplierOpeningBalance,
+        CustomerCreated, CustomerUpdated, DebtCollected, CollectionReversed, CustomerOpeningBalance,
     ];
 }

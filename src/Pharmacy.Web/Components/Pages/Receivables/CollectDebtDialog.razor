@@ -1,0 +1,65 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudText Typo="Typo.body2" Class="mb-2">
+            @L["Receivables.Owed"]: <b dir="ltr">@MoneyFormat.Format(Customer.Balance)</b>
+        </MudText>
+
+        <div class="d-flex align-end gap-2">
+            <MudNumericField T="decimal?" @bind-Value="_amount" Label="@L["Cash.Amount"]" Min="0" Max="Customer.Balance" Format="0.00" Immediate="true" Class="flex-grow-1" />
+            <MudButton Variant="Variant.Outlined" Size="Size.Small" Class="mb-2" OnClick="() => _amount = Customer.Balance">@L["Payables.PayAll"]</MudButton>
+        </div>
+
+        <MudTextField @bind-Value="_note" Label="@L["Payables.NoteOptional"]" MaxLength="CustomerAccountEntry.NoteMaxLength" Lines="2" Class="mt-2" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_saving || _amount is null)" OnClick="SaveAsync">
+            @L["Receivables.Collect"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public CustomerDetail Customer { get; set; } = default!;
+
+    // One id per opened dialog: a double click or a retry is applied only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private decimal? _amount;
+    private string? _note;
+    private string? _error;
+    private bool _saving;
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var request = new CollectDebtRequest(_operationId, Customer.Id, _amount ?? 0m, _note);
+            var result = await Services.For<ReceivablesService>().RunAsync(s => s.CollectAsync(request));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

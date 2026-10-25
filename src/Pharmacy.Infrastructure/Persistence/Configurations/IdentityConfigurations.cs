@@ -117,6 +117,17 @@ internal sealed class IdentityTableConfiguration :
         (5, Permissions.PurchasingView),
         (5, Permissions.PurchasingCreate),
         (4, Permissions.PayablesPay),
+
+        // Customers and receivables (Task 6). Cashiers collect debts; opening balances and reversals are left to
+        // administrators unless granted.
+        (2, Permissions.CustomersView),
+        (3, Permissions.CustomersView),
+        (4, Permissions.CustomersView),
+        (2, Permissions.CustomersManage),
+        (4, Permissions.CustomersManage),
+        (2, Permissions.ReceivablesCollect),
+        (3, Permissions.ReceivablesCollect),
+        (4, Permissions.ReceivablesCollect),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

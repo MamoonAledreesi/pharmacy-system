@@ -1,0 +1,192 @@
+@page "/customers/{CustomerId:int}"
+@attribute [Authorize(Policy = Permissions.CustomersView)]
+@inject ServiceRunner Services
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IAuthorizationService AuthorizationService
+
+<PageTitle>@(_customer?.Name ?? L["Nav.Customers"]) - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="customers" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@(_customer?.Name ?? L["Nav.Customers"])</MudText>
+    @if (_customer is { IsActive: false })
+    {
+        <MudChip T="string" Size="Size.Small">@L["Users.Inactive"]</MudChip>
+    }
+    @if (_customer is { IsDefaultCash: true })
+    {
+        <MudChip T="string" Size="Size.Small" Color="Color.Info">@L["Customers.DefaultCash"]</MudChip>
+    }
+</div>
+
+@if (_notFound)
+{
+    <MudAlert Severity="Severity.Warning">@L["Errors.NotFound"]</MudAlert>
+    return;
+}
+
+@if (_customer is not { } customer)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="6">
+            <MudSimpleTable Dense="true" Elevation="0">
+                <tbody>
+                    <tr><td>@L["Customers.Phone"]</td><td dir="ltr">@customer.Phone</td></tr>
+                    <tr><td>@L["Customers.Address"]</td><td>@customer.Address</td></tr>
+                    <tr><td>@L["Customers.Notes"]</td><td>@customer.Notes</td></tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.caption">@L["Receivables.Owed"]</MudText>
+            <MudText Typo="Typo.h4" Class="@(customer.Balance > 0 ? "delta-negative" : string.Empty)">
+                <span dir="ltr">@MoneyFormat.Format(customer.Balance)</span>
+            </MudText>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                @if (_canCollect && customer.Balance > 0)
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Payments" OnClick="CollectAsync">
+                        @L["Receivables.Collect"]
+                    </MudButton>
+                }
+                @if (_canSetOpening && !customer.HasOpeningBalance)
+                {
+                    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.AccountBalance" OnClick="OpeningBalanceAsync">
+                        @L["Payables.SetOpeningBalance"]
+                    </MudButton>
+                }
+                @if (_canManage)
+                {
+                    <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" OnClick="EditAsync">
+                        @L["Common.Edit"]
+                    </MudButton>
+                }
+            </div>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudText Typo="Typo.h6" GutterBottom="true">@L["Payables.Statement"]</MudText>
+<MudTable @ref="_table" T="CustomerEntryRow" ServerData="LoadStatementAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25">
+    <HeaderContent>
+        <MudTh>@L["Audit.Time"]</MudTh>
+        <MudTh>@L["Inventory.MovementType"]</MudTh>
+        <MudTh>@L["Payables.Reference"]</MudTh>
+        <MudTh>@L["Cash.Amount"]</MudTh>
+        <MudTh>@L["Cash.BalanceAfter"]</MudTh>
+        <MudTh>@L["Cash.Note"]</MudTh>
+        <MudTh>@L["Login.UserName"]</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Audit.Time"]">@LocalizerExtensions.LocalTime(context.OccurredAtUtc)</MudTd>
+        <MudTd DataLabel="@L["Inventory.MovementType"]">
+            @L[$"CustomerEntryTypes.{context.Type}"]
+            @if (context.CollectionReversed)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Payables.Reversed"]</MudChip>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Payables.Reference"]"><span dir="ltr">@context.ReferenceNumber</span></MudTd>
+        <MudTd DataLabel="@L["Cash.Amount"]"><span dir="ltr" class="@(context.Amount > 0 ? "delta-negative" : "delta-positive")">@MoneyFormat.FormatSigned(context.Amount)</span></MudTd>
+        <MudTd DataLabel="@L["Cash.BalanceAfter"]"><span dir="ltr">@MoneyFormat.Format(context.BalanceAfter)</span></MudTd>
+        <MudTd DataLabel="@L["Cash.Note"]">@context.Note</MudTd>
+        <MudTd DataLabel="@L["Login.UserName"]"><span dir="ltr">@context.UserName</span></MudTd>
+        <MudTd>
+            @if (_canReverse && context is { Type: CustomerEntryType.Collection, CollectionReversed: false, ReferenceId: not null })
+            {
+                <MudButton Size="Size.Small" Color="Color.Error" OnClick="() => ReverseAsync(context)">@L["Receivables.Reverse"]</MudButton>
+            }
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Payables.NoEntries"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<CustomerEntryRow>? _table;
+    private CustomerDetail? _customer;
+    private bool _notFound;
+    private bool _canManage;
+    private bool _canCollect;
+    private bool _canReverse;
+    private bool _canSetOpening;
+
+    [Parameter]
+    public int CustomerId { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+        _canManage = (await AuthorizationService.AuthorizeAsync(user, Permissions.CustomersManage)).Succeeded;
+        _canCollect = (await AuthorizationService.AuthorizeAsync(user, Permissions.ReceivablesCollect)).Succeeded;
+        _canReverse = (await AuthorizationService.AuthorizeAsync(user, Permissions.ReceivablesReverse)).Succeeded;
+        _canSetOpening = (await AuthorizationService.AuthorizeAsync(user, Permissions.ReceivablesSetOpeningBalance)).Succeeded;
+    }
+
+    protected override Task OnParametersSetAsync() => LoadCustomerAsync();
+
+    private async Task LoadCustomerAsync()
+    {
+        var result = await Services.For<CustomerQueryService>().RunAsync(s => s.GetAsync(CustomerId));
+        _notFound = result.IsFailure;
+        _customer = result.IsSuccess ? result.Value : null;
+    }
+
+    private Task<TableData<CustomerEntryRow>> LoadStatementAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadStatementPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<CustomerEntryRow>> LoadStatementPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var result = await Services.For<CustomerQueryService>().RunAsync(s => s.GetStatementAsync(
+            new StatementQuery(CustomerId, state.Page, state.PageSize), cancellationToken));
+        return result.IsSuccess
+            ? new TableData<CustomerEntryRow> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<CustomerEntryRow> { Items = [], TotalItems = 0 };
+    }
+
+    private Task EditAsync() =>
+        ShowAsync<CustomerDialog>(L["Common.Edit"], new DialogParameters<CustomerDialog> { { d => d.Existing, _customer } }, "Common.Saved");
+
+    private Task CollectAsync() =>
+        ShowAsync<CollectDebtDialog>(L["Receivables.Collect"], new DialogParameters<CollectDebtDialog> { { d => d.Customer, _customer! } }, "Receivables.CollectionSaved");
+
+    private Task OpeningBalanceAsync() =>
+        ShowAsync<CustomerOpeningBalanceDialog>(
+            L["Payables.SetOpeningBalance"], new DialogParameters<CustomerOpeningBalanceDialog> { { d => d.CustomerId, CustomerId } }, "Common.Saved");
+
+    private Task ReverseAsync(CustomerEntryRow row) =>
+        ShowAsync<ReverseCollectionDialog>(
+            L["Receivables.Reverse"],
+            new DialogParameters<ReverseCollectionDialog> { { d => d.CollectionId, (int)row.ReferenceId!.Value }, { d => d.Amount, -row.Amount } },
+            "Receivables.CollectionReversedMessage");
+
+    private async Task ShowAsync<TDialog>(string title, DialogParameters<TDialog> parameters, string savedMessageKey)
+        where TDialog : Microsoft.AspNetCore.Components.IComponent
+    {
+        var dialog = await DialogService.ShowAsync<TDialog>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L[savedMessageKey], Severity.Success);
+            await LoadCustomerAsync();
+            if (_table is not null)
+            {
+                await _table.ReloadServerData();
+            }
+        }
+    }
+}

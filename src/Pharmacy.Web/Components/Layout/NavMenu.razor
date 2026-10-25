@@ -31,6 +31,10 @@
         </MudNavGroup>
     </AuthorizeView>
 
+    <AuthorizeView Policy="@Permissions.CustomersView">
+        <MudNavLink Href="customers" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">@L["Nav.Customers"]</MudNavLink>
+    </AuthorizeView>
+
     @* Module entries are enabled as each module is delivered (see the roadmap). *@
     @foreach (var (key, icon) in _upcomingModules)
     {
@@ -56,7 +60,6 @@
     private static readonly (string Key, string Icon)[] _upcomingModules =
     [
         ("Nav.Sales", Icons.Material.Filled.PointOfSale),
-        ("Nav.Customers", Icons.Material.Filled.People),
         ("Nav.Reports", Icons.Material.Filled.Assessment),
     ];
 }

@@ -1,0 +1,111 @@
+@page "/customers"
+@attribute [Authorize(Policy = Permissions.CustomersView)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>@L["Nav.Customers"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudText Typo="Typo.h4">@L["Nav.Customers"]</MudText>
+    <MudSpacer />
+    <AuthorizeView Policy="@Permissions.CustomersManage">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddAsync">
+            @L["Customers.Add"]
+        </MudButton>
+    </AuthorizeView>
+</div>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="8">
+            <MudTextField T="string" Value="_searchText" ValueChanged="OnSearchChangedAsync" Immediate="true" DebounceInterval="300"
+                          Label="@L["Customers.Search"]" Clearable="true"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" autofocus />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex align-center">
+            <MudSwitch T="bool" Value="_includeInactive" ValueChanged="OnIncludeInactiveChangedAsync" Color="Color.Primary" Label="@L["Customers.ShowInactive"]" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudTable @ref="_table" T="CustomerListItem" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25"
+          OnRowClick="args => Open(args.Item!)" RowClass="cursor-pointer">
+    <HeaderContent>
+        <MudTh>@L["Customers.Name"]</MudTh>
+        <MudTh>@L["Customers.Phone"]</MudTh>
+        <MudTh>@L["Customers.Balance"]</MudTh>
+        <MudTh>@L["Users.Status"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Customers.Name"]">
+            <b>@context.Name</b>
+            @if (context.IsDefaultCash)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Info">@L["Customers.DefaultCash"]</MudChip>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Customers.Phone"]"><span dir="ltr">@context.Phone</span></MudTd>
+        <MudTd DataLabel="@L["Customers.Balance"]">
+            <span dir="ltr" class="@(context.Balance > 0 ? "delta-negative" : string.Empty)">@MoneyFormat.Format(context.Balance)</span>
+        </MudTd>
+        <MudTd DataLabel="@L["Users.Status"]">
+            @if (!context.IsActive)
+            {
+                <MudChip T="string" Size="Size.Small">@L["Users.Inactive"]</MudChip>
+            }
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Customers.NoResults"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<CustomerListItem>? _table;
+    private string? _searchText;
+    private bool _includeInactive;
+
+    private Task<TableData<CustomerListItem>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<CustomerListItem>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var result = await Services.For<CustomerQueryService>().RunAsync(s => s.SearchAsync(
+            new CustomerQuery(_searchText, _includeInactive, state.Page, state.PageSize), cancellationToken));
+        return result.IsSuccess
+            ? new TableData<CustomerListItem> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<CustomerListItem> { Items = [], TotalItems = 0 };
+    }
+
+    private Task OnSearchChangedAsync(string? text)
+    {
+        _searchText = text;
+        return ReloadAsync();
+    }
+
+    private Task OnIncludeInactiveChangedAsync(bool include)
+    {
+        _includeInactive = include;
+        return ReloadAsync();
+    }
+
+    private Task ReloadAsync() => _table?.ReloadServerData() ?? Task.CompletedTask;
+
+    private void Open(CustomerListItem customer) => Navigation.NavigateTo($"customers/{customer.Id}");
+
+    private async Task AddAsync()
+    {
+        var dialog = await DialogService.ShowAsync<CustomerDialog>(
+            L["Customers.Add"], new DialogParameters(), new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Common.Saved"], Severity.Success);
+            await ReloadAsync();
+        }
+    }
+}

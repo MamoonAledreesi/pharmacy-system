@@ -292,6 +292,62 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Payables.Pay",
                             RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 36,
+                            ClaimType = "permission",
+                            ClaimValue = "Customers.View",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 37,
+                            ClaimType = "permission",
+                            ClaimValue = "Customers.View",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 38,
+                            ClaimType = "permission",
+                            ClaimValue = "Customers.View",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 39,
+                            ClaimType = "permission",
+                            ClaimValue = "Customers.Manage",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 40,
+                            ClaimType = "permission",
+                            ClaimValue = "Customers.Manage",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 41,
+                            ClaimType = "permission",
+                            ClaimValue = "Receivables.Collect",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 42,
+                            ClaimType = "permission",
+                            ClaimValue = "Receivables.Collect",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 43,
+                            ClaimType = "permission",
+                            ClaimValue = "Receivables.Collect",
+                            RoleId = 4
                         });
                 });
 
@@ -1486,6 +1542,223 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Pharmacy.Domain.Receivables.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<decimal>("CurrentBalance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDefaultCash")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("SearchText")
+                        .IsRequired()
+                        .HasMaxLength(181)
+                        .HasColumnType("nvarchar(181)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDefaultCash")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Customers_OneDefaultCash")
+                        .HasFilter("[IsDefaultCash] = 1");
+
+                    b.HasIndex("SearchText");
+
+                    b.ToTable("Customers", "receivables", t =>
+                        {
+                            t.HasCheckConstraint("CK_Customers_Balance", "[CurrentBalance] >= 0");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CurrentBalance = 0m,
+                            IsActive = true,
+                            IsDefaultCash = true,
+                            Name = "عميل نقدي / Cash customer",
+                            SearchText = "عميل نقدي / cash customer"
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Receivables.CustomerAccountEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("BalanceAfter")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("ReferenceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ReferenceType")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperationId")
+                        .IsUnique()
+                        .HasFilter("[OperationId] IS NOT NULL");
+
+                    b.HasIndex("CustomerId", "Id");
+
+                    b.HasIndex("ReferenceType", "ReferenceId")
+                        .HasFilter("[ReferenceType] IS NOT NULL");
+
+                    b.ToTable("CustomerAccountEntries", "receivables", t =>
+                        {
+                            t.HasCheckConstraint("CK_CustomerAccountEntries_Amount", "[Amount] <> 0");
+
+                            t.HasCheckConstraint("CK_CustomerAccountEntries_BalanceAfter", "[BalanceAfter] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Receivables.DebtCollection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CollectedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsReversed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ReverseOperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ReverseReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime?>("ReversedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReversedByUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
+
+                    b.HasIndex("OperationId")
+                        .IsUnique();
+
+                    b.HasIndex("ReverseOperationId")
+                        .IsUnique()
+                        .HasFilter("[ReverseOperationId] IS NOT NULL");
+
+                    b.HasIndex("CustomerId", "Id");
+
+                    b.ToTable("DebtCollections", "receivables", t =>
+                        {
+                            t.HasCheckConstraint("CK_DebtCollections_Amount", "[Amount] > 0");
+
+                            t.HasCheckConstraint("CK_DebtCollections_Reversal", "([IsReversed] = 0 AND [ReversedAtUtc] IS NULL AND [ReverseReason] IS NULL) OR ([IsReversed] = 1 AND [ReversedAtUtc] IS NOT NULL AND [ReverseReason] IS NOT NULL)");
+                        });
+                });
+
             modelBuilder.Entity("Pharmacy.Domain.Settings.PharmacySettings", b =>
                 {
                     b.Property<int>("Id")
@@ -1885,6 +2158,26 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                     b.HasOne("Pharmacy.Domain.Purchasing.Supplier", null)
                         .WithMany()
                         .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Receivables.CustomerAccountEntry", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Receivables.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Receivables.DebtCollection", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Receivables.Customer", null)
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

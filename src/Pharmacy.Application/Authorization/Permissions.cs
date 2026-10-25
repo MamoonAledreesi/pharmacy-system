@@ -31,6 +31,11 @@ public static class Permissions
     public const string PayablesPay = "Payables.Pay";
     public const string PayablesReverse = "Payables.Reverse";
     public const string PayablesSetOpeningBalance = "Payables.SetOpeningBalance";
+    public const string CustomersView = "Customers.View";
+    public const string CustomersManage = "Customers.Manage";
+    public const string ReceivablesCollect = "Receivables.Collect";
+    public const string ReceivablesReverse = "Receivables.Reverse";
+    public const string ReceivablesSetOpeningBalance = "Receivables.SetOpeningBalance";
 
     public static IReadOnlyList<string> All { get; } =
         [
@@ -39,6 +44,7 @@ public static class Permissions
             CashView, CashOpenShift, CashManualMovement, CashForceClose,
             SuppliersView, SuppliersManage, PurchasingView, PurchasingCreate,
             PayablesPay, PayablesReverse, PayablesSetOpeningBalance,
+            CustomersView, CustomersManage, ReceivablesCollect, ReceivablesReverse, ReceivablesSetOpeningBalance,
             UsersManage, SettingsManage, AuditLogView,
         ];
 

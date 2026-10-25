@@ -15,6 +15,9 @@ public abstract class CashTestBase : IAsyncLifetime
         Permissions.CashView, Permissions.CashOpenShift, Permissions.CashManualMovement,
     ];
 
+    /// <summary>What the signed-in user may do at the start of each test; derived bases add the permissions of their module.</summary>
+    protected virtual string[] InitialPermissions => Cashier;
+
     protected TestServices Services { get; } = new();
 
     public Task InitializeAsync() => InitializeCoreAsync();
@@ -70,6 +73,6 @@ public abstract class CashTestBase : IAsyncLifetime
     private async Task InitializeCoreAsync()
     {
         await Services.InitializeAsync();
-        SignIn(7, "cashier", Cashier);
+        SignIn(7, "cashier", InitialPermissions);
     }
 }

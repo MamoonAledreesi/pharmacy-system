@@ -1,0 +1,60 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudAlert Severity="Severity.Info" Dense="true" Class="mb-3">@L["Receivables.OpeningBalanceHint"]</MudAlert>
+
+        <MudNumericField T="decimal?" @bind-Value="_amount" Label="@L["Receivables.OpeningAmount"]" Min="0" Format="0.00" Immediate="true" />
+
+        <MudTextField @bind-Value="_note" Label="@L["Payables.NoteOptional"]" MaxLength="CustomerAccountEntry.NoteMaxLength" Lines="2" Class="mt-2" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_saving || _amount is null)" OnClick="SaveAsync">
+            @L["Settings.Save"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public int CustomerId { get; set; }
+
+    // One id per opened dialog: a double click or a retry is applied only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private decimal? _amount;
+    private string? _note;
+    private string? _error;
+    private bool _saving;
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var request = new CustomerOpeningBalanceRequest(_operationId, CustomerId, _amount ?? 0m, _note);
+            var result = await Services.For<ReceivablesService>().RunAsync(s => s.SetOpeningBalanceAsync(request));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

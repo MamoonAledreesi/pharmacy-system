@@ -1704,4 +1704,160 @@
   <data name="Purchases.QuickFactorHint" xml:space="preserve">
     <value>مثال: 3 شرائط في العلبة</value>
   </data>
+  <data name="Customers.Add" xml:space="preserve">
+    <value>إضافة عميل</value>
+  </data>
+  <data name="Customers.Search" xml:space="preserve">
+    <value>بحث بالاسم أو الهاتف</value>
+  </data>
+  <data name="Customers.ShowInactive" xml:space="preserve">
+    <value>عرض غير النشطين</value>
+  </data>
+  <data name="Customers.Name" xml:space="preserve">
+    <value>اسم العميل</value>
+  </data>
+  <data name="Customers.Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="Customers.Address" xml:space="preserve">
+    <value>العنوان</value>
+  </data>
+  <data name="Customers.Notes" xml:space="preserve">
+    <value>ملاحظات</value>
+  </data>
+  <data name="Customers.Active" xml:space="preserve">
+    <value>نشط</value>
+  </data>
+  <data name="Customers.Balance" xml:space="preserve">
+    <value>المستحق عليه</value>
+  </data>
+  <data name="Customers.NoResults" xml:space="preserve">
+    <value>لا يوجد عملاء.</value>
+  </data>
+  <data name="Customers.DefaultCash" xml:space="preserve">
+    <value>العميل النقدي الافتراضي</value>
+  </data>
+  <data name="Customers.PhoneInUse" xml:space="preserve">
+    <value>هذا الرقم مسجل للعميل "{0}". احفظ مرة أخرى إن كان شخصاً آخر.</value>
+  </data>
+  <data name="Receivables.Owed" xml:space="preserve">
+    <value>المستحق على العميل</value>
+  </data>
+  <data name="Receivables.Collect" xml:space="preserve">
+    <value>تحصيل دين</value>
+  </data>
+  <data name="Receivables.CollectionSaved" xml:space="preserve">
+    <value>تم تسجيل التحصيل.</value>
+  </data>
+  <data name="Receivables.Reverse" xml:space="preserve">
+    <value>عكس التحصيل</value>
+  </data>
+  <data name="Receivables.ReverseWarning" xml:space="preserve">
+    <value>سيتم إلغاء تحصيل بمبلغ {0}: يخرج النقد من الوردية المفتوحة ويعود المبلغ مستحقاً على العميل.</value>
+  </data>
+  <data name="Receivables.CollectionReversedMessage" xml:space="preserve">
+    <value>تم عكس التحصيل.</value>
+  </data>
+  <data name="Receivables.OpeningBalanceHint" xml:space="preserve">
+    <value>أدخل ما كان مستحقاً على هذا العميل قبل بدء استخدام النظام. يمكن إدخاله مرة واحدة فقط.</value>
+  </data>
+  <data name="Receivables.OpeningAmount" xml:space="preserve">
+    <value>المبلغ المستحق عند البدء</value>
+  </data>
+  <data name="CustomerEntryTypes.OpeningBalance" xml:space="preserve">
+    <value>رصيد افتتاحي</value>
+  </data>
+  <data name="CustomerEntryTypes.Sale" xml:space="preserve">
+    <value>بيع آجل</value>
+  </data>
+  <data name="CustomerEntryTypes.Collection" xml:space="preserve">
+    <value>تحصيل</value>
+  </data>
+  <data name="CustomerEntryTypes.CollectionReversal" xml:space="preserve">
+    <value>عكس تحصيل</value>
+  </data>
+  <data name="CashMovementTypes.DebtCollection" xml:space="preserve">
+    <value>تحصيل دين</value>
+  </data>
+  <data name="CashMovementTypes.DebtCollectionReversal" xml:space="preserve">
+    <value>عكس تحصيل دين</value>
+  </data>
+  <data name="PermissionModules.Customers" xml:space="preserve">
+    <value>العملاء</value>
+  </data>
+  <data name="PermissionModules.Receivables" xml:space="preserve">
+    <value>ديون العملاء</value>
+  </data>
+  <data name="Permissions.Customers.View" xml:space="preserve">
+    <value>عرض العملاء وكشوف الحساب</value>
+  </data>
+  <data name="Permissions.Customers.Manage" xml:space="preserve">
+    <value>إضافة العملاء وتعديلهم</value>
+  </data>
+  <data name="Permissions.Receivables.Collect" xml:space="preserve">
+    <value>تحصيل ديون العملاء</value>
+  </data>
+  <data name="Permissions.Receivables.Reverse" xml:space="preserve">
+    <value>عكس تحصيل الديون</value>
+  </data>
+  <data name="Permissions.Receivables.SetOpeningBalance" xml:space="preserve">
+    <value>إدخال الأرصدة الافتتاحية للعملاء</value>
+  </data>
+  <data name="AuditActions.Receivables.CustomerCreated" xml:space="preserve">
+    <value>إنشاء عميل</value>
+  </data>
+  <data name="AuditActions.Receivables.CustomerUpdated" xml:space="preserve">
+    <value>تعديل عميل</value>
+  </data>
+  <data name="AuditActions.Receivables.DebtCollected" xml:space="preserve">
+    <value>تحصيل دين</value>
+  </data>
+  <data name="AuditActions.Receivables.CollectionReversed" xml:space="preserve">
+    <value>عكس تحصيل دين</value>
+  </data>
+  <data name="AuditActions.Receivables.OpeningBalance" xml:space="preserve">
+    <value>رصيد افتتاحي لعميل</value>
+  </data>
+  <data name="Receivables.UnknownCustomer" xml:space="preserve">
+    <value>لم يتم العثور على العميل.</value>
+  </data>
+  <data name="Receivables.InactiveCustomer" xml:space="preserve">
+    <value>هذا العميل غير نشط.</value>
+  </data>
+  <data name="Receivables.CustomerNameRequired" xml:space="preserve">
+    <value>اسم العميل مطلوب.</value>
+  </data>
+  <data name="Receivables.CustomerNameTooLong" xml:space="preserve">
+    <value>يجب ألا يتجاوز اسم العميل {0} حرفاً.</value>
+  </data>
+  <data name="Receivables.FieldTooLong" xml:space="preserve">
+    <value>أحد الحقول أطول من المسموح.</value>
+  </data>
+  <data name="Receivables.DefaultCustomerCannotBeDeactivated" xml:space="preserve">
+    <value>لا يمكن تعطيل العميل النقدي الافتراضي.</value>
+  </data>
+  <data name="Receivables.InvalidAmount" xml:space="preserve">
+    <value>يجب أن يكون المبلغ أكبر من صفر وبخانتين عشريتين على الأكثر.</value>
+  </data>
+  <data name="Receivables.AmountTooLarge" xml:space="preserve">
+    <value>لا يمكن أن يتجاوز المبلغ {0:N2}.</value>
+  </data>
+  <data name="Receivables.CollectionExceedsBalance" xml:space="preserve">
+    <value>التحصيل أكبر من المستحق على العميل ({0:N2}).</value>
+  </data>
+  <data name="Receivables.UnknownCollection" xml:space="preserve">
+    <value>لم يتم العثور على التحصيل.</value>
+  </data>
+  <data name="Receivables.CollectionAlreadyReversed" xml:space="preserve">
+    <value>تم عكس هذا التحصيل بالفعل.</value>
+  </data>
+  <data name="Receivables.ReasonRequired" xml:space="preserve">
+    <value>السبب مطلوب.</value>
+  </data>
+  <data name="Receivables.NoteTooLong" xml:space="preserve">
+    <value>يجب ألا تتجاوز الملاحظة {0} حرفاً.</value>
+  </data>
+  <data name="Receivables.OpeningBalanceAlreadySet" xml:space="preserve">
+    <value>لهذا العميل رصيد افتتاحي بالفعل.</value>
+  </data>
 </root>

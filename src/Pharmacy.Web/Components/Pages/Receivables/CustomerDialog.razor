@@ -1,0 +1,103 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        @if (_phoneOwner is not null)
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true" Class="mb-3">@L["Customers.PhoneInUse", _phoneOwner]</MudAlert>
+        }
+
+        <MudGrid Spacing="2">
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_name" Label="@L["Customers.Name"]" MaxLength="Customer.NameMaxLength" Required="true" autofocus />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField T="string" Value="_phone" ValueChanged="OnPhoneChanged" Label="@L["Customers.Phone"]" MaxLength="Customer.PhoneMaxLength" Style="direction: ltr" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_address" Label="@L["Customers.Address"]" MaxLength="Customer.AddressMaxLength" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_notes" Label="@L["Customers.Notes"]" MaxLength="Customer.NotesMaxLength" Lines="2" />
+            </MudItem>
+            @if (Existing is not null)
+            {
+                <MudItem xs="12">
+                    <MudSwitch T="bool" @bind-Value="_isActive" Color="Color.Primary" Disabled="Existing.IsDefaultCash" Label="@L["Customers.Active"]" />
+                </MudItem>
+            }
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_saving" OnClick="SaveAsync">@L["Settings.Save"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    /// <summary>The customer to edit; null creates a new one.</summary>
+    [Parameter]
+    public CustomerDetail? Existing { get; set; }
+
+    private string? _name;
+    private string? _phone;
+    private string? _address;
+    private string? _notes;
+    private bool _isActive = true;
+    private string? _phoneOwner;
+    private string? _error;
+    private bool _saving;
+
+    protected override void OnInitialized()
+    {
+        if (Existing is { } customer)
+        {
+            _name = customer.Name;
+            _phone = customer.Phone;
+            _address = customer.Address;
+            _notes = customer.Notes;
+            _isActive = customer.IsActive;
+        }
+    }
+
+    // A phone number that belongs to someone else is a likely duplicate: warn, but do not block (family members share phones).
+    private async Task OnPhoneChanged(string? phone)
+    {
+        _phone = phone;
+        var owner = await Services.For<CustomerQueryService>().RunAsync(s => s.FindPhoneOwnerAsync(phone, Existing?.Id));
+        _phoneOwner = owner.IsSuccess ? owner.Value : null;
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var input = new CustomerInput(_name, _phone, _address, _notes, _isActive);
+            var result = Existing is { } customer
+                ? await Services.For<CustomerService>().RunAsync(s => s.UpdateAsync(customer.Id, input, customer.RowVersion))
+                : (Result)await Services.For<CustomerService>().RunAsync(s => s.CreateAsync(input));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}
