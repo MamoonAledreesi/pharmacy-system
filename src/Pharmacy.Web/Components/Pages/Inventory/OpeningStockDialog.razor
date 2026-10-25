@@ -1,0 +1,225 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        @if (ProductId is null)
+        {
+            <MudAutocomplete T="ProductListItem" Label="@L["Inventory.Product"]" Placeholder="@L["Products.SearchHint"]"
+                             Value="_selectedProduct" ValueChanged="OnProductSelectedAsync" SearchFunc="SearchProductsAsync"
+                             ToStringFunc="ProductText" MinCharacters="1" DebounceInterval="250" CoerceText="false" Clearable="true" />
+        }
+        else if (_detail is not null)
+        {
+            <MudText Typo="Typo.subtitle1" Class="mb-2">@ProductText(_detail)</MudText>
+        }
+
+        @if (_detail is not null)
+        {
+            <MudGrid Spacing="2" Class="mt-1">
+                <MudItem xs="7">
+                    <MudNumericField T="int?" @bind-Value="_quantity" Label="@L["Inventory.Quantity"]" Min="1" />
+                </MudItem>
+                <MudItem xs="5">
+                    <MudSelect T="int" @bind-Value="_unitId" Label="@L["Products.Unit"]">
+                        @foreach (var unit in _detail.Units)
+                        {
+                            <MudSelectItem T="int" Value="unit.Id">@unit.Unit.For(SupportedCultures.IsArabicUi)</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudNumericField T="decimal?" @bind-Value="_cost" Label="@L["Inventory.CostPerChosenUnit", SelectedUnit?.Unit.For(SupportedCultures.IsArabicUi) ?? string.Empty]"
+                                     Min="0" Format="0.####" HelperText="@CostHint" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_batchNumber" Label="@L["Inventory.BatchNumberOptional"]" MaxLength="Batch.BatchNumberMaxLength"
+                                  HelperText="@L["Inventory.BatchNumberHint"]" Style="direction: ltr" />
+                </MudItem>
+
+                @if (_detail.TracksExpiry)
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.subtitle2">@L["Inventory.ExpiryDate"]</MudText>
+                        <MudRadioGroup T="bool" @bind-Value="_monthYearMode">
+                            <MudRadio T="bool" Value="true" Color="Color.Primary">@L["Inventory.MonthYear"]</MudRadio>
+                            <MudRadio T="bool" Value="false" Color="Color.Primary">@L["Inventory.FullDate"]</MudRadio>
+                        </MudRadioGroup>
+                    </MudItem>
+                    @if (_monthYearMode)
+                    {
+                        <MudItem xs="6">
+                            <MudSelect T="int?" @bind-Value="_month" Label="@L["Inventory.Month"]">
+                                @foreach (var month in Enumerable.Range(1, 12))
+                                {
+                                    <MudSelectItem T="int?" Value="month">@month</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudNumericField T="int?" @bind-Value="_year" Label="@L["Inventory.Year"]" Min="ExpiryRules.MinYear" Max="ExpiryRules.MaxYear" />
+                        </MudItem>
+                        @if (ExpiryValue is { } endOfMonth)
+                        {
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.caption">@L["Inventory.ExpiresOn", endOfMonth.ToString("d", CultureInfo.CurrentCulture)]</MudText>
+                            </MudItem>
+                        }
+                    }
+                    else
+                    {
+                        <MudItem xs="12">
+                            <MudDatePicker Label="@L["Inventory.ExpiryDate"]" @bind-Date="_date" />
+                        </MudItem>
+                    }
+                }
+                else
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.caption">@L["Inventory.NoExpiryProduct"]</MudText>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_saving || _detail is null)" OnClick="SaveAsync">
+            @L["Settings.Save"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    /// <summary>The product to receive stock for; when null the user searches for one.</summary>
+    [Parameter]
+    public int? ProductId { get; set; }
+
+    // One id per opened dialog: a double click or a retry is applied only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private ProductListItem? _selectedProduct;
+    private ProductStockDetail? _detail;
+    private int _unitId;
+    private int? _quantity;
+    private decimal? _cost;
+    private string? _batchNumber;
+    private bool _monthYearMode = true;
+    private int? _month;
+    private int? _year = DateTime.Today.Year;
+    private DateTime? _date;
+    private string? _error;
+    private bool _saving;
+
+    private ProductUnitSummary? SelectedUnit => _detail?.Units.FirstOrDefault(u => u.Id == _unitId);
+
+    private DateOnly? ExpiryValue
+    {
+        get
+        {
+            if (_monthYearMode)
+            {
+                return _month is >= 1 and <= 12 && _year is >= ExpiryRules.MinYear and <= ExpiryRules.MaxYear
+                    ? ExpiryRules.EndOfMonth(_year.Value, _month.Value)
+                    : null;
+            }
+
+            return _date is { } date ? DateOnly.FromDateTime(date) : null;
+        }
+    }
+
+    private string? CostHint
+    {
+        get
+        {
+            if (SelectedUnit is not { IsBase: false } unit || _cost is not { } cost || _detail?.Units.FirstOrDefault(u => u.IsBase) is not { } baseUnit)
+            {
+                return null;
+            }
+
+            var baseCost = Batch.UnitCostFromPackCost(cost, unit.Factor).ToString("0.####", CultureInfo.CurrentCulture);
+            return L["Inventory.CostPerBaseUnit", baseUnit.Unit.For(SupportedCultures.IsArabicUi), baseCost].Value;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ProductId is { } id)
+        {
+            await LoadDetailAsync(id);
+        }
+    }
+
+    // MudAutocomplete also asks for the text of "no selection" (null) when it first renders.
+    private static string ProductText(ProductListItem? product) =>
+        product is null ? string.Empty : $"{product.DisplayName(SupportedCultures.IsArabicUi)} {product.Strength}".Trim();
+
+    private static string ProductText(ProductStockDetail product) =>
+        $"{product.DisplayName(SupportedCultures.IsArabicUi)} {product.Strength}".Trim();
+
+    private Task<IEnumerable<ProductListItem>> SearchProductsAsync(string text, CancellationToken cancellationToken) =>
+        TableDataLoader.SearchAsync<ProductListItem>(async () =>
+        {
+            var result = await Services.For<ProductQueryService>().RunAsync(s => s.QuickSearchAsync(text, cancellationToken));
+            return result.IsSuccess ? result.Value : Array.Empty<ProductListItem>();
+        }, cancellationToken);
+
+    private async Task OnProductSelectedAsync(ProductListItem? product)
+    {
+        _selectedProduct = product;
+        _detail = null;
+        if (product is not null)
+        {
+            await LoadDetailAsync(product.Id);
+        }
+    }
+
+    private async Task LoadDetailAsync(int productId)
+    {
+        var detail = await Services.For<InventoryQueryService>().RunAsync(s => s.GetProductStockAsync(productId));
+        if (detail.IsFailure)
+        {
+            _error = L.Message(detail.Error!);
+            return;
+        }
+
+        _error = null;
+        _detail = detail.Value;
+        _unitId = _detail.Units.FirstOrDefault(u => u.IsBase)?.Id ?? _detail.Units[0].Id;
+    }
+
+    private async Task SaveAsync()
+    {
+        if (_detail is null)
+        {
+            return;
+        }
+
+        _error = null;
+        _saving = true;
+        try
+        {
+            var request = new OpeningStockRequest(
+                _operationId, _detail.ProductId, _unitId, _quantity ?? 0, _cost ?? 0m, _batchNumber, _detail.TracksExpiry ? ExpiryValue : null);
+            var result = await Services.For<InventoryService>().RunAsync(s => s.ReceiveOpeningStockAsync(request));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

@@ -1,0 +1,149 @@
+@page "/inventory"
+@attribute [Authorize(Policy = Permissions.InventoryView)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>@L["Nav.Inventory"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudText Typo="Typo.h4">@L["Nav.Inventory"]</MudText>
+    <MudSpacer />
+    <AuthorizeView Policy="@Permissions.InventoryOpeningStock">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddOpeningStockAsync">
+            @L["Inventory.AddOpeningStock"]
+        </MudButton>
+    </AuthorizeView>
+</div>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="7">
+            <MudTextField T="string" Value="_searchText" ValueChanged="OnSearchChangedAsync" Immediate="true" DebounceInterval="300"
+                          Label="@L["Products.Search"]" Placeholder="@L["Products.SearchHint"]" Clearable="true"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+        </MudItem>
+        <MudItem xs="12" md="5">
+            <MudSelect T="StockFilter" Value="_filter" ValueChanged="OnFilterChangedAsync" Label="@L["Inventory.Show"]">
+                @foreach (var filter in Enum.GetValues<StockFilter>())
+                {
+                    <MudSelectItem T="StockFilter" Value="filter">@L[$"StockFilters.{filter}"]</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudTable @ref="_table" T="StockListItem" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25"
+          OnRowClick="args => Open(args.Item!)" RowClass="cursor-pointer">
+    <HeaderContent>
+        <MudTh>@L["Products.TradeName"]</MudTh>
+        <MudTh>@L["Inventory.Sellable"]</MudTh>
+        <MudTh>@L["Inventory.Quarantined"]</MudTh>
+        <MudTh>@L["Inventory.Expired"]</MudTh>
+        <MudTh>@L["Inventory.NearExpiry"]</MudTh>
+        <MudTh>@L["Users.Status"]</MudTh>
+        <AuthorizeView Policy="@Permissions.InventoryViewCost" Context="_">
+            <MudTh>@L["Inventory.StockValue"]</MudTh>
+        </AuthorizeView>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Products.TradeName"]">
+            <MudText Typo="Typo.body2"><b>@context.DisplayName(SupportedCultures.IsArabicUi)</b> <span dir="ltr">@context.Strength</span></MudText>
+        </MudTd>
+        <MudTd DataLabel="@L["Inventory.Sellable"]">@QuantityFormat.Describe(context.Sellable, context.Units)</MudTd>
+        <MudTd DataLabel="@L["Inventory.Quarantined"]">
+            @(context.Quarantined > 0 ? QuantityFormat.Describe(context.Quarantined, context.Units) : "—")
+        </MudTd>
+        <MudTd DataLabel="@L["Inventory.Expired"]">
+            @if (context.Expired > 0)
+            {
+                <MudText Color="Color.Error">@QuantityFormat.Describe(context.Expired, context.Units)</MudText>
+            }
+            else
+            {
+                <span>—</span>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Inventory.NearExpiry"]">
+            @if (context.NearExpiry > 0)
+            {
+                <MudText Color="Color.Warning">@QuantityFormat.Describe(context.NearExpiry, context.Units)</MudText>
+            }
+            else
+            {
+                <span>—</span>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Users.Status"]">
+            @if (!context.IsActive)
+            {
+                <MudChip T="string" Size="Size.Small">@L["Users.Inactive"]</MudChip>
+            }
+            else if (context.Sellable <= 0)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Error">@L["Inventory.OutOfStock"]</MudChip>
+            }
+            else if (context.IsLow)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Inventory.LowStock"]</MudChip>
+            }
+        </MudTd>
+        @if (context.StockValue is { } value)
+        {
+            <MudTd DataLabel="@L["Inventory.StockValue"]"><span dir="ltr">@value.ToString("N2", CultureInfo.CurrentCulture)</span></MudTd>
+        }
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Products.NoResults"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<StockListItem>? _table;
+    private string? _searchText;
+    private StockFilter _filter;
+
+    private Task<TableData<StockListItem>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<StockListItem>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var query = new StockQuery(_searchText, _filter, state.Page, state.PageSize);
+        var result = await Services.For<InventoryQueryService>().RunAsync(s => s.SearchStockAsync(query, cancellationToken));
+        return result.IsSuccess
+            ? new TableData<StockListItem> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<StockListItem> { Items = [], TotalItems = 0 };
+    }
+
+    private Task OnSearchChangedAsync(string? text)
+    {
+        _searchText = text;
+        return ReloadAsync();
+    }
+
+    private Task OnFilterChangedAsync(StockFilter filter)
+    {
+        _filter = filter;
+        return ReloadAsync();
+    }
+
+    private Task ReloadAsync() => _table?.ReloadServerData() ?? Task.CompletedTask;
+
+    private void Open(StockListItem item) => Navigation.NavigateTo($"inventory/{item.ProductId}");
+
+    private async Task AddOpeningStockAsync()
+    {
+        var dialog = await DialogService.ShowAsync<OpeningStockDialog>(
+            L["Inventory.AddOpeningStock"], new DialogParameters(), new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Common.Saved"], Severity.Success);
+            await ReloadAsync();
+        }
+    }
+}

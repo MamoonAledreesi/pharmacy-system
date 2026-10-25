@@ -28,11 +28,18 @@ public static class AuditActions
     public const string LookupCreated = "Catalog.LookupCreated";
     public const string LookupUpdated = "Catalog.LookupUpdated";
 
+    public const string StockOpening = "Inventory.OpeningStock";
+    public const string StockAdjusted = "Inventory.Adjusted";
+    public const string StockQuarantined = "Inventory.Quarantined";
+    public const string StockReleased = "Inventory.Released";
+    public const string StockWrittenOff = "Inventory.WrittenOff";
+
     public static IReadOnlyList<string> All { get; } =
     [
         LoginSucceeded, LoginFailed, LockedOut, Logout, PasswordChanged, SetupCompleted,
         UserCreated, UserUpdated, UserPasswordReset, UserUnlocked,
         RoleCreated, RoleUpdated, RoleDeleted, SettingsUpdated,
         ProductCreated, ProductUpdated, ProductStatusChanged, LookupCreated, LookupUpdated,
+        StockOpening, StockAdjusted, StockQuarantined, StockReleased, StockWrittenOff,
     ];
 }

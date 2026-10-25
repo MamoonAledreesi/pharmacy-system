@@ -22,6 +22,9 @@ public static class CatalogErrors
     public const string UnitFactorTooSmall = "Catalog.UnitFactorTooSmall";
     public const string DuplicateUnit = "Catalog.DuplicateUnit";
     public const string UnknownUnit = "Catalog.UnknownUnit";
+
+    /// <summary>The product already has stock, so its base unit and existing unit factors are fixed.</summary>
+    public const string UnitsLockedByStock = "Catalog.UnitsLockedByStock";
     public const string InvalidPrice = "Catalog.InvalidPrice";
     public const string BarcodeTooLong = "Catalog.BarcodeTooLong";
     public const string DuplicateBarcode = "Catalog.DuplicateBarcode";

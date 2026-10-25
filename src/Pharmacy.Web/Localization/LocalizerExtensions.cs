@@ -19,6 +19,10 @@ public static class LocalizerExtensions
         return localized.ResourceNotFound ? roleName : localized.Value;
     }
 
+    /// <summary>A UTC timestamp as a local date only (for example when a batch was received).</summary>
+    public static string LocalDate(DateTime utc) =>
+        DateTime.SpecifyKind(utc, DateTimeKind.Utc).ToLocalTime().ToString("d", System.Globalization.CultureInfo.CurrentCulture);
+
     /// <summary>UTC timestamps are shown in the server's local time zone (the pharmacy's own LAN server).</summary>
     public static string LocalTime(DateTime utc) =>
         DateTime.SpecifyKind(utc, DateTimeKind.Utc).ToLocalTime().ToString("g", System.Globalization.CultureInfo.CurrentCulture);

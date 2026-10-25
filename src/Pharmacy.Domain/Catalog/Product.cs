@@ -78,7 +78,7 @@ public sealed class Product
     /// Replaces the product data and units. Units are matched by id: existing ones are updated, missing
     /// ones removed, and ones without an id added. Nothing changes if validation fails.
     /// </summary>
-    public Result Update(ProductDetails details, IReadOnlyList<ProductUnitData> units)
+    public Result Update(ProductDetails details, IReadOnlyList<ProductUnitData> units, bool unitsLocked = false)
     {
         ArgumentNullException.ThrowIfNull(details);
         ArgumentNullException.ThrowIfNull(units);
@@ -86,7 +86,7 @@ public sealed class Product
         var cleanDetails = Clean(details);
         var cleanUnits = units.Select(Clean).ToList();
 
-        var error = ValidateDetails(cleanDetails) ?? ValidateUnits(cleanUnits);
+        var error = ValidateDetails(cleanDetails) ?? ValidateUnits(cleanUnits) ?? (unitsLocked ? ValidateAgainstExistingUnits(cleanUnits) : null);
         if (error is not null)
         {
             return Result.Failure(error);
@@ -226,6 +226,23 @@ public sealed class Product
         return barcodes.Distinct(StringComparer.OrdinalIgnoreCase).Count() != barcodes.Count
             ? new Error(CatalogErrors.DuplicateBarcode)
             : null;
+    }
+
+    // Once stock exists, quantities are stored in base units and every existing unit has meaning for it:
+    // changing which unit is the base, what a unit is, or its factor would silently change stock quantities.
+    // New units may still be added; prices and barcodes may still change.
+    private Error? ValidateAgainstExistingUnits(List<ProductUnitData> incoming)
+    {
+        foreach (var existing in _units.Where(u => u.Id != 0))
+        {
+            var match = incoming.SingleOrDefault(u => u.Id == existing.Id);
+            if (match is null || match.UnitOfMeasureId != existing.UnitOfMeasureId || match.IsBase != existing.IsBase || match.Factor != existing.Factor)
+            {
+                return new Error(CatalogErrors.UnitsLockedByStock);
+            }
+        }
+
+        return null;
     }
 
     private static Error? TooLong(string? value, int maxLength) =>

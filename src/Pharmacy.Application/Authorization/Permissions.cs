@@ -15,9 +15,18 @@ public static class Permissions
     public const string AuditLogView = "AuditLog.View";
     public const string CatalogView = "Catalog.View";
     public const string CatalogManage = "Catalog.Manage";
+    public const string InventoryView = "Inventory.View";
+    public const string InventoryViewCost = "Inventory.ViewCost";
+    public const string InventoryOpeningStock = "Inventory.OpeningStock";
+    public const string InventoryAdjust = "Inventory.Adjust";
+    public const string InventoryWriteOff = "Inventory.WriteOff";
 
     public static IReadOnlyList<string> All { get; } =
-        [CatalogView, CatalogManage, UsersManage, SettingsManage, AuditLogView];
+        [
+            CatalogView, CatalogManage,
+            InventoryView, InventoryViewCost, InventoryOpeningStock, InventoryAdjust, InventoryWriteOff,
+            UsersManage, SettingsManage, AuditLogView,
+        ];
 
     public static bool IsDefined(string permission) => All.Contains(permission, StringComparer.Ordinal);
 

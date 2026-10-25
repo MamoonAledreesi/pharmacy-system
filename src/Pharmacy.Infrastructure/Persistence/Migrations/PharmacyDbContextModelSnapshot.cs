@@ -89,6 +89,83 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Catalog.Manage",
                             RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.View",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.View",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.View",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.View",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.Adjust",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.Adjust",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.WriteOff",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.WriteOff",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 15,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.OpeningStock",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 16,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.ViewCost",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 17,
+                            ClaimType = "permission",
+                            ClaimValue = "Inventory.ViewCost",
+                            RoleId = 4
                         });
                 });
 
@@ -603,6 +680,148 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Pharmacy.Domain.Inventory.Batch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BatchNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateOnly?>("ExpiryDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityAvailable")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityQuarantined")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReceivedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpiryDate");
+
+                    b.HasIndex("ProductId", "ExpiryDate");
+
+                    b.HasIndex("ProductId", "BatchNumber", "ExpiryDate", "UnitCost")
+                        .IsUnique();
+
+                    b.ToTable("Batches", "inventory", t =>
+                        {
+                            t.HasCheckConstraint("CK_Batches_QuantityAvailable", "[QuantityAvailable] >= 0");
+
+                            t.HasCheckConstraint("CK_Batches_QuantityQuarantined", "[QuantityQuarantined] >= 0");
+
+                            t.HasCheckConstraint("CK_Batches_UnitCost", "[UnitCost] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Inventory.StockMovement", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("AvailableAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AvailableDelta")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BatchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuarantineAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuarantineDelta")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReasonCode")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<long?>("ReferenceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ReferenceType")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BatchId", "Id");
+
+                    b.HasIndex("ProductId", "OccurredAtUtc");
+
+                    b.HasIndex("ReferenceType", "ReferenceId")
+                        .HasFilter("[ReferenceType] IS NOT NULL");
+
+                    b.HasIndex("OperationId", "BatchId", "Type")
+                        .IsUnique()
+                        .HasFilter("[OperationId] IS NOT NULL");
+
+                    b.ToTable("StockMovements", "inventory", t =>
+                        {
+                            t.HasCheckConstraint("CK_StockMovements_Balances", "[AvailableAfter] >= 0 AND [QuarantineAfter] >= 0");
+
+                            t.HasCheckConstraint("CK_StockMovements_NotEmpty", "[AvailableDelta] <> 0 OR [QuarantineDelta] <> 0");
+                        });
+                });
+
             modelBuilder.Entity("Pharmacy.Domain.Settings.PharmacySettings", b =>
                 {
                     b.Property<int>("Id")
@@ -621,6 +840,11 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("NearExpiryDays")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(90);
 
                     b.Property<string>("Phone")
                         .HasMaxLength(30)
@@ -646,6 +870,8 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
 
                     b.ToTable("PharmacySettings", "config", t =>
                         {
+                            t.HasCheckConstraint("CK_PharmacySettings_NearExpiryDays", "[NearExpiryDays] BETWEEN 1 AND 3650");
+
                             t.HasCheckConstraint("CK_PharmacySettings_SingleRow", "[Id] = 1");
                         });
 
@@ -655,6 +881,7 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             Id = 1,
                             NameArabic = "الصيدلية",
                             NameEnglish = "Pharmacy",
+                            NearExpiryDays = 90,
                             PrimaryColor = "MedicalGreen",
                             ThemeMode = "Light"
                         });
@@ -905,6 +1132,32 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UnitOfMeasureId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Inventory.Batch", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Catalog.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Inventory.StockMovement", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Inventory.Batch", "Batch")
+                        .WithMany()
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Batch");
                 });
 
             modelBuilder.Entity("Pharmacy.Domain.Catalog.Product", b =>

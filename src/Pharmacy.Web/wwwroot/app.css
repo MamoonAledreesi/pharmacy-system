@@ -182,3 +182,20 @@ h1:focus {
     white-space: pre-wrap;
     word-break: break-word;
 }
+
+/* Stock movement amounts: green for additions, red for removals. */
+.delta-positive {
+    color: var(--mud-palette-success);
+    font-weight: 500;
+}
+
+.delta-negative {
+    color: var(--mud-palette-error);
+    font-weight: 500;
+}
+
+.expiry-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}

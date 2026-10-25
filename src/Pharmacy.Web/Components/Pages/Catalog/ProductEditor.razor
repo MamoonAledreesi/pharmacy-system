@@ -98,25 +98,30 @@
                 <MudText Typo="Typo.h6">@L["Products.Units"]</MudText>
                 <MudText Typo="Typo.caption" Class="d-block mb-3">@L["Products.UnitsIntro"]</MudText>
 
+                @if (_unitsLocked)
+                {
+                    <MudAlert Severity="Severity.Info" Dense="true" Class="mb-3">@L["Products.UnitsLockedHint"]</MudAlert>
+                }
+
                 <MudRadioGroup T="Guid" @bind-Value="_baseRowKey">
                     @foreach (var row in _units)
                     {
                         <div class="product-unit-row">
-                            <MudRadio T="Guid" Value="row.Key" Color="Color.Primary" Dense="true"
+                            <MudRadio T="Guid" Value="row.Key" Color="Color.Primary" Dense="true" Disabled="_unitsLocked"
                                       AriaLabel="@L["Products.BaseUnit"]" title="@L["Products.BaseUnit"]" />
-                            <MudSelect T="int?" @bind-Value="row.UnitOfMeasureId" Label="@L["Products.Unit"]" Required="true" RequiredError="@L["Catalog.UnitRequired"]" Margin="Margin.Dense" Class="unit-select">
+                            <MudSelect T="int?" @bind-Value="row.UnitOfMeasureId" Label="@L["Products.Unit"]" Disabled="IsLockedRow(row)" Required="true" RequiredError="@L["Catalog.UnitRequired"]" Margin="Margin.Dense" Class="unit-select">
                                 @foreach (var unit in _unitsOfMeasure)
                                 {
                                     <MudSelectItem T="int?" Value="unit.Id">@unit.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
                                 }
                             </MudSelect>
                             <MudNumericField T="int" Value="IsBase(row) ? 1 : row.Factor" ValueChanged="value => row.Factor = value"
-                                             Disabled="IsBase(row)" Min="1" Label="@L["Products.Factor"]" Margin="Margin.Dense" Class="unit-number" />
+                                             Disabled="IsBase(row) || IsLockedRow(row)" Min="1" Label="@L["Products.Factor"]" Margin="Margin.Dense" Class="unit-number" />
                             <MudNumericField T="decimal?" @bind-Value="row.DefaultSellingPrice" Min="0" Format="N2"
                                              Label="@L["Products.DefaultPrice"]" Margin="Margin.Dense" Class="unit-number" />
                             <MudTextField @bind-Value="row.Barcode" Label="@L["Products.Barcode"]" Margin="Margin.Dense"
                                           MaxLength="ProductUnit.BarcodeMaxLength" Class="unit-barcode" Style="direction: ltr" />
-                            @if (_canManage && _units.Count > 1)
+                            @if (_canManage && _units.Count > 1 && !IsLockedRow(row))
                             {
                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
                                                aria-label="@L["Products.RemoveUnit"]" title="@L["Products.RemoveUnit"]" OnClick="() => RemoveUnit(row)" />
@@ -170,6 +175,7 @@
     private IReadOnlyList<LookupItem> _dosageForms = [];
     private IReadOnlyList<LookupItem> _unitsOfMeasure = [];
     private bool _canManage;
+    private bool _unitsLocked;
     private bool _loading = true;
     private bool _notFound;
     private bool _saving;
@@ -194,6 +200,7 @@
             _units = [];
             _rowVersion = [];
             _isActive = null;
+            _unitsLocked = false;
             AddUnit();
         }
         else
@@ -211,6 +218,7 @@
             _baseRowKey = _units.First(u => u.IsBaseOnLoad).Key;
             _rowVersion = product.Value.RowVersion;
             _isActive = product.Value.IsActive;
+            _unitsLocked = product.Value.UnitsLocked;
         }
 
         await LoadListsAsync();
@@ -229,6 +237,9 @@
     }
 
     private bool IsBase(UnitRow row) => row.Key == _baseRowKey;
+
+    // Once the product has stock, its existing units keep their meaning; only new units can be added.
+    private bool IsLockedRow(UnitRow row) => _unitsLocked && row.Id is not null;
 
     private string UnitName(int? unitOfMeasureId) =>
         _unitsOfMeasure.FirstOrDefault(u => u.Id == unitOfMeasureId)?.DisplayName(SupportedCultures.IsArabicUi) ?? "?";

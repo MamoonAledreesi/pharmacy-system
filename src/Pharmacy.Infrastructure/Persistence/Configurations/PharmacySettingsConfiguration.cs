@@ -11,7 +11,10 @@ internal sealed class PharmacySettingsConfiguration : IEntityTypeConfiguration<P
     public void Configure(EntityTypeBuilder<PharmacySettings> builder)
     {
         builder.ToTable("PharmacySettings", Schemas.Config, table =>
-            table.HasCheckConstraint("CK_PharmacySettings_SingleRow", $"[Id] = {PharmacySettings.SingletonId}"));
+            {
+                table.HasCheckConstraint("CK_PharmacySettings_SingleRow", $"[Id] = {PharmacySettings.SingletonId}");
+                table.HasCheckConstraint("CK_PharmacySettings_NearExpiryDays", "[NearExpiryDays] BETWEEN 1 AND 3650");
+            });
 
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Id).ValueGeneratedNever();
@@ -25,6 +28,7 @@ internal sealed class PharmacySettingsConfiguration : IEntityTypeConfiguration<P
         builder.Property(s => s.ThemeMode).HasConversion<string>().HasMaxLength(EnumMaxLength);
         builder.Property(s => s.PrimaryColor).HasConversion<string>().HasMaxLength(EnumMaxLength);
 
+        builder.Property(s => s.NearExpiryDays).HasDefaultValue(PharmacySettings.DefaultNearExpiryDays);
         builder.Property(s => s.RowVersion).IsRowVersion();
 
         var defaults = PharmacySettings.Defaults;
@@ -35,6 +39,7 @@ internal sealed class PharmacySettingsConfiguration : IEntityTypeConfiguration<P
             defaults.NameEnglish,
             defaults.ThemeMode,
             defaults.PrimaryColor,
+            defaults.NearExpiryDays,
         });
     }
 }

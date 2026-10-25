@@ -70,6 +70,14 @@
                 </MudRadioGroup>
             </MudPaper>
         </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6" GutterBottom="true">@L["Settings.Inventory"]</MudText>
+                <MudNumericField T="int" @bind-Value="_form.NearExpiryDays" Label="@L["Settings.NearExpiryDays"]"
+                                 Min="1" Max="PharmacySettings.MaxNearExpiryDays" HelperText="@L["Settings.NearExpiryDaysHint"]" />
+            </MudPaper>
+        </MudItem>
     </MudGrid>
 
     <MudButton Class="mt-4 align-self-start"
@@ -149,6 +157,7 @@
         public string? Address { get; set; }
         public ThemeMode ThemeMode { get; set; }
         public ThemeColor PrimaryColor { get; set; }
+        public int NearExpiryDays { get; set; }
 
         public static SettingsForm From(PharmacySettingsData data) => new()
         {
@@ -158,9 +167,10 @@
             Address = data.Address,
             ThemeMode = data.ThemeMode,
             PrimaryColor = data.PrimaryColor,
+            NearExpiryDays = data.NearExpiryDays,
         };
 
         public PharmacySettingsData ToData() =>
-            new(NameArabic, NameEnglish, Phone, Address, ThemeMode, PrimaryColor);
+            new(NameArabic, NameEnglish, Phone, Address, ThemeMode, PrimaryColor, NearExpiryDays);
     }
 }

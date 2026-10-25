@@ -22,7 +22,7 @@ public sealed class ProductQueryService(IPharmacyDbContext db, ICurrentUser curr
             return Result.Failure<PagedResult<ProductListItem>>(new Error(CommonErrors.Forbidden));
         }
 
-        var products = Filter(db.Products.AsNoTracking(), query.Text, query.IncludeInactive);
+        var products = ProductSearchFilter.Apply(db.Products.AsNoTracking(), query.Text, query.IncludeInactive);
         if (query.CategoryId is { } categoryId)
         {
             products = products.Where(p => p.CategoryId == categoryId);
@@ -57,28 +57,12 @@ public sealed class ProductQueryService(IPharmacyDbContext db, ICurrentUser curr
             return Result.Success<IReadOnlyList<ProductListItem>>([]);
         }
 
-        IReadOnlyList<ProductListItem> items = await Project(Filter(db.Products.AsNoTracking(), text, includeInactive: false)
+        IReadOnlyList<ProductListItem> items = await Project(ProductSearchFilter.Apply(db.Products.AsNoTracking(), text, includeInactive: false)
                 .OrderBy(p => p.SearchText.StartsWith(normalized) ? 0 : 1)
                 .ThenBy(p => p.TradeNameEnglish ?? p.TradeNameArabic)
                 .Take(QuickSearchLimit))
             .ToListAsync(cancellationToken);
         return Result.Success(items);
-    }
-
-    /// <summary>Every word typed must appear in the product's normalized search text, in any order.</summary>
-    private static IQueryable<Product> Filter(IQueryable<Product> products, string? text, bool includeInactive)
-    {
-        if (!includeInactive)
-        {
-            products = products.Where(p => p.IsActive);
-        }
-
-        foreach (var word in SearchNormalizer.Normalize(text).Split(' ', StringSplitOptions.RemoveEmptyEntries))
-        {
-            products = products.Where(p => p.SearchText.Contains(word));
-        }
-
-        return products;
     }
 
     private IQueryable<ProductListItem> Project(IQueryable<Product> products) =>

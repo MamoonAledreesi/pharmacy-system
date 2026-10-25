@@ -81,6 +81,19 @@ internal sealed class IdentityTableConfiguration :
         (4, Permissions.CatalogView),
         (5, Permissions.CatalogView),
         (5, Permissions.CatalogManage),
+
+        // Inventory (Task 3). Cashiers see stock but not costs; the store keeper enters opening stock.
+        (2, Permissions.InventoryView),
+        (3, Permissions.InventoryView),
+        (4, Permissions.InventoryView),
+        (5, Permissions.InventoryView),
+        (2, Permissions.InventoryAdjust),
+        (5, Permissions.InventoryAdjust),
+        (2, Permissions.InventoryWriteOff),
+        (5, Permissions.InventoryWriteOff),
+        (5, Permissions.InventoryOpeningStock),
+        (2, Permissions.InventoryViewCost),
+        (4, Permissions.InventoryViewCost),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

@@ -27,4 +27,9 @@ public sealed record ProductListItem(
 /// <summary>Product list filter. <see cref="Text"/> matches trade names, scientific name, and barcodes.</summary>
 public sealed record ProductQuery(string? Text, int? CategoryId, bool IncludeInactive, int PageIndex, int PageSize);
 
-public sealed record ProductForEdit(int Id, ProductDetails Details, IReadOnlyList<ProductUnitData> Units, bool IsActive, byte[] RowVersion);
+/// <summary>
+/// A product for editing. <c>UnitsLocked</c> is true once the product has stock: its base unit and the
+/// factors of its existing units can no longer change.
+/// </summary>
+public sealed record ProductForEdit(
+    int Id, ProductDetails Details, IReadOnlyList<ProductUnitData> Units, bool IsActive, bool UnitsLocked, byte[] RowVersion);

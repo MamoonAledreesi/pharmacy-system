@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Abstractions;
 using Pharmacy.Domain.Auditing;
 using Pharmacy.Domain.Catalog;
+using Pharmacy.Domain.Common;
+using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Settings;
 using Pharmacy.Infrastructure.Identity;
 
@@ -30,6 +32,23 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
     public DbSet<UnitOfMeasure> UnitsOfMeasure => Set<UnitOfMeasure>();
 
     public DbSet<DosageForm> DosageForms => Set<DosageForm>();
+
+    public DbSet<Batch> Batches => Set<Batch>();
+
+    public DbSet<StockMovement> StockMovements => Set<StockMovement>();
+
+    public Task<TResult> ExecuteInTransactionAsync<TResult>(Func<Task<TResult>> work, CancellationToken cancellationToken = default)
+        where TResult : Result =>
+        this.InTransactionAsync(work, cancellationToken);
+
+    // UPDLOCK keeps the product's batch rows locked until the transaction ends, so two operations on the same
+    // product (for example two sales of the last box) cannot both read the old quantity and both succeed.
+    // ROWLOCK keeps the lock to those rows. Locking an empty set locks nothing, which is why creating the very
+    // first batch of a product relies on the unique index and the caller retrying on a conflict.
+    public Task<List<Batch>> LoadBatchesForUpdateAsync(int productId, CancellationToken cancellationToken = default) =>
+        Batches
+            .FromSqlInterpolated($"SELECT * FROM inventory.Batches WITH (UPDLOCK, ROWLOCK) WHERE ProductId = {productId}")
+            .ToListAsync(cancellationToken);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

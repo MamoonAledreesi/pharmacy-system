@@ -63,7 +63,10 @@
 
     private Task SearchAsync() => _table?.ReloadServerData() ?? Task.CompletedTask;
 
-    private async Task<TableData<AuditLogRow>> LoadAsync(TableState state, CancellationToken cancellationToken)
+    private Task<TableData<AuditLogRow>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<AuditLogRow>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
     {
         // Dates are picked in local time; "to" includes the whole selected day.
         var filter = new AuditLogFilter(

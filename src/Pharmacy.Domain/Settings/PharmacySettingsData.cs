@@ -7,4 +7,5 @@ public sealed record PharmacySettingsData(
     string? Phone,
     string? Address,
     ThemeMode ThemeMode,
-    ThemeColor PrimaryColor);
+    ThemeColor PrimaryColor,
+    int NearExpiryDays = PharmacySettings.DefaultNearExpiryDays);

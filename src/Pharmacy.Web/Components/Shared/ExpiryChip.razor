@@ -1,0 +1,30 @@
+@using Pharmacy.Domain.Inventory
+
+@* Expiry date with a colored status: red = expired, orange = near expiry. *@
+<span class="expiry-chip">
+    @if (Date is { } date)
+    {
+        <span dir="ltr">@date.ToString("d", CultureInfo.CurrentCulture)</span>
+        @switch (Status)
+        {
+            case ExpiryStatus.Expired:
+                <MudChip T="string" Size="Size.Small" Color="Color.Error">@L["Expiry.Expired"]</MudChip>
+                break;
+            case ExpiryStatus.NearExpiry:
+                <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Expiry.NearExpiry"]</MudChip>
+                break;
+        }
+    }
+    else
+    {
+        <span>—</span>
+    }
+</span>
+
+@code {
+    [Parameter]
+    public DateOnly? Date { get; set; }
+
+    [Parameter]
+    public ExpiryStatus Status { get; set; }
+}

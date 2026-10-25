@@ -1,0 +1,261 @@
+@page "/inventory/{ProductId:int}"
+@attribute [Authorize(Policy = Permissions.InventoryView)]
+@inject ServiceRunner Services
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>@Title - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="inventory" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@Title</MudText>
+    <MudSpacer />
+    <AuthorizeView Policy="@Permissions.InventoryOpeningStock">
+        @if (_detail is { IsActive: true })
+        {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddOpeningStockAsync">
+                @L["Inventory.AddOpeningStock"]
+            </MudButton>
+        }
+    </AuthorizeView>
+</div>
+
+@if (_notFound)
+{
+    <MudAlert Severity="Severity.Warning">@L["Errors.NotFound"]</MudAlert>
+    return;
+}
+
+@if (_detail is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+<MudText Typo="Typo.body2" Class="mb-3">
+    @L["Inventory.NearExpiryRule", _detail.NearExpiryDays]
+    @if (!_detail.TracksExpiry)
+    {
+        <span> · @L["Inventory.NoExpiryProduct"]</span>
+    }
+</MudText>
+
+<MudText Typo="Typo.h6" GutterBottom="true">@L["Inventory.Batches"]</MudText>
+<MudTable Items="_detail.Batches" Dense="true" Hover="true" Elevation="1">
+    <HeaderContent>
+        <MudTh>@L["Inventory.BatchNumber"]</MudTh>
+        <MudTh>@L["Inventory.ExpiryDate"]</MudTh>
+        <MudTh>@L["Inventory.ReceivedOn"]</MudTh>
+        <MudTh>@L["Inventory.Sellable"]</MudTh>
+        <MudTh>@L["Inventory.Quarantined"]</MudTh>
+        <AuthorizeView Policy="@Permissions.InventoryViewCost" Context="_">
+            <MudTh>@L["Inventory.UnitCost", BaseUnitName]</MudTh>
+        </AuthorizeView>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Inventory.BatchNumber"]"><span dir="ltr">@context.BatchNumber</span></MudTd>
+        <MudTd DataLabel="@L["Inventory.ExpiryDate"]"><ExpiryChip Date="context.ExpiryDate" Status="context.Status" /></MudTd>
+        <MudTd DataLabel="@L["Inventory.ReceivedOn"]">@LocalizerExtensions.LocalDate(context.ReceivedAtUtc)</MudTd>
+        <MudTd DataLabel="@L["Inventory.Sellable"]">@QuantityFormat.Describe(context.Available, _detail.Units)</MudTd>
+        <MudTd DataLabel="@L["Inventory.Quarantined"]">
+            @(context.Quarantined > 0 ? QuantityFormat.Describe(context.Quarantined, _detail.Units) : "—")
+        </MudTd>
+        @if (context.UnitCost is { } cost)
+        {
+            <MudTd DataLabel="@L["Inventory.UnitCost", BaseUnitName]"><span dir="ltr">@cost.ToString("N4", CultureInfo.CurrentCulture)</span></MudTd>
+        }
+        <MudTd>
+            <AuthorizeView Policy="@Permissions.InventoryAdjust" Context="_">
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AriaLabel="@L["Inventory.Actions"]">
+                    @if (context.Available > 0)
+                    {
+                        <MudMenuItem OnClick="() => ActAsync(StockAction.AdjustDecrease, context)">@L["StockActions.AdjustDecrease"]</MudMenuItem>
+                    }
+                    <MudMenuItem OnClick="() => ActAsync(StockAction.AdjustIncrease, context)">@L["StockActions.AdjustIncrease"]</MudMenuItem>
+                    @if (context.Available > 0)
+                    {
+                        <MudMenuItem OnClick="() => ActAsync(StockAction.Quarantine, context)">@L["StockActions.Quarantine"]</MudMenuItem>
+                    }
+                    @if (context.Quarantined > 0)
+                    {
+                        <MudMenuItem OnClick="() => ActAsync(StockAction.Release, context)">@L["StockActions.Release"]</MudMenuItem>
+                    }
+                </MudMenu>
+            </AuthorizeView>
+            <AuthorizeView Policy="@Permissions.InventoryWriteOff" Context="_">
+                @if (context.Available > 0)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.DeleteSweep" Size="Size.Small" Color="Color.Error"
+                                   aria-label="@L["StockActions.WriteOff"]" title="@L["StockActions.WriteOff"]"
+                                   OnClick="() => ActAsync(StockAction.WriteOff, context)" />
+                }
+                @if (context.Quarantined > 0)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.RemoveShoppingCart" Size="Size.Small" Color="Color.Error"
+                                   aria-label="@L["StockActions.WriteOffQuarantined"]" title="@L["StockActions.WriteOffQuarantined"]"
+                                   OnClick="() => ActAsync(StockAction.WriteOffQuarantined, context)" />
+                }
+            </AuthorizeView>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Inventory.NoBatches"]</MudText>
+    </NoRecordsContent>
+</MudTable>
+
+<MudText Typo="Typo.h6" Class="mt-6" GutterBottom="true">@L["Inventory.History"]</MudText>
+<MudPaper Class="pa-3 mb-3" Elevation="0" Outlined="true">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" sm="6">
+            <MudSelect T="int?" Value="_batchFilter" ValueChanged="OnBatchFilterChangedAsync" Label="@L["Inventory.Batch"]" Clearable="true">
+                @foreach (var batch in _detail.Batches)
+                {
+                    <MudSelectItem T="int?" Value="batch.Id">@batch.BatchNumber</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudSelect T="StockMovementType?" Value="_typeFilter" ValueChanged="OnTypeFilterChangedAsync" Label="@L["Inventory.MovementType"]" Clearable="true">
+                @foreach (var type in Enum.GetValues<StockMovementType>())
+                {
+                    <MudSelectItem T="StockMovementType?" Value="type">@L[$"StockMovementTypes.{type}"]</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudTable @ref="_movements" T="MovementRow" ServerData="LoadMovementsAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25">
+    <HeaderContent>
+        <MudTh>@L["Audit.Time"]</MudTh>
+        <MudTh>@L["Inventory.MovementType"]</MudTh>
+        <MudTh>@L["Inventory.BatchNumber"]</MudTh>
+        <MudTh>@L["Inventory.Change"]</MudTh>
+        <MudTh>@L["Inventory.Balance"]</MudTh>
+        <MudTh>@L["Inventory.Reason"]</MudTh>
+        <MudTh>@L["Login.UserName"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Audit.Time"]">@LocalizerExtensions.LocalTime(context.OccurredAtUtc)</MudTd>
+        <MudTd DataLabel="@L["Inventory.MovementType"]">@L[$"StockMovementTypes.{context.Type}"]</MudTd>
+        <MudTd DataLabel="@L["Inventory.BatchNumber"]"><span dir="ltr">@context.BatchNumber</span></MudTd>
+        <MudTd DataLabel="@L["Inventory.Change"]">
+            <span dir="ltr">
+                @if (context.AvailableDelta != 0)
+                {
+                    <span class="@DeltaClass(context.AvailableDelta)">@Signed(context.AvailableDelta)</span>
+                }
+                @if (context.QuarantineDelta != 0)
+                {
+                    <span class="@DeltaClass(context.QuarantineDelta)"> (@L["Inventory.QuarantineShort"] @Signed(context.QuarantineDelta))</span>
+                }
+            </span>
+        </MudTd>
+        <MudTd DataLabel="@L["Inventory.Balance"]">
+            <span dir="ltr">@context.AvailableAfter@(context.QuarantineAfter > 0 ? $" / {context.QuarantineAfter}" : "")</span>
+        </MudTd>
+        <MudTd DataLabel="@L["Inventory.Reason"]">
+            @(context.ReasonCode is null ? "" : L[$"StockReasons.{context.ReasonCode}"].Value)
+            @if (!string.IsNullOrWhiteSpace(context.Note))
+            {
+                <MudText Typo="Typo.caption">@context.Note</MudText>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Login.UserName"]"><span dir="ltr">@context.UserName</span></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Audit.NoRecords"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public int ProductId { get; set; }
+
+    private ProductStockDetail? _detail;
+    private bool _notFound;
+    private MudTable<MovementRow>? _movements;
+    private int? _batchFilter;
+    private StockMovementType? _typeFilter;
+
+    private string Title => _detail?.DisplayName(SupportedCultures.IsArabicUi) is { Length: > 0 } name
+        ? $"{name} {_detail.Strength}".Trim()
+        : L["Nav.Inventory"];
+
+    private string BaseUnitName => _detail?.Units.FirstOrDefault(u => u.IsBase)?.Unit.For(SupportedCultures.IsArabicUi) ?? string.Empty;
+
+    protected override Task OnParametersSetAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        var result = await Services.For<InventoryQueryService>().RunAsync(s => s.GetProductStockAsync(ProductId));
+        _notFound = result.IsFailure;
+        _detail = result.IsSuccess ? result.Value : null;
+    }
+
+    private Task<TableData<MovementRow>> LoadMovementsAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadMovementsPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<MovementRow>> LoadMovementsPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var query = new MovementQuery(ProductId, _batchFilter, _typeFilter, null, null, state.Page, state.PageSize);
+        var result = await Services.For<InventoryQueryService>().RunAsync(s => s.SearchMovementsAsync(query, cancellationToken));
+        return result.IsSuccess
+            ? new TableData<MovementRow> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<MovementRow> { Items = [], TotalItems = 0 };
+    }
+
+    private Task OnBatchFilterChangedAsync(int? batchId)
+    {
+        _batchFilter = batchId;
+        return ReloadMovementsAsync();
+    }
+
+    private Task OnTypeFilterChangedAsync(StockMovementType? type)
+    {
+        _typeFilter = type;
+        return ReloadMovementsAsync();
+    }
+
+    private Task ReloadMovementsAsync() => _movements?.ReloadServerData() ?? Task.CompletedTask;
+
+    private async Task AddOpeningStockAsync()
+    {
+        var parameters = new DialogParameters<OpeningStockDialog> { { d => d.ProductId, ProductId } };
+        var dialog = await DialogService.ShowAsync<OpeningStockDialog>(
+            L["Inventory.AddOpeningStock"], parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        await RefreshAfterAsync(dialog);
+    }
+
+    private async Task ActAsync(StockAction action, BatchRow batch)
+    {
+        var parameters = new DialogParameters<StockActionDialog>
+        {
+            { d => d.Action, action },
+            { d => d.Batch, batch },
+            { d => d.Units, _detail!.Units },
+        };
+        var dialog = await DialogService.ShowAsync<StockActionDialog>(
+            L[$"StockActions.{action}"], parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        await RefreshAfterAsync(dialog);
+    }
+
+    private async Task RefreshAfterAsync(IDialogReference dialog)
+    {
+        if (await dialog.Result is { Canceled: false })
+        {
+            Snackbar.Add(L["Common.Saved"], Severity.Success);
+            await LoadAsync();
+            await ReloadMovementsAsync();
+        }
+    }
+
+    private static string Signed(int value) => value > 0 ? $"+{value}" : value.ToString(CultureInfo.CurrentCulture);
+
+    private static string DeltaClass(int value) => value > 0 ? "delta-positive" : "delta-negative";
+}

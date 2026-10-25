@@ -4,8 +4,11 @@ using System.Xml.Linq;
 using Pharmacy.Application.Auditing;
 using Pharmacy.Application.Authorization;
 using Pharmacy.Application.Common;
+using Pharmacy.Application.Inventory;
 using Pharmacy.Domain.Common;
+using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Settings;
+using Pharmacy.Web.Common;
 
 namespace Pharmacy.ArchitectureTests;
 
@@ -93,6 +96,19 @@ public partial class LocalizationResourceTests
             .Concat(SystemRoles.Defaults.Select(r => $"RoleNames.{r}"));
 
         expected.Where(key => !keys.Contains(key)).ShouldBeEmpty("labels missing from the resources");
+    }
+
+    [Fact]
+    public void EveryInventoryOption_HasALabel()
+    {
+        var keys = LoadResource("SharedResource.en.resx").Keys.ToHashSet(StringComparer.Ordinal);
+
+        var expected = Enum.GetNames<StockFilter>().Select(name => $"StockFilters.{name}")
+            .Concat(Enum.GetNames<StockAction>().Select(name => $"StockActions.{name}"))
+            .Concat(Enum.GetNames<StockMovementType>().Select(name => $"StockMovementTypes.{name}"))
+            .Concat(StockReasons.All.Select(reason => $"StockReasons.{reason}"));
+
+        expected.Where(key => !keys.Contains(key)).ShouldBeEmpty("inventory options without a label");
     }
 
     // Matches L["Some.Key"] and L["Some.Key", arg] in markup.

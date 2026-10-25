@@ -24,7 +24,9 @@ public sealed class ProductService(IPharmacyDbContext db, ICurrentUser currentUs
         var product = await db.Products.AsNoTracking().Include(p => p.Units).SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
         return product is null
             ? Result.Failure<ProductForEdit>(_notFound)
-            : Result.Success(new ProductForEdit(product.Id, DetailsOf(product), UnitsOf(product), product.IsActive, product.RowVersion));
+            : Result.Success(new ProductForEdit(
+                product.Id, DetailsOf(product), UnitsOf(product), product.IsActive,
+                UnitsLocked: await HasStockHistoryAsync(product.Id, cancellationToken), product.RowVersion));
     }
 
     public async Task<Result<int>> CreateAsync(
@@ -79,7 +81,7 @@ public sealed class ProductService(IPharmacyDbContext db, ICurrentUser currentUs
         var before = Snapshot(product);
         db.Entry(product).Property(p => p.RowVersion).OriginalValue = rowVersion;
 
-        var updated = product.Update(details, units);
+        var updated = product.Update(details, units, unitsLocked: await HasStockHistoryAsync(id, cancellationToken));
         if (updated.IsFailure)
         {
             return updated;
@@ -121,6 +123,9 @@ public sealed class ProductService(IPharmacyDbContext db, ICurrentUser currentUs
 
         return Result.Success();
     }
+
+    private Task<bool> HasStockHistoryAsync(int productId, CancellationToken cancellationToken) =>
+        db.Batches.AnyAsync(b => b.ProductId == productId, cancellationToken);
 
     private async Task<Result> SaveAsync(CancellationToken cancellationToken)
     {

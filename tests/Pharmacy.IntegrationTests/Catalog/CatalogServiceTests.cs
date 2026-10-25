@@ -44,6 +44,7 @@ public sealed class CatalogServiceTests : IAsyncLifetime
         forms.Value.Count.ShouldBe(11);
 
         var grants = await _services.InScopeAsync(s => s.GetRequiredService<PharmacyDbContext>().RoleClaims
+            .Where(c => c.ClaimValue!.StartsWith("Catalog."))
             .Join(s.GetRequiredService<PharmacyDbContext>().Roles, c => c.RoleId, r => r.Id, (c, r) => r.Name + ":" + c.ClaimValue)
             .ToListAsync());
         grants.ShouldBe(

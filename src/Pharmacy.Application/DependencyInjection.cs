@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Pharmacy.Application.Auditing;
 using Pharmacy.Application.Catalog;
+using Pharmacy.Application.Inventory;
 using Pharmacy.Application.Settings;
 
 namespace Pharmacy.Application;
@@ -20,6 +21,10 @@ public static class DependencyInjection
         services.AddScoped(typeof(LookupService<>));
         services.AddScoped<ProductService>();
         services.AddScoped<ProductQueryService>();
+
+        services.AddScoped<InventoryLedger>();
+        services.AddScoped<InventoryService>();
+        services.AddScoped<InventoryQueryService>();
 
         return services;
     }

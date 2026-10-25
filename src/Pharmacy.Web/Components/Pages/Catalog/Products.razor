@@ -85,7 +85,10 @@
         _categories = categories.IsSuccess ? categories.Value : [];
     }
 
-    private async Task<TableData<ProductListItem>> LoadAsync(TableState state, CancellationToken cancellationToken)
+    private Task<TableData<ProductListItem>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<ProductListItem>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
     {
         var result = await Services.For<ProductQueryService>().RunAsync(s => s.SearchAsync(
             new ProductQuery(_searchText, _categoryId, _includeInactive, state.Page, state.PageSize), cancellationToken));

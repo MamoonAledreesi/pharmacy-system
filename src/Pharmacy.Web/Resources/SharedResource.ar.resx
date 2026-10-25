@@ -846,4 +846,307 @@
   <data name="MudBlazor.MudInput_Decrement" xml:space="preserve">
     <value>إنقاص</value>
   </data>
+  <data name="Inventory.AddOpeningStock" xml:space="preserve">
+    <value>إضافة مخزون افتتاحي</value>
+  </data>
+  <data name="Inventory.Show" xml:space="preserve">
+    <value>عرض</value>
+  </data>
+  <data name="Inventory.Sellable" xml:space="preserve">
+    <value>المتاح للبيع</value>
+  </data>
+  <data name="Inventory.Quarantined" xml:space="preserve">
+    <value>في الحجر</value>
+  </data>
+  <data name="Inventory.QuarantineShort" xml:space="preserve">
+    <value>حجر</value>
+  </data>
+  <data name="Inventory.Expired" xml:space="preserve">
+    <value>منتهي الصلاحية</value>
+  </data>
+  <data name="Inventory.NearExpiry" xml:space="preserve">
+    <value>قريب الانتهاء</value>
+  </data>
+  <data name="Inventory.OutOfStock" xml:space="preserve">
+    <value>نفد المخزون</value>
+  </data>
+  <data name="Inventory.LowStock" xml:space="preserve">
+    <value>مخزون منخفض</value>
+  </data>
+  <data name="Inventory.StockValue" xml:space="preserve">
+    <value>قيمة المخزون</value>
+  </data>
+  <data name="Inventory.Batches" xml:space="preserve">
+    <value>الدفعات</value>
+  </data>
+  <data name="Inventory.Batch" xml:space="preserve">
+    <value>الدفعة</value>
+  </data>
+  <data name="Inventory.BatchNumber" xml:space="preserve">
+    <value>رقم الدفعة</value>
+  </data>
+  <data name="Inventory.BatchNumberOptional" xml:space="preserve">
+    <value>رقم الدفعة (اختياري)</value>
+  </data>
+  <data name="Inventory.BatchNumberHint" xml:space="preserve">
+    <value>إن تُرك فارغاً يُنشأ رقم تلقائي مثل AUTO-0001</value>
+  </data>
+  <data name="Inventory.ExpiryDate" xml:space="preserve">
+    <value>تاريخ الانتهاء</value>
+  </data>
+  <data name="Inventory.MonthYear" xml:space="preserve">
+    <value>شهر / سنة</value>
+  </data>
+  <data name="Inventory.FullDate" xml:space="preserve">
+    <value>تاريخ كامل</value>
+  </data>
+  <data name="Inventory.Month" xml:space="preserve">
+    <value>الشهر</value>
+  </data>
+  <data name="Inventory.Year" xml:space="preserve">
+    <value>السنة</value>
+  </data>
+  <data name="Inventory.ExpiresOn" xml:space="preserve">
+    <value>صالحة حتى نهاية {0}</value>
+  </data>
+  <data name="Inventory.ReceivedOn" xml:space="preserve">
+    <value>تاريخ الاستلام</value>
+  </data>
+  <data name="Inventory.UnitCost" xml:space="preserve">
+    <value>التكلفة لكل {0}</value>
+  </data>
+  <data name="Inventory.CostPerChosenUnit" xml:space="preserve">
+    <value>التكلفة لكل {0}</value>
+  </data>
+  <data name="Inventory.CostPerBaseUnit" xml:space="preserve">
+    <value>التكلفة لكل {0}: {1}</value>
+  </data>
+  <data name="Inventory.Product" xml:space="preserve">
+    <value>المنتج</value>
+  </data>
+  <data name="Inventory.Quantity" xml:space="preserve">
+    <value>الكمية</value>
+  </data>
+  <data name="Inventory.BaseEquivalent" xml:space="preserve">
+    <value>= {0} {1}</value>
+  </data>
+  <data name="Inventory.Reason" xml:space="preserve">
+    <value>السبب</value>
+  </data>
+  <data name="Inventory.Note" xml:space="preserve">
+    <value>ملاحظة</value>
+  </data>
+  <data name="Inventory.Actions" xml:space="preserve">
+    <value>إجراءات</value>
+  </data>
+  <data name="Inventory.NoBatches" xml:space="preserve">
+    <value>لا توجد دفعات لهذا المنتج بعد.</value>
+  </data>
+  <data name="Inventory.NoExpiryProduct" xml:space="preserve">
+    <value>منتج بدون تاريخ صلاحية.</value>
+  </data>
+  <data name="Inventory.NearExpiryRule" xml:space="preserve">
+    <value>يُعدّ قريب الانتهاء خلال {0} يوماً.</value>
+  </data>
+  <data name="Inventory.History" xml:space="preserve">
+    <value>سجل الحركات</value>
+  </data>
+  <data name="Inventory.MovementType" xml:space="preserve">
+    <value>نوع الحركة</value>
+  </data>
+  <data name="Inventory.Change" xml:space="preserve">
+    <value>التغيير</value>
+  </data>
+  <data name="Inventory.Balance" xml:space="preserve">
+    <value>الرصيد بعد الحركة</value>
+  </data>
+  <data name="Expiry.Expired" xml:space="preserve">
+    <value>منتهية</value>
+  </data>
+  <data name="Expiry.NearExpiry" xml:space="preserve">
+    <value>قريبة الانتهاء</value>
+  </data>
+  <data name="StockFilters.All" xml:space="preserve">
+    <value>الكل</value>
+  </data>
+  <data name="StockFilters.InStock" xml:space="preserve">
+    <value>المتوفر</value>
+  </data>
+  <data name="StockFilters.OutOfStock" xml:space="preserve">
+    <value>النافد</value>
+  </data>
+  <data name="StockFilters.LowStock" xml:space="preserve">
+    <value>المخزون المنخفض</value>
+  </data>
+  <data name="StockFilters.HasExpired" xml:space="preserve">
+    <value>فيه كميات منتهية</value>
+  </data>
+  <data name="StockFilters.NearExpiry" xml:space="preserve">
+    <value>قريب الانتهاء</value>
+  </data>
+  <data name="StockFilters.HasQuarantined" xml:space="preserve">
+    <value>فيه كميات في الحجر</value>
+  </data>
+  <data name="StockActions.AdjustIncrease" xml:space="preserve">
+    <value>تسوية بالزيادة</value>
+  </data>
+  <data name="StockActions.AdjustDecrease" xml:space="preserve">
+    <value>تسوية بالنقص</value>
+  </data>
+  <data name="StockActions.Quarantine" xml:space="preserve">
+    <value>نقل إلى الحجر</value>
+  </data>
+  <data name="StockActions.Release" xml:space="preserve">
+    <value>إعادة من الحجر للبيع</value>
+  </data>
+  <data name="StockActions.WriteOff" xml:space="preserve">
+    <value>إتلاف من المتاح</value>
+  </data>
+  <data name="StockActions.WriteOffQuarantined" xml:space="preserve">
+    <value>إتلاف من الحجر</value>
+  </data>
+  <data name="StockReasons.Damaged" xml:space="preserve">
+    <value>تالف</value>
+  </data>
+  <data name="StockReasons.Lost" xml:space="preserve">
+    <value>مفقود</value>
+  </data>
+  <data name="StockReasons.CountDifference" xml:space="preserve">
+    <value>فرق جرد</value>
+  </data>
+  <data name="StockReasons.Expired" xml:space="preserve">
+    <value>منتهي الصلاحية</value>
+  </data>
+  <data name="StockReasons.Other" xml:space="preserve">
+    <value>سبب آخر</value>
+  </data>
+  <data name="StockMovementTypes.OpeningStock" xml:space="preserve">
+    <value>مخزون افتتاحي</value>
+  </data>
+  <data name="StockMovementTypes.Purchase" xml:space="preserve">
+    <value>شراء</value>
+  </data>
+  <data name="StockMovementTypes.Sale" xml:space="preserve">
+    <value>بيع</value>
+  </data>
+  <data name="StockMovementTypes.AdjustmentIncrease" xml:space="preserve">
+    <value>تسوية بالزيادة</value>
+  </data>
+  <data name="StockMovementTypes.AdjustmentDecrease" xml:space="preserve">
+    <value>تسوية بالنقص</value>
+  </data>
+  <data name="StockMovementTypes.QuarantineIn" xml:space="preserve">
+    <value>نقل إلى الحجر</value>
+  </data>
+  <data name="StockMovementTypes.QuarantineOut" xml:space="preserve">
+    <value>إعادة من الحجر</value>
+  </data>
+  <data name="StockMovementTypes.WriteOff" xml:space="preserve">
+    <value>إتلاف</value>
+  </data>
+  <data name="StockMovementTypes.WriteOffQuarantined" xml:space="preserve">
+    <value>إتلاف من الحجر</value>
+  </data>
+  <data name="PermissionModules.Inventory" xml:space="preserve">
+    <value>المخزون</value>
+  </data>
+  <data name="Permissions.Inventory.View" xml:space="preserve">
+    <value>عرض المخزون والدفعات</value>
+  </data>
+  <data name="Permissions.Inventory.ViewCost" xml:space="preserve">
+    <value>عرض التكلفة وقيمة المخزون</value>
+  </data>
+  <data name="Permissions.Inventory.OpeningStock" xml:space="preserve">
+    <value>إدخال المخزون الافتتاحي</value>
+  </data>
+  <data name="Permissions.Inventory.Adjust" xml:space="preserve">
+    <value>التسويات والحجر</value>
+  </data>
+  <data name="Permissions.Inventory.WriteOff" xml:space="preserve">
+    <value>إتلاف المخزون</value>
+  </data>
+  <data name="AuditActions.Inventory.OpeningStock" xml:space="preserve">
+    <value>مخزون افتتاحي</value>
+  </data>
+  <data name="AuditActions.Inventory.Adjusted" xml:space="preserve">
+    <value>تسوية مخزون</value>
+  </data>
+  <data name="AuditActions.Inventory.Quarantined" xml:space="preserve">
+    <value>نقل إلى الحجر</value>
+  </data>
+  <data name="AuditActions.Inventory.Released" xml:space="preserve">
+    <value>إعادة من الحجر</value>
+  </data>
+  <data name="AuditActions.Inventory.WrittenOff" xml:space="preserve">
+    <value>إتلاف مخزون</value>
+  </data>
+  <data name="Settings.Inventory" xml:space="preserve">
+    <value>المخزون</value>
+  </data>
+  <data name="Settings.NearExpiryDays" xml:space="preserve">
+    <value>تنبيه قرب الانتهاء (أيام)</value>
+  </data>
+  <data name="Settings.NearExpiryDaysHint" xml:space="preserve">
+    <value>تُعدّ الدفعة قريبة الانتهاء خلال هذه المدة. يمكن تخصيصها لكل منتج.</value>
+  </data>
+  <data name="Settings.InvalidNearExpiryDays" xml:space="preserve">
+    <value>مدة قرب الانتهاء يجب أن تكون بين 1 و{0} يوماً.</value>
+  </data>
+  <data name="Products.UnitsLockedHint" xml:space="preserve">
+    <value>للمنتج مخزون، لذلك تُقفل وحدته الأساسية ووحداته الحالية ومعاملاتها حتى لا تتغير كميات المخزون. يمكنك إضافة وحدات جديدة وتعديل الأسعار والباركود.</value>
+  </data>
+  <data name="Catalog.UnitsLockedByStock" xml:space="preserve">
+    <value>للمنتج مخزون، فلا يمكن تغيير وحدته الأساسية أو وحداته الحالية أو معاملاتها.</value>
+  </data>
+  <data name="Inventory.InvalidQuantity" xml:space="preserve">
+    <value>الكمية يجب أن تكون أكبر من صفر.</value>
+  </data>
+  <data name="Inventory.QuantityTooLarge" xml:space="preserve">
+    <value>الكمية كبيرة جداً (الحد الأقصى {0} وحدة أساسية للعملية الواحدة).</value>
+  </data>
+  <data name="Inventory.InvalidUnitCost" xml:space="preserve">
+    <value>التكلفة غير صالحة.</value>
+  </data>
+  <data name="Inventory.BatchNumberRequired" xml:space="preserve">
+    <value>رقم الدفعة مطلوب.</value>
+  </data>
+  <data name="Inventory.BatchNumberTooLong" xml:space="preserve">
+    <value>رقم الدفعة يجب ألا يتجاوز {0} حرفاً.</value>
+  </data>
+  <data name="Inventory.ExpiryRequired" xml:space="preserve">
+    <value>تاريخ الانتهاء مطلوب لهذا المنتج.</value>
+  </data>
+  <data name="Inventory.ExpiryOutOfRange" xml:space="preserve">
+    <value>تاريخ الانتهاء يجب أن يكون بين سنة {0} وسنة {1}.</value>
+  </data>
+  <data name="Inventory.InsufficientStock" xml:space="preserve">
+    <value>الكمية المتاحة غير كافية. المتاح: {0}.</value>
+  </data>
+  <data name="Inventory.InsufficientQuarantined" xml:space="preserve">
+    <value>كمية الحجر غير كافية. في الحجر: {0}.</value>
+  </data>
+  <data name="Inventory.UnknownProduct" xml:space="preserve">
+    <value>المنتج غير موجود.</value>
+  </data>
+  <data name="Inventory.InactiveProduct" xml:space="preserve">
+    <value>المنتج معطّل. فعّله أولاً.</value>
+  </data>
+  <data name="Inventory.UnknownBatch" xml:space="preserve">
+    <value>الدفعة غير موجودة.</value>
+  </data>
+  <data name="Inventory.UnknownUnit" xml:space="preserve">
+    <value>الوحدة المختارة ليست من وحدات المنتج.</value>
+  </data>
+  <data name="Inventory.ReasonRequired" xml:space="preserve">
+    <value>السبب مطلوب.</value>
+  </data>
+  <data name="Inventory.UnknownReason" xml:space="preserve">
+    <value>السبب المختار غير صالح لهذه العملية.</value>
+  </data>
+  <data name="Inventory.NoteRequired" xml:space="preserve">
+    <value>اكتب ملاحظة توضح السبب الآخر.</value>
+  </data>
+  <data name="Inventory.NoteTooLong" xml:space="preserve">
+    <value>الملاحظة يجب ألا تتجاوز {0} حرفاً.</value>
+  </data>
 </root>

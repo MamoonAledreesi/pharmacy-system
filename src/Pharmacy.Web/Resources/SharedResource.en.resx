@@ -846,4 +846,307 @@
   <data name="MudBlazor.MudInput_Decrement" xml:space="preserve">
     <value>Decrease</value>
   </data>
+  <data name="Inventory.AddOpeningStock" xml:space="preserve">
+    <value>Add opening stock</value>
+  </data>
+  <data name="Inventory.Show" xml:space="preserve">
+    <value>Show</value>
+  </data>
+  <data name="Inventory.Sellable" xml:space="preserve">
+    <value>Sellable</value>
+  </data>
+  <data name="Inventory.Quarantined" xml:space="preserve">
+    <value>Quarantined</value>
+  </data>
+  <data name="Inventory.QuarantineShort" xml:space="preserve">
+    <value>quarantine</value>
+  </data>
+  <data name="Inventory.Expired" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="Inventory.NearExpiry" xml:space="preserve">
+    <value>Near expiry</value>
+  </data>
+  <data name="Inventory.OutOfStock" xml:space="preserve">
+    <value>Out of stock</value>
+  </data>
+  <data name="Inventory.LowStock" xml:space="preserve">
+    <value>Low stock</value>
+  </data>
+  <data name="Inventory.StockValue" xml:space="preserve">
+    <value>Stock value</value>
+  </data>
+  <data name="Inventory.Batches" xml:space="preserve">
+    <value>Batches</value>
+  </data>
+  <data name="Inventory.Batch" xml:space="preserve">
+    <value>Batch</value>
+  </data>
+  <data name="Inventory.BatchNumber" xml:space="preserve">
+    <value>Batch number</value>
+  </data>
+  <data name="Inventory.BatchNumberOptional" xml:space="preserve">
+    <value>Batch number (optional)</value>
+  </data>
+  <data name="Inventory.BatchNumberHint" xml:space="preserve">
+    <value>If left empty an automatic number such as AUTO-0001 is created</value>
+  </data>
+  <data name="Inventory.ExpiryDate" xml:space="preserve">
+    <value>Expiry date</value>
+  </data>
+  <data name="Inventory.MonthYear" xml:space="preserve">
+    <value>Month / year</value>
+  </data>
+  <data name="Inventory.FullDate" xml:space="preserve">
+    <value>Full date</value>
+  </data>
+  <data name="Inventory.Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="Inventory.Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="Inventory.ExpiresOn" xml:space="preserve">
+    <value>Valid until the end of {0}</value>
+  </data>
+  <data name="Inventory.ReceivedOn" xml:space="preserve">
+    <value>Received on</value>
+  </data>
+  <data name="Inventory.UnitCost" xml:space="preserve">
+    <value>Cost per {0}</value>
+  </data>
+  <data name="Inventory.CostPerChosenUnit" xml:space="preserve">
+    <value>Cost per {0}</value>
+  </data>
+  <data name="Inventory.CostPerBaseUnit" xml:space="preserve">
+    <value>Cost per {0}: {1}</value>
+  </data>
+  <data name="Inventory.Product" xml:space="preserve">
+    <value>Product</value>
+  </data>
+  <data name="Inventory.Quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="Inventory.BaseEquivalent" xml:space="preserve">
+    <value>= {0} {1}</value>
+  </data>
+  <data name="Inventory.Reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="Inventory.Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Inventory.Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Inventory.NoBatches" xml:space="preserve">
+    <value>This product has no batches yet.</value>
+  </data>
+  <data name="Inventory.NoExpiryProduct" xml:space="preserve">
+    <value>This product has no expiry date.</value>
+  </data>
+  <data name="Inventory.NearExpiryRule" xml:space="preserve">
+    <value>Counted as near expiry within {0} days.</value>
+  </data>
+  <data name="Inventory.History" xml:space="preserve">
+    <value>Movement history</value>
+  </data>
+  <data name="Inventory.MovementType" xml:space="preserve">
+    <value>Movement type</value>
+  </data>
+  <data name="Inventory.Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Inventory.Balance" xml:space="preserve">
+    <value>Balance after</value>
+  </data>
+  <data name="Expiry.Expired" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="Expiry.NearExpiry" xml:space="preserve">
+    <value>Near expiry</value>
+  </data>
+  <data name="StockFilters.All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="StockFilters.InStock" xml:space="preserve">
+    <value>In stock</value>
+  </data>
+  <data name="StockFilters.OutOfStock" xml:space="preserve">
+    <value>Out of stock</value>
+  </data>
+  <data name="StockFilters.LowStock" xml:space="preserve">
+    <value>Low stock</value>
+  </data>
+  <data name="StockFilters.HasExpired" xml:space="preserve">
+    <value>Has expired stock</value>
+  </data>
+  <data name="StockFilters.NearExpiry" xml:space="preserve">
+    <value>Near expiry</value>
+  </data>
+  <data name="StockFilters.HasQuarantined" xml:space="preserve">
+    <value>Has quarantined stock</value>
+  </data>
+  <data name="StockActions.AdjustIncrease" xml:space="preserve">
+    <value>Adjust: increase</value>
+  </data>
+  <data name="StockActions.AdjustDecrease" xml:space="preserve">
+    <value>Adjust: decrease</value>
+  </data>
+  <data name="StockActions.Quarantine" xml:space="preserve">
+    <value>Move to quarantine</value>
+  </data>
+  <data name="StockActions.Release" xml:space="preserve">
+    <value>Release from quarantine</value>
+  </data>
+  <data name="StockActions.WriteOff" xml:space="preserve">
+    <value>Write off sellable stock</value>
+  </data>
+  <data name="StockActions.WriteOffQuarantined" xml:space="preserve">
+    <value>Write off quarantined stock</value>
+  </data>
+  <data name="StockReasons.Damaged" xml:space="preserve">
+    <value>Damaged</value>
+  </data>
+  <data name="StockReasons.Lost" xml:space="preserve">
+    <value>Lost</value>
+  </data>
+  <data name="StockReasons.CountDifference" xml:space="preserve">
+    <value>Count difference</value>
+  </data>
+  <data name="StockReasons.Expired" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="StockReasons.Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="StockMovementTypes.OpeningStock" xml:space="preserve">
+    <value>Opening stock</value>
+  </data>
+  <data name="StockMovementTypes.Purchase" xml:space="preserve">
+    <value>Purchase</value>
+  </data>
+  <data name="StockMovementTypes.Sale" xml:space="preserve">
+    <value>Sale</value>
+  </data>
+  <data name="StockMovementTypes.AdjustmentIncrease" xml:space="preserve">
+    <value>Adjustment increase</value>
+  </data>
+  <data name="StockMovementTypes.AdjustmentDecrease" xml:space="preserve">
+    <value>Adjustment decrease</value>
+  </data>
+  <data name="StockMovementTypes.QuarantineIn" xml:space="preserve">
+    <value>Moved to quarantine</value>
+  </data>
+  <data name="StockMovementTypes.QuarantineOut" xml:space="preserve">
+    <value>Released from quarantine</value>
+  </data>
+  <data name="StockMovementTypes.WriteOff" xml:space="preserve">
+    <value>Write-off</value>
+  </data>
+  <data name="StockMovementTypes.WriteOffQuarantined" xml:space="preserve">
+    <value>Quarantine write-off</value>
+  </data>
+  <data name="PermissionModules.Inventory" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="Permissions.Inventory.View" xml:space="preserve">
+    <value>View stock and batches</value>
+  </data>
+  <data name="Permissions.Inventory.ViewCost" xml:space="preserve">
+    <value>View costs and stock value</value>
+  </data>
+  <data name="Permissions.Inventory.OpeningStock" xml:space="preserve">
+    <value>Enter opening stock</value>
+  </data>
+  <data name="Permissions.Inventory.Adjust" xml:space="preserve">
+    <value>Adjustments and quarantine</value>
+  </data>
+  <data name="Permissions.Inventory.WriteOff" xml:space="preserve">
+    <value>Write off stock</value>
+  </data>
+  <data name="AuditActions.Inventory.OpeningStock" xml:space="preserve">
+    <value>Opening stock</value>
+  </data>
+  <data name="AuditActions.Inventory.Adjusted" xml:space="preserve">
+    <value>Stock adjusted</value>
+  </data>
+  <data name="AuditActions.Inventory.Quarantined" xml:space="preserve">
+    <value>Moved to quarantine</value>
+  </data>
+  <data name="AuditActions.Inventory.Released" xml:space="preserve">
+    <value>Released from quarantine</value>
+  </data>
+  <data name="AuditActions.Inventory.WrittenOff" xml:space="preserve">
+    <value>Stock written off</value>
+  </data>
+  <data name="Settings.Inventory" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="Settings.NearExpiryDays" xml:space="preserve">
+    <value>Near-expiry alert (days)</value>
+  </data>
+  <data name="Settings.NearExpiryDaysHint" xml:space="preserve">
+    <value>A batch is near expiry within this period. Each product may override it.</value>
+  </data>
+  <data name="Settings.InvalidNearExpiryDays" xml:space="preserve">
+    <value>The near-expiry period must be between 1 and {0} days.</value>
+  </data>
+  <data name="Products.UnitsLockedHint" xml:space="preserve">
+    <value>This product has stock, so its base unit, existing units, and factors are locked to keep stock quantities correct. You can still add new units and change prices and barcodes.</value>
+  </data>
+  <data name="Catalog.UnitsLockedByStock" xml:space="preserve">
+    <value>This product has stock, so its base unit, existing units, and factors cannot be changed.</value>
+  </data>
+  <data name="Inventory.InvalidQuantity" xml:space="preserve">
+    <value>The quantity must be greater than zero.</value>
+  </data>
+  <data name="Inventory.QuantityTooLarge" xml:space="preserve">
+    <value>The quantity is too large (at most {0} base units per operation).</value>
+  </data>
+  <data name="Inventory.InvalidUnitCost" xml:space="preserve">
+    <value>The cost is not valid.</value>
+  </data>
+  <data name="Inventory.BatchNumberRequired" xml:space="preserve">
+    <value>The batch number is required.</value>
+  </data>
+  <data name="Inventory.BatchNumberTooLong" xml:space="preserve">
+    <value>The batch number must not exceed {0} characters.</value>
+  </data>
+  <data name="Inventory.ExpiryRequired" xml:space="preserve">
+    <value>The expiry date is required for this product.</value>
+  </data>
+  <data name="Inventory.ExpiryOutOfRange" xml:space="preserve">
+    <value>The expiry date must be between the years {0} and {1}.</value>
+  </data>
+  <data name="Inventory.InsufficientStock" xml:space="preserve">
+    <value>Not enough sellable stock. Available: {0}.</value>
+  </data>
+  <data name="Inventory.InsufficientQuarantined" xml:space="preserve">
+    <value>Not enough quarantined stock. In quarantine: {0}.</value>
+  </data>
+  <data name="Inventory.UnknownProduct" xml:space="preserve">
+    <value>The product does not exist.</value>
+  </data>
+  <data name="Inventory.InactiveProduct" xml:space="preserve">
+    <value>The product is deactivated. Activate it first.</value>
+  </data>
+  <data name="Inventory.UnknownBatch" xml:space="preserve">
+    <value>The batch does not exist.</value>
+  </data>
+  <data name="Inventory.UnknownUnit" xml:space="preserve">
+    <value>The selected unit is not one of the product's units.</value>
+  </data>
+  <data name="Inventory.ReasonRequired" xml:space="preserve">
+    <value>A reason is required.</value>
+  </data>
+  <data name="Inventory.UnknownReason" xml:space="preserve">
+    <value>The selected reason is not valid for this operation.</value>
+  </data>
+  <data name="Inventory.NoteRequired" xml:space="preserve">
+    <value>Write a note explaining the other reason.</value>
+  </data>
+  <data name="Inventory.NoteTooLong" xml:space="preserve">
+    <value>The note must not exceed {0} characters.</value>
+  </data>
 </root>
