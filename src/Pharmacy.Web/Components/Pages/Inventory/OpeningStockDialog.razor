@@ -43,39 +43,7 @@
 
                 @if (_detail.TracksExpiry)
                 {
-                    <MudItem xs="12">
-                        <MudText Typo="Typo.subtitle2">@L["Inventory.ExpiryDate"]</MudText>
-                        <MudRadioGroup T="bool" @bind-Value="_monthYearMode">
-                            <MudRadio T="bool" Value="true" Color="Color.Primary">@L["Inventory.MonthYear"]</MudRadio>
-                            <MudRadio T="bool" Value="false" Color="Color.Primary">@L["Inventory.FullDate"]</MudRadio>
-                        </MudRadioGroup>
-                    </MudItem>
-                    @if (_monthYearMode)
-                    {
-                        <MudItem xs="6">
-                            <MudSelect T="int?" @bind-Value="_month" Label="@L["Inventory.Month"]">
-                                @foreach (var month in Enumerable.Range(1, 12))
-                                {
-                                    <MudSelectItem T="int?" Value="month">@month</MudSelectItem>
-                                }
-                            </MudSelect>
-                        </MudItem>
-                        <MudItem xs="6">
-                            <MudNumericField T="int?" @bind-Value="_year" Label="@L["Inventory.Year"]" Min="ExpiryRules.MinYear" Max="ExpiryRules.MaxYear" />
-                        </MudItem>
-                        @if (ExpiryValue is { } endOfMonth)
-                        {
-                            <MudItem xs="12">
-                                <MudText Typo="Typo.caption">@L["Inventory.ExpiresOn", endOfMonth.ToString("d", CultureInfo.CurrentCulture)]</MudText>
-                            </MudItem>
-                        }
-                    }
-                    else
-                    {
-                        <MudItem xs="12">
-                            <MudDatePicker Label="@L["Inventory.ExpiryDate"]" @bind-Date="_date" />
-                        </MudItem>
-                    }
+                    <ExpiryPicker @ref="_expiry" />
                 }
                 else
                 {
@@ -110,29 +78,11 @@
     private int? _quantity;
     private decimal? _cost;
     private string? _batchNumber;
-    private bool _monthYearMode = true;
-    private int? _month;
-    private int? _year = DateTime.Today.Year;
-    private DateTime? _date;
+    private ExpiryPicker? _expiry;
     private string? _error;
     private bool _saving;
 
     private ProductUnitSummary? SelectedUnit => _detail?.Units.FirstOrDefault(u => u.Id == _unitId);
-
-    private DateOnly? ExpiryValue
-    {
-        get
-        {
-            if (_monthYearMode)
-            {
-                return _month is >= 1 and <= 12 && _year is >= ExpiryRules.MinYear and <= ExpiryRules.MaxYear
-                    ? ExpiryRules.EndOfMonth(_year.Value, _month.Value)
-                    : null;
-            }
-
-            return _date is { } date ? DateOnly.FromDateTime(date) : null;
-        }
-    }
 
     private string? CostHint
     {
@@ -206,7 +156,7 @@
         try
         {
             var request = new OpeningStockRequest(
-                _operationId, _detail.ProductId, _unitId, _quantity ?? 0, _cost ?? 0m, _batchNumber, _detail.TracksExpiry ? ExpiryValue : null);
+                _operationId, _detail.ProductId, _unitId, _quantity ?? 0, _cost ?? 0m, _batchNumber, _detail.TracksExpiry ? _expiry?.Value : null);
             var result = await Services.For<InventoryService>().RunAsync(s => s.ReceiveOpeningStockAsync(request));
 
             if (result.IsFailure)

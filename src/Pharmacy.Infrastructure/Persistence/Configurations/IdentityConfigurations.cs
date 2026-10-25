@@ -104,6 +104,19 @@ internal sealed class IdentityTableConfiguration :
         (4, Permissions.CashOpenShift),
         (2, Permissions.CashManualMovement),
         (4, Permissions.CashManualMovement),
+
+        // Suppliers and purchasing (Task 5). The store keeper buys, the accountant pays; opening balances and
+        // reversals are left to administrators unless granted.
+        (2, Permissions.SuppliersView),
+        (4, Permissions.SuppliersView),
+        (5, Permissions.SuppliersView),
+        (4, Permissions.SuppliersManage),
+        (5, Permissions.SuppliersManage),
+        (2, Permissions.PurchasingView),
+        (4, Permissions.PurchasingView),
+        (5, Permissions.PurchasingView),
+        (5, Permissions.PurchasingCreate),
+        (4, Permissions.PayablesPay),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

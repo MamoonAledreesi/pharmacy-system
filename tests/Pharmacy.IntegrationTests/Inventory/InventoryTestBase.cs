@@ -25,6 +25,9 @@ public abstract class InventoryTestBase : IAsyncLifetime
         Permissions.InventoryOpeningStock, Permissions.InventoryAdjust, Permissions.InventoryWriteOff, Permissions.SettingsManage,
     ];
 
+    /// <summary>What the signed-in user may do at the start of each test; derived bases add the permissions of their module.</summary>
+    protected virtual string[] InitialPermissions => StoreKeeper;
+
     protected TestServices Services { get; } = new();
 
     protected int ProductId { get; private set; }
@@ -39,7 +42,7 @@ public abstract class InventoryTestBase : IAsyncLifetime
     public async Task InitializeAsync()
     {
         await Services.InitializeAsync();
-        SignIn(StoreKeeper);
+        SignIn(InitialPermissions);
         (ProductId, StripId, BoxId) = await CreateProductAsync("Panadol", tracksExpiry: true);
     }
 

@@ -39,6 +39,13 @@ public static class AuditActions
     public const string CashShiftForceClosed = "Cash.ShiftForceClosed";
     public const string CashManualMovement = "Cash.ManualMovement";
 
+    public const string SupplierCreated = "Purchasing.SupplierCreated";
+    public const string SupplierUpdated = "Purchasing.SupplierUpdated";
+    public const string PurchaseCreated = "Purchasing.PurchaseCreated";
+    public const string SupplierPaid = "Payables.SupplierPaid";
+    public const string SupplierPaymentReversed = "Payables.PaymentReversed";
+    public const string SupplierOpeningBalance = "Payables.OpeningBalance";
+
     public static IReadOnlyList<string> All { get; } =
     [
         LoginSucceeded, LoginFailed, LockedOut, Logout, PasswordChanged, SetupCompleted,
@@ -47,5 +54,6 @@ public static class AuditActions
         ProductCreated, ProductUpdated, ProductStatusChanged, LookupCreated, LookupUpdated,
         StockOpening, StockAdjusted, StockQuarantined, StockReleased, StockWrittenOff,
         CashShiftOpened, CashShiftClosed, CashShiftForceClosed, CashManualMovement,
+        SupplierCreated, SupplierUpdated, PurchaseCreated, SupplierPaid, SupplierPaymentReversed, SupplierOpeningBalance,
     ];
 }

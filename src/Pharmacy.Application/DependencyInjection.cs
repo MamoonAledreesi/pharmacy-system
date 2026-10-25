@@ -3,6 +3,7 @@ using Pharmacy.Application.Auditing;
 using Pharmacy.Application.Cash;
 using Pharmacy.Application.Catalog;
 using Pharmacy.Application.Inventory;
+using Pharmacy.Application.Purchasing;
 using Pharmacy.Application.Settings;
 
 namespace Pharmacy.Application;
@@ -30,6 +31,12 @@ public static class DependencyInjection
         services.AddScoped<CashLedger>();
         services.AddScoped<CashService>();
         services.AddScoped<CashQueryService>();
+
+        services.AddScoped<SupplierService>();
+        services.AddScoped<SupplierQueryService>();
+        services.AddScoped<PurchaseService>();
+        services.AddScoped<PurchaseQueryService>();
+        services.AddScoped<PayablesService>();
 
         return services;
     }

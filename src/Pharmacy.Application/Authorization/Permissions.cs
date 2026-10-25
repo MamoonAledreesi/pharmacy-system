@@ -24,12 +24,21 @@ public static class Permissions
     public const string CashOpenShift = "Cash.OpenShift";
     public const string CashManualMovement = "Cash.ManualMovement";
     public const string CashForceClose = "Cash.ForceClose";
+    public const string SuppliersView = "Suppliers.View";
+    public const string SuppliersManage = "Suppliers.Manage";
+    public const string PurchasingView = "Purchasing.View";
+    public const string PurchasingCreate = "Purchasing.Create";
+    public const string PayablesPay = "Payables.Pay";
+    public const string PayablesReverse = "Payables.Reverse";
+    public const string PayablesSetOpeningBalance = "Payables.SetOpeningBalance";
 
     public static IReadOnlyList<string> All { get; } =
         [
             CatalogView, CatalogManage,
             InventoryView, InventoryViewCost, InventoryOpeningStock, InventoryAdjust, InventoryWriteOff,
             CashView, CashOpenShift, CashManualMovement, CashForceClose,
+            SuppliersView, SuppliersManage, PurchasingView, PurchasingCreate,
+            PayablesPay, PayablesReverse, PayablesSetOpeningBalance,
             UsersManage, SettingsManage, AuditLogView,
         ];
 

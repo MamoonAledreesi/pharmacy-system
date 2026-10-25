@@ -1,0 +1,211 @@
+@inject ServiceRunner Services
+@inject IDialogService DialogService
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudAutocomplete T="ProductListItem" Label="@L["Inventory.Product"]" Placeholder="@L["Products.SearchHint"]"
+                         Value="_selectedProduct" ValueChanged="OnProductSelectedAsync" SearchFunc="SearchProductsAsync" @bind-Text="_searchText"
+                         ToStringFunc="ProductText" MinCharacters="1" DebounceInterval="250" CoerceText="false" Clearable="true" />
+
+        <AuthorizeView Policy="@Permissions.CatalogManage">
+            <MudButton Variant="Variant.Text" Size="Size.Small" StartIcon="@Icons.Material.Filled.AddCircleOutline" OnClick="NewProductAsync" Class="mt-1">
+                @L["Purchases.NewProduct"]
+            </MudButton>
+        </AuthorizeView>
+
+        @if (_product is not null)
+        {
+            <MudGrid Spacing="2" Class="mt-1">
+                <MudItem xs="7">
+                    <MudNumericField T="int?" @bind-Value="_quantity" Label="@L["Inventory.Quantity"]" Min="1" />
+                </MudItem>
+                <MudItem xs="5">
+                    <MudSelect T="int" @bind-Value="_unitId" Label="@L["Products.Unit"]">
+                        @foreach (var unit in _product.Units)
+                        {
+                            <MudSelectItem T="int" Value="unit.Id">@unit.Unit.For(SupportedCultures.IsArabicUi)</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudNumericField T="decimal?" @bind-Value="_cost" Label="@L["Inventory.CostPerChosenUnit", SelectedUnit?.Unit.For(SupportedCultures.IsArabicUi) ?? string.Empty]"
+                                     Min="0" Format="0.####" HelperText="@CostHint" />
+                </MudItem>
+                @if (CostChangeWarning is { } warning)
+                {
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Warning" Dense="true">@warning</MudAlert>
+                    </MudItem>
+                }
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="_batchNumber" Label="@L["Inventory.BatchNumberOptional"]" MaxLength="Batch.BatchNumberMaxLength"
+                                  HelperText="@L["Inventory.BatchNumberHint"]" Style="direction: ltr" />
+                </MudItem>
+
+                @if (_product.TracksExpiry)
+                {
+                    <ExpiryPicker @ref="_expiry" />
+                }
+                else
+                {
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.caption">@L["Inventory.NoExpiryProduct"]</MudText>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_product is null)" OnClick="Add">@L["Purchases.AddLine"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    /// <summary>A cost this much above or below the last purchase gets a warning (not a block).</summary>
+    private const decimal CostChangeThreshold = 0.30m;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private ProductListItem? _selectedProduct;
+    private string? _searchText;
+    private PurchaseProduct? _product;
+    private ExpiryPicker? _expiry;
+    private int _unitId;
+    private int? _quantity;
+    private decimal? _cost;
+    private string? _batchNumber;
+    private string? _error;
+
+    private ProductUnitSummary? SelectedUnit => _product?.Units.FirstOrDefault(u => u.Id == _unitId);
+
+    private string? CostHint
+    {
+        get
+        {
+            if (SelectedUnit is not { IsBase: false } unit || _cost is not { } cost || _product?.Units.FirstOrDefault(u => u.IsBase) is not { } baseUnit)
+            {
+                return null;
+            }
+
+            var baseCost = Batch.UnitCostFromPackCost(cost, unit.Factor).ToString("0.####", CultureInfo.CurrentCulture);
+            return L["Inventory.CostPerBaseUnit", baseUnit.Unit.For(SupportedCultures.IsArabicUi), baseCost].Value;
+        }
+    }
+
+    private string? CostChangeWarning
+    {
+        get
+        {
+            if (SelectedUnit is not { } unit || _cost is not { } cost || _product?.LastBaseUnitCost is not { } last || last <= 0)
+            {
+                return null;
+            }
+
+            var baseCost = Batch.UnitCostFromPackCost(cost, unit.Factor);
+            return Math.Abs(baseCost - last) / last > CostChangeThreshold
+                ? L["Purchases.CostChangedWarning", last.ToString("0.####", CultureInfo.CurrentCulture)].Value
+                : null;
+        }
+    }
+
+    // MudAutocomplete also asks for the text of "no selection" (null) when it first renders.
+    private static string ProductText(ProductListItem? product) =>
+        product is null ? string.Empty : $"{product.DisplayName(SupportedCultures.IsArabicUi)} {product.Strength}".Trim();
+
+    private Task<IEnumerable<ProductListItem>> SearchProductsAsync(string text, CancellationToken cancellationToken) =>
+        TableDataLoader.SearchAsync<ProductListItem>(async () =>
+        {
+            var result = await Services.For<ProductQueryService>().RunAsync(s => s.QuickSearchAsync(text, cancellationToken));
+            return result.IsSuccess ? result.Value : Array.Empty<ProductListItem>();
+        }, cancellationToken);
+
+    private async Task NewProductAsync()
+    {
+        var parameters = new DialogParameters<QuickProductDialog> { { d => d.SuggestedName, _searchText } };
+        var dialog = await DialogService.ShowAsync<QuickProductDialog>(
+            L["Purchases.NewProduct"], parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is not { Canceled: false, Data: int productId })
+        {
+            return;
+        }
+
+        // Select the product that was just created, as if it had been found by the search.
+        var created = await Services.For<PurchaseQueryService>().RunAsync(s => s.GetProductAsync(productId));
+        if (created.IsFailure)
+        {
+            _error = L.Message(created.Error!);
+            return;
+        }
+
+        var found = await Services.For<ProductQueryService>().RunAsync(
+            s => s.QuickSearchAsync(created.Value.DisplayName(SupportedCultures.IsArabicUi)));
+        _selectedProduct = found.IsSuccess ? found.Value.FirstOrDefault(p => p.Id == productId) : null;
+        _error = null;
+        _product = created.Value;
+        _unitId = _product.Units.FirstOrDefault(u => u.IsBase)?.Id ?? _product.Units[0].Id;
+    }
+
+    private async Task OnProductSelectedAsync(ProductListItem? product)
+    {
+        _selectedProduct = product;
+        _product = null;
+        if (product is null)
+        {
+            return;
+        }
+
+        var detail = await Services.For<PurchaseQueryService>().RunAsync(s => s.GetProductAsync(product.Id));
+        if (detail.IsFailure)
+        {
+            _error = L.Message(detail.Error!);
+            return;
+        }
+
+        _error = null;
+        _product = detail.Value;
+        _unitId = _product.Units.FirstOrDefault(u => u.IsBase)?.Id ?? _product.Units[0].Id;
+    }
+
+    private void Add()
+    {
+        if (_product is null || SelectedUnit is not { } unit)
+        {
+            return;
+        }
+
+        var quantity = _quantity ?? 0;
+        if (quantity <= 0)
+        {
+            _error = L.Message(new Error(InventoryErrors.InvalidQuantity));
+            return;
+        }
+
+        if (_cost is not { } cost || cost < 0)
+        {
+            _error = L.Message(new Error(InventoryErrors.InvalidUnitCost));
+            return;
+        }
+
+        var expiry = _product.TracksExpiry ? _expiry?.Value : null;
+        if (_product.TracksExpiry && expiry is null)
+        {
+            _error = L.Message(new Error(InventoryErrors.ExpiryRequired));
+            return;
+        }
+
+        var request = new PurchaseLineRequest(_product.ProductId, unit.Id, quantity, cost, _batchNumber, expiry);
+        var line = new PurchaseEditorLine(
+            request,
+            $"{_product.DisplayName(SupportedCultures.IsArabicUi)} {_product.Strength}".Trim(),
+            unit.Unit.For(SupportedCultures.IsArabicUi),
+            PurchaseInvoice.LineTotal(quantity, cost));
+        MudDialog.Close(DialogResult.Ok(line));
+    }
+}

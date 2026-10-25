@@ -1,0 +1,57 @@
+@* An expiry date entered as month and year (the end of that month) or as a full date. Place it inside a MudGrid; read the result with Value. *@
+<MudItem xs="12">
+    <MudText Typo="Typo.subtitle2">@L["Inventory.ExpiryDate"]</MudText>
+    <MudRadioGroup T="bool" @bind-Value="_monthYearMode">
+        <MudRadio T="bool" Value="true" Color="Color.Primary">@L["Inventory.MonthYear"]</MudRadio>
+        <MudRadio T="bool" Value="false" Color="Color.Primary">@L["Inventory.FullDate"]</MudRadio>
+    </MudRadioGroup>
+</MudItem>
+@if (_monthYearMode)
+{
+    <MudItem xs="6">
+        <MudSelect T="int?" @bind-Value="_month" Label="@L["Inventory.Month"]">
+            @foreach (var month in Enumerable.Range(1, 12))
+            {
+                <MudSelectItem T="int?" Value="month">@month</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="6">
+        <MudNumericField T="int?" @bind-Value="_year" Label="@L["Inventory.Year"]" Min="ExpiryRules.MinYear" Max="ExpiryRules.MaxYear" />
+    </MudItem>
+    @if (Value is { } endOfMonth)
+    {
+        <MudItem xs="12">
+            <MudText Typo="Typo.caption">@L["Inventory.ExpiresOn", endOfMonth.ToString("d", CultureInfo.CurrentCulture)]</MudText>
+        </MudItem>
+    }
+}
+else
+{
+    <MudItem xs="12">
+        <MudDatePicker Label="@L["Inventory.ExpiryDate"]" @bind-Date="_date" />
+    </MudItem>
+}
+
+@code {
+    private bool _monthYearMode = true;
+    private int? _month;
+    private int? _year = DateTime.Today.Year;
+    private DateTime? _date;
+
+    /// <summary>The chosen expiry date, or null while it is incomplete.</summary>
+    public DateOnly? Value
+    {
+        get
+        {
+            if (_monthYearMode)
+            {
+                return _month is >= 1 and <= 12 && _year is >= ExpiryRules.MinYear and <= ExpiryRules.MaxYear
+                    ? ExpiryRules.EndOfMonth(_year.Value, _month.Value)
+                    : null;
+            }
+
+            return _date is { } date ? DateOnly.FromDateTime(date) : null;
+        }
+    }
+}

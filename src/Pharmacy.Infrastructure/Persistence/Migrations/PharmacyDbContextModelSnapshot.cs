@@ -222,6 +222,76 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Cash.ManualMovement",
                             RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 26,
+                            ClaimType = "permission",
+                            ClaimValue = "Suppliers.View",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 27,
+                            ClaimType = "permission",
+                            ClaimValue = "Suppliers.View",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 28,
+                            ClaimType = "permission",
+                            ClaimValue = "Suppliers.View",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 29,
+                            ClaimType = "permission",
+                            ClaimValue = "Suppliers.Manage",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 30,
+                            ClaimType = "permission",
+                            ClaimValue = "Suppliers.Manage",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 31,
+                            ClaimType = "permission",
+                            ClaimValue = "Purchasing.View",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 32,
+                            ClaimType = "permission",
+                            ClaimValue = "Purchasing.View",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 33,
+                            ClaimType = "permission",
+                            ClaimValue = "Purchasing.View",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 34,
+                            ClaimType = "permission",
+                            ClaimValue = "Purchasing.Create",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 35,
+                            ClaimType = "permission",
+                            ClaimValue = "Payables.Pay",
+                            RoleId = 4
                         });
                 });
 
@@ -906,6 +976,39 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Pharmacy.Domain.Common.DocumentSequence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LastNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Prefix")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Prefix", "Year")
+                        .IsUnique();
+
+                    b.ToTable("DocumentSequences", "config");
+                });
+
             modelBuilder.Entity("Pharmacy.Domain.Inventory.Batch", b =>
                 {
                     b.Property<int>("Id")
@@ -1045,6 +1148,341 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("CK_StockMovements_Balances", "[AvailableAfter] >= 0 AND [QuarantineAfter] >= 0");
 
                             t.HasCheckConstraint("CK_StockMovements_NotEmpty", "[AvailableDelta] <> 0 OR [QuarantineDelta] <> 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseInvoice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("InvoiceDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<decimal>("OnCredit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("PaidCash")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SupplierInvoiceNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("SupplierName")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceDate");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
+
+                    b.HasIndex("OperationId")
+                        .IsUnique();
+
+                    b.HasIndex("SupplierId", "InvoiceDate");
+
+                    b.ToTable("PurchaseInvoices", "purchasing", t =>
+                        {
+                            t.HasCheckConstraint("CK_PurchaseInvoices_Amounts", "[Total] >= 0 AND [PaidCash] >= 0 AND [OnCredit] >= 0 AND [PaidCash] + [OnCredit] = [Total]");
+
+                            t.HasCheckConstraint("CK_PurchaseInvoices_CreditNeedsSupplier", "[OnCredit] = 0 OR [SupplierId] IS NOT NULL");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseInvoiceLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BaseQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("BaseUnitCost")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<int?>("BatchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BatchNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("CostPerUnit")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateOnly?>("ExpiryDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("LineTotal")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitFactor")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductUnitId");
+
+                    b.ToTable("PurchaseInvoiceLines", "purchasing", t =>
+                        {
+                            t.HasCheckConstraint("CK_PurchaseInvoiceLines_Costs", "[CostPerUnit] >= 0 AND [BaseUnitCost] >= 0 AND [LineTotal] >= 0");
+
+                            t.HasCheckConstraint("CK_PurchaseInvoiceLines_Quantities", "[Quantity] > 0 AND [BaseQuantity] > 0 AND [UnitFactor] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<decimal>("CurrentBalance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("SearchText")
+                        .IsRequired()
+                        .HasMaxLength(181)
+                        .HasColumnType("nvarchar(181)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Suppliers", "purchasing", t =>
+                        {
+                            t.HasCheckConstraint("CK_Suppliers_Balance", "[CurrentBalance] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.SupplierAccountEntry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("BalanceAfter")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("ReferenceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ReferenceType")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperationId")
+                        .IsUnique()
+                        .HasFilter("[OperationId] IS NOT NULL");
+
+                    b.HasIndex("ReferenceType", "ReferenceId")
+                        .HasFilter("[ReferenceType] IS NOT NULL");
+
+                    b.HasIndex("SupplierId", "Id");
+
+                    b.ToTable("SupplierAccountEntries", "payables", t =>
+                        {
+                            t.HasCheckConstraint("CK_SupplierAccountEntries_Amount", "[Amount] <> 0");
+
+                            t.HasCheckConstraint("CK_SupplierAccountEntries_BalanceAfter", "[BalanceAfter] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.SupplierPayment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsReversed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("PaidAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ReverseOperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ReverseReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime?>("ReversedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReversedByUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperationId")
+                        .IsUnique();
+
+                    b.HasIndex("ReverseOperationId")
+                        .IsUnique()
+                        .HasFilter("[ReverseOperationId] IS NOT NULL");
+
+                    b.HasIndex("SupplierId", "Id");
+
+                    b.ToTable("SupplierPayments", "payables", t =>
+                        {
+                            t.HasCheckConstraint("CK_SupplierPayments_Amount", "[Amount] > 0");
+
+                            t.HasCheckConstraint("CK_SupplierPayments_Reversal", "([IsReversed] = 0 AND [ReversedAtUtc] IS NULL AND [ReverseReason] IS NULL) OR ([IsReversed] = 1 AND [ReversedAtUtc] IS NOT NULL AND [ReverseReason] IS NOT NULL)");
                         });
                 });
 
@@ -1397,9 +1835,68 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                     b.Navigation("Batch");
                 });
 
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseInvoice", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Purchasing.Supplier", null)
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseInvoiceLine", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Inventory.Batch", null)
+                        .WithMany()
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Pharmacy.Domain.Purchasing.PurchaseInvoice", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.ProductUnit", null)
+                        .WithMany()
+                        .HasForeignKey("ProductUnitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.SupplierAccountEntry", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Purchasing.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.SupplierPayment", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Purchasing.Supplier", null)
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Pharmacy.Domain.Catalog.Product", b =>
                 {
                     b.Navigation("Units");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Purchasing.PurchaseInvoice", b =>
+                {
+                    b.Navigation("Lines");
                 });
 #pragma warning restore 612, 618
         }

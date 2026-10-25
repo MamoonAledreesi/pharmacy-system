@@ -1,0 +1,101 @@
+@page "/purchases"
+@attribute [Authorize(Policy = Permissions.PurchasingView)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+
+<PageTitle>@L["Nav.PurchaseInvoices"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudText Typo="Typo.h4">@L["Nav.PurchaseInvoices"]</MudText>
+    <MudSpacer />
+    <AuthorizeView Policy="@Permissions.PurchasingCreate">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Href="purchases/new">
+            @L["Purchases.New"]
+        </MudButton>
+    </AuthorizeView>
+</div>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="6">
+            <MudTextField T="string" Value="_searchText" ValueChanged="OnSearchChangedAsync" Immediate="true" DebounceInterval="300"
+                          Label="@L["Purchases.Search"]" Clearable="true"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" autofocus />
+        </MudItem>
+        <MudItem xs="6" md="3">
+            <MudDatePicker Date="_from" DateChanged="OnFromChangedAsync" Label="@L["Purchases.From"]" Clearable="true" />
+        </MudItem>
+        <MudItem xs="6" md="3">
+            <MudDatePicker Date="_to" DateChanged="OnToChangedAsync" Label="@L["Purchases.To"]" Clearable="true" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudTable @ref="_table" T="PurchaseListItem" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25"
+          OnRowClick="args => Open(args.Item!)" RowClass="cursor-pointer">
+    <HeaderContent>
+        <MudTh>@L["Purchases.Number"]</MudTh>
+        <MudTh>@L["Purchases.InvoiceDate"]</MudTh>
+        <MudTh>@L["Purchases.Supplier"]</MudTh>
+        <MudTh>@L["Purchases.Total"]</MudTh>
+        <MudTh>@L["Purchases.PaidCash"]</MudTh>
+        <MudTh>@L["Purchases.OnCredit"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Purchases.Number"]"><span dir="ltr">@context.Number</span></MudTd>
+        <MudTd DataLabel="@L["Purchases.InvoiceDate"]">@context.InvoiceDate.ToString("d", CultureInfo.CurrentCulture)</MudTd>
+        <MudTd DataLabel="@L["Purchases.Supplier"]">@(context.SupplierName ?? L["Purchases.UnregisteredSeller"])</MudTd>
+        <MudTd DataLabel="@L["Purchases.Total"]"><span dir="ltr">@MoneyFormat.Format(context.Total)</span></MudTd>
+        <MudTd DataLabel="@L["Purchases.PaidCash"]"><span dir="ltr">@MoneyFormat.Format(context.PaidCash)</span></MudTd>
+        <MudTd DataLabel="@L["Purchases.OnCredit"]"><span dir="ltr">@MoneyFormat.Format(context.OnCredit)</span></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Purchases.NoResults"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<PurchaseListItem>? _table;
+    private string? _searchText;
+    private DateTime? _from;
+    private DateTime? _to;
+
+    private Task<TableData<PurchaseListItem>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<PurchaseListItem>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var query = new PurchaseQuery(
+            _searchText, null, _from is { } from ? DateOnly.FromDateTime(from) : null, _to is { } to ? DateOnly.FromDateTime(to) : null,
+            state.Page, state.PageSize);
+        var result = await Services.For<PurchaseQueryService>().RunAsync(s => s.SearchAsync(query, cancellationToken));
+        return result.IsSuccess
+            ? new TableData<PurchaseListItem> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<PurchaseListItem> { Items = [], TotalItems = 0 };
+    }
+
+    private Task OnSearchChangedAsync(string? text)
+    {
+        _searchText = text;
+        return ReloadAsync();
+    }
+
+    private Task OnFromChangedAsync(DateTime? date)
+    {
+        _from = date;
+        return ReloadAsync();
+    }
+
+    private Task OnToChangedAsync(DateTime? date)
+    {
+        _to = date;
+        return ReloadAsync();
+    }
+
+    private Task ReloadAsync() => _table?.ReloadServerData() ?? Task.CompletedTask;
+
+    private void Open(PurchaseListItem invoice) => Navigation.NavigateTo($"purchases/{invoice.Id}");
+}

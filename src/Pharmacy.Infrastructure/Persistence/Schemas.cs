@@ -9,4 +9,6 @@ internal static class Schemas
     public const string Catalog = "catalog";
     public const string Inventory = "inventory";
     public const string Cash = "cash";
+    public const string Purchasing = "purchasing";
+    public const string Payables = "payables";
 }

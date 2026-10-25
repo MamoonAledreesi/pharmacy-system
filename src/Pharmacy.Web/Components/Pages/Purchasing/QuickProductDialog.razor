@@ -1,0 +1,142 @@
+@inject ServiceRunner Services
+
+@* A short form to create a product while entering a purchase; the full editor remains in the catalog. *@
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudGrid Spacing="2">
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_nameArabic" Label="@L["Products.TradeNameArabic"]" MaxLength="100" autofocus />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_nameEnglish" Label="@L["Products.TradeNameEnglish"]" MaxLength="100" Style="direction: ltr" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_strength" Label="@L["Products.Strength"]" MaxLength="50" Style="direction: ltr" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudSelect T="int?" @bind-Value="_categoryId" Label="@L["Products.Category"]" Required="true">
+                    @foreach (var category in _categories)
+                    {
+                        <MudSelectItem T="int?" Value="category.Id">@category.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudSelect T="int?" @bind-Value="_baseUnitId" Label="@L["Purchases.QuickBaseUnit"]" Required="true">
+                    @foreach (var unit in _units)
+                    {
+                        <MudSelectItem T="int?" Value="unit.Id">@unit.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudNumericField T="decimal?" @bind-Value="_price" Label="@L["Purchases.QuickPrice"]" Min="0" Format="0.00" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudSelect T="int?" @bind-Value="_largerUnitId" Label="@L["Purchases.QuickLargerUnit"]" Clearable="true">
+                    @foreach (var unit in _units.Where(u => u.Id != _baseUnitId))
+                    {
+                        <MudSelectItem T="int?" Value="unit.Id">@unit.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                @if (_largerUnitId is not null)
+                {
+                    <MudNumericField T="int?" @bind-Value="_factor" Label="@L["Purchases.QuickFactor"]" Min="2" HelperText="@L["Purchases.QuickFactorHint"]" />
+                }
+            </MudItem>
+            <MudItem xs="12">
+                <MudSwitch T="bool" @bind-Value="_tracksExpiry" Color="Color.Primary" Label="@L["Products.TracksExpiry"]" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_saving" OnClick="SaveAsync">@L["Settings.Save"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    /// <summary>The text the user had typed in the product search, offered as the first name.</summary>
+    [Parameter]
+    public string? SuggestedName { get; set; }
+
+    private IReadOnlyList<LookupItem> _categories = [];
+    private IReadOnlyList<LookupItem> _units = [];
+    private string? _nameArabic;
+    private string? _nameEnglish;
+    private string? _strength;
+    private int? _categoryId;
+    private int? _baseUnitId;
+    private int? _largerUnitId;
+    private int? _factor;
+    private decimal? _price;
+    private bool _tracksExpiry = true;
+    private string? _error;
+    private bool _saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var categories = await Services.For<LookupService<Category>>().RunAsync(s => s.GetAllAsync(includeInactive: false));
+        _categories = categories.IsSuccess ? categories.Value : [];
+        var units = await Services.For<LookupService<UnitOfMeasure>>().RunAsync(s => s.GetAllAsync(includeInactive: false));
+        _units = units.IsSuccess ? units.Value : [];
+
+        var text = SuggestedName?.Trim();
+        if (!string.IsNullOrEmpty(text))
+        {
+            if (text.Any(c => c is >= '؀' and <= 'ۿ'))
+            {
+                _nameArabic = text;
+            }
+            else
+            {
+                _nameEnglish = text;
+            }
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        if (_categoryId is not { } categoryId || _baseUnitId is not { } baseUnitId)
+        {
+            _error = L.Message(new Error(CatalogErrors.CategoryRequired));
+            return;
+        }
+
+        _saving = true;
+        try
+        {
+            var details = new ProductDetails(
+                _nameArabic, _nameEnglish, null, _strength, null, null, categoryId, null, _tracksExpiry, null, null);
+            var units = new List<ProductUnitData> { new(null, baseUnitId, true, 1, _price, null) };
+            if (_largerUnitId is { } largerUnitId)
+            {
+                units.Add(new ProductUnitData(null, largerUnitId, false, _factor ?? 0, null, null));
+            }
+
+            var result = await Services.For<ProductService>().RunAsync(s => s.CreateAsync(details, units));
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(result.Value));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

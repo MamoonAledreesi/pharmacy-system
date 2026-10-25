@@ -7,6 +7,7 @@ using Pharmacy.Domain.Cash;
 using Pharmacy.Domain.Catalog;
 using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
+using Pharmacy.Domain.Purchasing;
 using Pharmacy.Domain.Settings;
 using Pharmacy.Infrastructure.Identity;
 
@@ -42,6 +43,16 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
 
     public DbSet<CashMovement> CashMovements => Set<CashMovement>();
 
+    public DbSet<Supplier> Suppliers => Set<Supplier>();
+
+    public DbSet<SupplierAccountEntry> SupplierAccountEntries => Set<SupplierAccountEntry>();
+
+    public DbSet<SupplierPayment> SupplierPayments => Set<SupplierPayment>();
+
+    public DbSet<PurchaseInvoice> PurchaseInvoices => Set<PurchaseInvoice>();
+
+    public DbSet<DocumentSequence> DocumentSequences => Set<DocumentSequence>();
+
     public Task<TResult> ExecuteInTransactionAsync<TResult>(Func<Task<TResult>> work, CancellationToken cancellationToken = default)
         where TResult : Result =>
         this.InTransactionAsync(work, cancellationToken);
@@ -68,6 +79,31 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
             .FromSqlInterpolated($"SELECT * FROM cash.CashShifts WITH (UPDLOCK, ROWLOCK) WHERE Id = {shiftId}")
             .ToListAsync(cancellationToken))
         .SingleOrDefault();
+
+    // UPDLOCK keeps the supplier row locked until the transaction ends, so two payments or invoices cannot both read
+    // the old balance and both be applied to it.
+    public async Task<Supplier?> LoadSupplierForUpdateAsync(int supplierId, CancellationToken cancellationToken = default) =>
+        (await Suppliers
+            .FromSqlInterpolated($"SELECT * FROM purchasing.Suppliers WITH (UPDLOCK, ROWLOCK) WHERE Id = {supplierId}")
+            .ToListAsync(cancellationToken))
+        .SingleOrDefault();
+
+    // The sequence row is locked until the transaction ends, so two invoices never get the same number, and a
+    // rolled-back invoice gives its number back (numbers have no gaps).
+    public async Task<string> NextDocumentNumberAsync(string prefix, int year, CancellationToken cancellationToken = default)
+    {
+        var sequence = (await DocumentSequences
+                .FromSqlInterpolated($"SELECT * FROM config.DocumentSequences WITH (UPDLOCK, ROWLOCK) WHERE Prefix = {prefix} AND Year = {year}")
+                .ToListAsync(cancellationToken))
+            .SingleOrDefault();
+        if (sequence is null)
+        {
+            sequence = new DocumentSequence(prefix, year);
+            DocumentSequences.Add(sequence);
+        }
+
+        return sequence.Next();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

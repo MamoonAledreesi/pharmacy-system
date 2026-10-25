@@ -1,0 +1,89 @@
+@inject ServiceRunner Services
+
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        <MudGrid Spacing="2">
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_name" Label="@L["Suppliers.Name"]" MaxLength="Supplier.NameMaxLength" Required="true" autofocus />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_phone" Label="@L["Suppliers.Phone"]" MaxLength="Supplier.PhoneMaxLength" Style="direction: ltr" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="_address" Label="@L["Suppliers.Address"]" MaxLength="Supplier.AddressMaxLength" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="_notes" Label="@L["Suppliers.Notes"]" MaxLength="Supplier.NotesMaxLength" Lines="2" />
+            </MudItem>
+            @if (Existing is not null)
+            {
+                <MudItem xs="12">
+                    <MudSwitch T="bool" @bind-Value="_isActive" Color="Color.Primary" Label="@L["Suppliers.Active"]" />
+                </MudItem>
+            }
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="_saving" OnClick="SaveAsync">@L["Settings.Save"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    /// <summary>The supplier to edit; null creates a new one.</summary>
+    [Parameter]
+    public SupplierDetail? Existing { get; set; }
+
+    private string? _name;
+    private string? _phone;
+    private string? _address;
+    private string? _notes;
+    private bool _isActive = true;
+    private string? _error;
+    private bool _saving;
+
+    protected override void OnInitialized()
+    {
+        if (Existing is { } supplier)
+        {
+            _name = supplier.Name;
+            _phone = supplier.Phone;
+            _address = supplier.Address;
+            _notes = supplier.Notes;
+            _isActive = supplier.IsActive;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var input = new SupplierInput(_name, _phone, _address, _notes, _isActive);
+            var result = Existing is { } supplier
+                ? await Services.For<SupplierService>().RunAsync(s => s.UpdateAsync(supplier.Id, input, supplier.RowVersion))
+                : (Result)await Services.For<SupplierService>().RunAsync(s => s.CreateAsync(input));
+
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

@@ -1377,4 +1377,331 @@
   <data name="AuditActions.Cash.ManualMovement" xml:space="preserve">
     <value>Manual cash movement</value>
   </data>
+  <data name="Nav.Suppliers" xml:space="preserve">
+    <value>Suppliers</value>
+  </data>
+  <data name="Nav.PurchaseInvoices" xml:space="preserve">
+    <value>Purchase invoices</value>
+  </data>
+  <data name="Common.Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Suppliers.Add" xml:space="preserve">
+    <value>Add supplier</value>
+  </data>
+  <data name="Suppliers.Search" xml:space="preserve">
+    <value>Search by name or phone</value>
+  </data>
+  <data name="Suppliers.ShowInactive" xml:space="preserve">
+    <value>Show inactive</value>
+  </data>
+  <data name="Suppliers.Name" xml:space="preserve">
+    <value>Supplier name</value>
+  </data>
+  <data name="Suppliers.Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Suppliers.Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Suppliers.Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Suppliers.Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Suppliers.Balance" xml:space="preserve">
+    <value>Owed</value>
+  </data>
+  <data name="Suppliers.NoResults" xml:space="preserve">
+    <value>No suppliers found.</value>
+  </data>
+  <data name="Payables.Owed" xml:space="preserve">
+    <value>Owed to supplier</value>
+  </data>
+  <data name="Payables.Pay" xml:space="preserve">
+    <value>Pay supplier</value>
+  </data>
+  <data name="Payables.PayAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Payables.NoteOptional" xml:space="preserve">
+    <value>Note (optional)</value>
+  </data>
+  <data name="Payables.PaymentSaved" xml:space="preserve">
+    <value>The payment was recorded.</value>
+  </data>
+  <data name="Payables.SetOpeningBalance" xml:space="preserve">
+    <value>Opening balance</value>
+  </data>
+  <data name="Payables.OpeningAmount" xml:space="preserve">
+    <value>Amount owed at start</value>
+  </data>
+  <data name="Payables.OpeningBalanceHint" xml:space="preserve">
+    <value>Enter what you already owed this supplier when you started using the system. It can be entered only once.</value>
+  </data>
+  <data name="Payables.Statement" xml:space="preserve">
+    <value>Account statement</value>
+  </data>
+  <data name="Payables.Reference" xml:space="preserve">
+    <value>Reference</value>
+  </data>
+  <data name="Payables.Reversed" xml:space="preserve">
+    <value>Reversed</value>
+  </data>
+  <data name="Payables.Reverse" xml:space="preserve">
+    <value>Reverse payment</value>
+  </data>
+  <data name="Payables.ReverseReason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="Payables.ReverseWarning" xml:space="preserve">
+    <value>The payment of {0} will be taken back: the cash returns to the open shift and the amount is owed to the supplier again.</value>
+  </data>
+  <data name="Payables.PaymentReversedMessage" xml:space="preserve">
+    <value>The payment was reversed.</value>
+  </data>
+  <data name="Payables.NoEntries" xml:space="preserve">
+    <value>No entries yet.</value>
+  </data>
+  <data name="SupplierEntryTypes.OpeningBalance" xml:space="preserve">
+    <value>Opening balance</value>
+  </data>
+  <data name="SupplierEntryTypes.Invoice" xml:space="preserve">
+    <value>Credit purchase</value>
+  </data>
+  <data name="SupplierEntryTypes.Payment" xml:space="preserve">
+    <value>Payment</value>
+  </data>
+  <data name="SupplierEntryTypes.PaymentReversal" xml:space="preserve">
+    <value>Payment reversed</value>
+  </data>
+  <data name="Purchases.New" xml:space="preserve">
+    <value>New purchase invoice</value>
+  </data>
+  <data name="Purchases.Invoice" xml:space="preserve">
+    <value>Purchase invoice</value>
+  </data>
+  <data name="Purchases.Search" xml:space="preserve">
+    <value>Search by invoice number or supplier</value>
+  </data>
+  <data name="Purchases.From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="Purchases.To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Purchases.Number" xml:space="preserve">
+    <value>Number</value>
+  </data>
+  <data name="Purchases.InvoiceDate" xml:space="preserve">
+    <value>Invoice date</value>
+  </data>
+  <data name="Purchases.Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Purchases.UnregisteredSeller" xml:space="preserve">
+    <value>Unregistered seller</value>
+  </data>
+  <data name="Purchases.SupplierInvoiceNumber" xml:space="preserve">
+    <value>Supplier invoice number</value>
+  </data>
+  <data name="Purchases.SellerName" xml:space="preserve">
+    <value>Seller name (optional)</value>
+  </data>
+  <data name="Purchases.SellerNameHint" xml:space="preserve">
+    <value>For a quick cash purchase from someone who is not a registered supplier.</value>
+  </data>
+  <data name="Purchases.Lines" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="Purchases.AddLine" xml:space="preserve">
+    <value>Add item</value>
+  </data>
+  <data name="Purchases.NoLines" xml:space="preserve">
+    <value>No items yet.</value>
+  </data>
+  <data name="Purchases.UnitCost" xml:space="preserve">
+    <value>Cost per unit</value>
+  </data>
+  <data name="Purchases.LineTotal" xml:space="preserve">
+    <value>Line total</value>
+  </data>
+  <data name="Purchases.CostChangedWarning" xml:space="preserve">
+    <value>This cost differs by more than 30% from the last purchase ({0} per base unit). Check it before adding.</value>
+  </data>
+  <data name="Purchases.Payment" xml:space="preserve">
+    <value>Payment</value>
+  </data>
+  <data name="Purchases.PayCash" xml:space="preserve">
+    <value>Cash</value>
+  </data>
+  <data name="Purchases.PayCredit" xml:space="preserve">
+    <value>On credit</value>
+  </data>
+  <data name="Purchases.PayMixed" xml:space="preserve">
+    <value>Part cash, part credit</value>
+  </data>
+  <data name="Purchases.CreditNeedsSupplier" xml:space="preserve">
+    <value>Choose a registered supplier to buy on credit.</value>
+  </data>
+  <data name="Purchases.PaidCash" xml:space="preserve">
+    <value>Paid in cash</value>
+  </data>
+  <data name="Purchases.Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Purchases.OnCredit" xml:space="preserve">
+    <value>On credit</value>
+  </data>
+  <data name="Purchases.Post" xml:space="preserve">
+    <value>Post invoice</value>
+  </data>
+  <data name="Purchases.Posted" xml:space="preserve">
+    <value>The invoice was posted.</value>
+  </data>
+  <data name="Purchases.EnteredBy" xml:space="preserve">
+    <value>Entered by</value>
+  </data>
+  <data name="Purchases.NoResults" xml:space="preserve">
+    <value>No purchase invoices found.</value>
+  </data>
+  <data name="CashMovementTypes.PurchasePayment" xml:space="preserve">
+    <value>Purchase payment</value>
+  </data>
+  <data name="CashMovementTypes.SupplierPayment" xml:space="preserve">
+    <value>Supplier payment</value>
+  </data>
+  <data name="CashMovementTypes.SupplierPaymentReversal" xml:space="preserve">
+    <value>Supplier payment reversed</value>
+  </data>
+  <data name="PermissionModules.Suppliers" xml:space="preserve">
+    <value>Suppliers</value>
+  </data>
+  <data name="PermissionModules.Purchasing" xml:space="preserve">
+    <value>Purchasing</value>
+  </data>
+  <data name="PermissionModules.Payables" xml:space="preserve">
+    <value>Supplier payables</value>
+  </data>
+  <data name="Permissions.Suppliers.View" xml:space="preserve">
+    <value>View suppliers and statements</value>
+  </data>
+  <data name="Permissions.Suppliers.Manage" xml:space="preserve">
+    <value>Add and edit suppliers</value>
+  </data>
+  <data name="Permissions.Purchasing.View" xml:space="preserve">
+    <value>View purchase invoices</value>
+  </data>
+  <data name="Permissions.Purchasing.Create" xml:space="preserve">
+    <value>Create purchase invoices</value>
+  </data>
+  <data name="Permissions.Payables.Pay" xml:space="preserve">
+    <value>Pay suppliers</value>
+  </data>
+  <data name="Permissions.Payables.Reverse" xml:space="preserve">
+    <value>Reverse supplier payments</value>
+  </data>
+  <data name="Permissions.Payables.SetOpeningBalance" xml:space="preserve">
+    <value>Enter supplier opening balances</value>
+  </data>
+  <data name="AuditActions.Purchasing.SupplierCreated" xml:space="preserve">
+    <value>Supplier created</value>
+  </data>
+  <data name="AuditActions.Purchasing.SupplierUpdated" xml:space="preserve">
+    <value>Supplier updated</value>
+  </data>
+  <data name="AuditActions.Purchasing.PurchaseCreated" xml:space="preserve">
+    <value>Purchase invoice posted</value>
+  </data>
+  <data name="AuditActions.Payables.SupplierPaid" xml:space="preserve">
+    <value>Supplier paid</value>
+  </data>
+  <data name="AuditActions.Payables.PaymentReversed" xml:space="preserve">
+    <value>Supplier payment reversed</value>
+  </data>
+  <data name="AuditActions.Payables.OpeningBalance" xml:space="preserve">
+    <value>Supplier opening balance</value>
+  </data>
+  <data name="Purchasing.UnknownSupplier" xml:space="preserve">
+    <value>The supplier was not found.</value>
+  </data>
+  <data name="Purchasing.InactiveSupplier" xml:space="preserve">
+    <value>This supplier is inactive.</value>
+  </data>
+  <data name="Purchasing.SupplierNameRequired" xml:space="preserve">
+    <value>The supplier name is required.</value>
+  </data>
+  <data name="Purchasing.SupplierNameTooLong" xml:space="preserve">
+    <value>The supplier name cannot exceed {0} characters.</value>
+  </data>
+  <data name="Purchasing.DuplicateSupplierName" xml:space="preserve">
+    <value>A supplier with this name already exists.</value>
+  </data>
+  <data name="Purchasing.FieldTooLong" xml:space="preserve">
+    <value>One of the fields is too long.</value>
+  </data>
+  <data name="Purchasing.NoLines" xml:space="preserve">
+    <value>Add at least one item.</value>
+  </data>
+  <data name="Purchasing.TooManyLines" xml:space="preserve">
+    <value>An invoice cannot have more than {0} items.</value>
+  </data>
+  <data name="Purchasing.InvoiceDateInFuture" xml:space="preserve">
+    <value>The invoice date cannot be in the future.</value>
+  </data>
+  <data name="Purchasing.InvalidPaidAmount" xml:space="preserve">
+    <value>The cash paid must be between zero and the invoice total.</value>
+  </data>
+  <data name="Purchasing.SupplierRequiredForCredit" xml:space="preserve">
+    <value>A registered supplier is required when part of the invoice is on credit.</value>
+  </data>
+  <data name="Purchasing.TotalTooLarge" xml:space="preserve">
+    <value>The amount cannot exceed {0:N2}.</value>
+  </data>
+  <data name="Purchasing.ExpiryInPast" xml:space="preserve">
+    <value>An expired item cannot be purchased.</value>
+  </data>
+  <data name="Purchasing.InvalidAmount" xml:space="preserve">
+    <value>The amount must be greater than zero, with at most two decimals.</value>
+  </data>
+  <data name="Purchasing.PaymentExceedsBalance" xml:space="preserve">
+    <value>The payment is more than what is owed ({0:N2}).</value>
+  </data>
+  <data name="Purchasing.UnknownPayment" xml:space="preserve">
+    <value>The payment was not found.</value>
+  </data>
+  <data name="Purchasing.PaymentAlreadyReversed" xml:space="preserve">
+    <value>This payment was already reversed.</value>
+  </data>
+  <data name="Purchasing.ReasonRequired" xml:space="preserve">
+    <value>A reason is required.</value>
+  </data>
+  <data name="Purchasing.NoteTooLong" xml:space="preserve">
+    <value>The note cannot exceed {0} characters.</value>
+  </data>
+  <data name="Purchasing.OpeningBalanceAlreadySet" xml:space="preserve">
+    <value>This supplier already has an opening balance.</value>
+  </data>
+  <data name="Purchases.NewProduct" xml:space="preserve">
+    <value>New product</value>
+  </data>
+  <data name="Purchases.QuickBaseUnit" xml:space="preserve">
+    <value>Smallest unit sold</value>
+  </data>
+  <data name="Purchases.QuickPrice" xml:space="preserve">
+    <value>Selling price (optional)</value>
+  </data>
+  <data name="Purchases.QuickLargerUnit" xml:space="preserve">
+    <value>Larger unit (optional)</value>
+  </data>
+  <data name="Purchases.QuickFactor" xml:space="preserve">
+    <value>Base units in it</value>
+  </data>
+  <data name="Purchases.QuickFactorHint" xml:space="preserve">
+    <value>For example 3 strips in a box</value>
+  </data>
 </root>
