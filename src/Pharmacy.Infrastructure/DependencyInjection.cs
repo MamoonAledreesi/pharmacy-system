@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pharmacy.Application.Abstractions;
+using Pharmacy.Application.Reports;
 using Pharmacy.Application.Sales;
 using Pharmacy.Application.Users;
 using Pharmacy.Infrastructure.Identity;
 using Pharmacy.Infrastructure.Persistence;
+using Pharmacy.Infrastructure.Reporting;
 
 namespace Pharmacy.Infrastructure;
 
@@ -31,6 +33,7 @@ public static class DependencyInjection
         services.AddScoped<IUserManagementService, UserManagementService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ISupervisorVerifier, SupervisorVerifier>();
+        services.AddSingleton<IReportExporter, ReportExporter>();
 
         return services;
     }

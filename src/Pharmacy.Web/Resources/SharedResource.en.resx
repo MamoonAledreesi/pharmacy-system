@@ -2397,4 +2397,436 @@
   <data name="Expenses.ReasonRequired" xml:space="preserve">
     <value>A reason is required.</value>
   </data>
+  <data name="PermissionModules.Reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="Permissions.Reports.View" xml:space="preserve">
+    <value>View reports</value>
+  </data>
+  <data name="Permissions.Reports.ViewCostAndProfit" xml:space="preserve">
+    <value>View costs and profit in reports</value>
+  </data>
+  <data name="Permissions.Reports.Export" xml:space="preserve">
+    <value>Export reports to Excel and PDF</value>
+  </data>
+  <data name="Reports.GeneratedAt" xml:space="preserve">
+    <value>Generated</value>
+  </data>
+  <data name="Reports.Page" xml:space="preserve">
+    <value>Page</value>
+  </data>
+  <data name="Reports.BackToList" xml:space="preserve">
+    <value>Back to reports</value>
+  </data>
+  <data name="Reports.ExportExcel" xml:space="preserve">
+    <value>Export to Excel</value>
+  </data>
+  <data name="Reports.ExportPdf" xml:space="preserve">
+    <value>Export to PDF</value>
+  </data>
+  <data name="Reports.Run" xml:space="preserve">
+    <value>Show report</value>
+  </data>
+  <data name="Reports.NoData" xml:space="preserve">
+    <value>There is nothing to show for these filters.</value>
+  </data>
+  <data name="Reports.DisplayLimit" xml:space="preserve">
+    <value>Only the first {0} rows are shown here. Export the report to get every row.</value>
+  </data>
+  <data name="Reports.Filter.Text" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Reports.Filter.From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="Reports.Filter.To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Reports.Filter.Customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Reports.Filter.Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Reports.Filter.Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Reports.TotalRow" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Reports.BroughtForward" xml:space="preserve">
+    <value>Balance brought forward</value>
+  </data>
+  <data name="Reports.Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Reports.No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Reports.Status.Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Reports.Status.Reversed" xml:space="preserve">
+    <value>Reversed</value>
+  </data>
+  <data name="Reports.Status.Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="Reports.Status.Closed" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="Reports.Status.ForceClosed" xml:space="preserve">
+    <value>Force-closed</value>
+  </data>
+  <data name="Reports.Expiry.Ok" xml:space="preserve">
+    <value>Valid</value>
+  </data>
+  <data name="Reports.Expiry.NoExpiry" xml:space="preserve">
+    <value>No expiry</value>
+  </data>
+  <data name="Reports.Error.InvalidPeriod" xml:space="preserve">
+    <value>The start date must not be after the end date.</value>
+  </data>
+  <data name="Reports.Error.TooLarge" xml:space="preserve">
+    <value>The report has too many rows. Choose a shorter period.</value>
+  </data>
+  <data name="Reports.Error.CustomerRequired" xml:space="preserve">
+    <value>Choose a customer first.</value>
+  </data>
+  <data name="Reports.Error.SupplierRequired" xml:space="preserve">
+    <value>Choose a supplier first.</value>
+  </data>
+  <data name="Reports.Group.Sales" xml:space="preserve">
+    <value>Sales</value>
+  </data>
+  <data name="Reports.Group.Purchases" xml:space="preserve">
+    <value>Purchases</value>
+  </data>
+  <data name="Reports.Group.Inventory" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="Reports.Group.Accounts" xml:space="preserve">
+    <value>Customer and supplier accounts</value>
+  </data>
+  <data name="Reports.Group.Finance" xml:space="preserve">
+    <value>Expenses, cash and profit</value>
+  </data>
+  <data name="Reports.Title.SalesDaily" xml:space="preserve">
+    <value>Daily sales</value>
+  </data>
+  <data name="Reports.Description.SalesDaily" xml:space="preserve">
+    <value>Invoices, discounts, cash and credit, and returns for each day.</value>
+  </data>
+  <data name="Reports.Title.SalesByProduct" xml:space="preserve">
+    <value>Sales by product</value>
+  </data>
+  <data name="Reports.Description.SalesByProduct" xml:space="preserve">
+    <value>Quantity and value sold and returned for each product.</value>
+  </data>
+  <data name="Reports.Title.BelowCostSales" xml:space="preserve">
+    <value>Sales below cost</value>
+  </data>
+  <data name="Reports.Description.BelowCostSales" xml:space="preserve">
+    <value>Invoice lines sold for less than their cost, with who approved them and why.</value>
+  </data>
+  <data name="Reports.Title.SalesReturns" xml:space="preserve">
+    <value>Sales returns</value>
+  </data>
+  <data name="Reports.Description.SalesReturns" xml:space="preserve">
+    <value>Returns from customers, with the debt reduced and the cash refunded.</value>
+  </data>
+  <data name="Reports.Title.PurchasesDaily" xml:space="preserve">
+    <value>Daily purchases</value>
+  </data>
+  <data name="Reports.Description.PurchasesDaily" xml:space="preserve">
+    <value>Purchase invoices for each day, paid in cash or on credit.</value>
+  </data>
+  <data name="Reports.Title.PurchasesBySupplier" xml:space="preserve">
+    <value>Purchases by supplier</value>
+  </data>
+  <data name="Reports.Description.PurchasesBySupplier" xml:space="preserve">
+    <value>What was bought from each supplier and how it was paid.</value>
+  </data>
+  <data name="Reports.Title.PurchaseReturns" xml:space="preserve">
+    <value>Purchase returns</value>
+  </data>
+  <data name="Reports.Description.PurchaseReturns" xml:space="preserve">
+    <value>Goods sent back to suppliers, with the debt reduced and the cash refunded.</value>
+  </data>
+  <data name="Reports.Title.StockByBatch" xml:space="preserve">
+    <value>Stock by batch</value>
+  </data>
+  <data name="Reports.Description.StockByBatch" xml:space="preserve">
+    <value>Every batch that holds stock, with its expiry date and status.</value>
+  </data>
+  <data name="Reports.Title.ExpiryStatus" xml:space="preserve">
+    <value>Expired and near-expiry stock</value>
+  </data>
+  <data name="Reports.Description.ExpiryStatus" xml:space="preserve">
+    <value>Batches that have expired or are about to, soonest first.</value>
+  </data>
+  <data name="Reports.Title.WriteOffsAndAdjustments" xml:space="preserve">
+    <value>Write-offs and adjustments</value>
+  </data>
+  <data name="Reports.Description.WriteOffsAndAdjustments" xml:space="preserve">
+    <value>Stock destroyed or corrected, with the reason and who did it.</value>
+  </data>
+  <data name="Reports.Title.CustomerBalances" xml:space="preserve">
+    <value>Customer balances</value>
+  </data>
+  <data name="Reports.Description.CustomerBalances" xml:space="preserve">
+    <value>What each customer owes today.</value>
+  </data>
+  <data name="Reports.Title.SupplierBalances" xml:space="preserve">
+    <value>Supplier balances</value>
+  </data>
+  <data name="Reports.Description.SupplierBalances" xml:space="preserve">
+    <value>What the pharmacy owes each supplier today.</value>
+  </data>
+  <data name="Reports.Title.Collections" xml:space="preserve">
+    <value>Debt collections</value>
+  </data>
+  <data name="Reports.Description.Collections" xml:space="preserve">
+    <value>Money collected from customers against their debts.</value>
+  </data>
+  <data name="Reports.Title.CustomerStatement" xml:space="preserve">
+    <value>Customer statement</value>
+  </data>
+  <data name="Reports.Description.CustomerStatement" xml:space="preserve">
+    <value>Every entry on a customer account with the running balance.</value>
+  </data>
+  <data name="Reports.Title.SupplierStatement" xml:space="preserve">
+    <value>Supplier statement</value>
+  </data>
+  <data name="Reports.Description.SupplierStatement" xml:space="preserve">
+    <value>Every entry on a supplier account with the running balance.</value>
+  </data>
+  <data name="Reports.Title.ExpensesByCategory" xml:space="preserve">
+    <value>Expenses by category</value>
+  </data>
+  <data name="Reports.Description.ExpensesByCategory" xml:space="preserve">
+    <value>What was spent in each category and its share of the total.</value>
+  </data>
+  <data name="Reports.Title.ExpensesDetail" xml:space="preserve">
+    <value>Expense details</value>
+  </data>
+  <data name="Reports.Description.ExpensesDetail" xml:space="preserve">
+    <value>Every expense in the period, including reversed ones.</value>
+  </data>
+  <data name="Reports.Title.CashShifts" xml:space="preserve">
+    <value>Cash shifts</value>
+  </data>
+  <data name="Reports.Description.CashShifts" xml:space="preserve">
+    <value>Opening, expected and counted cash of each shift, and the difference.</value>
+  </data>
+  <data name="Reports.Title.Profit" xml:space="preserve">
+    <value>Profit</value>
+  </data>
+  <data name="Reports.Description.Profit" xml:space="preserve">
+    <value>Net sales, cost of goods, gross profit and operating profit.</value>
+  </data>
+  <data name="Reports.Profit.Sales" xml:space="preserve">
+    <value>Sales</value>
+  </data>
+  <data name="Reports.Profit.SalesReturns" xml:space="preserve">
+    <value>Sales returns</value>
+  </data>
+  <data name="Reports.Profit.NetSales" xml:space="preserve">
+    <value>Net sales</value>
+  </data>
+  <data name="Reports.Profit.CostOfGoods" xml:space="preserve">
+    <value>Cost of goods sold</value>
+  </data>
+  <data name="Reports.Profit.GrossProfit" xml:space="preserve">
+    <value>Gross profit</value>
+  </data>
+  <data name="Reports.Profit.Expenses" xml:space="preserve">
+    <value>Expenses</value>
+  </data>
+  <data name="Reports.Profit.WriteOffLosses" xml:space="preserve">
+    <value>Write-off losses</value>
+  </data>
+  <data name="Reports.Profit.AdjustmentShortfall" xml:space="preserve">
+    <value>Stock adjustment shortfall</value>
+  </data>
+  <data name="Reports.Profit.OperatingProfit" xml:space="preserve">
+    <value>Operating profit</value>
+  </data>
+  <data name="Reports.Col.Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Reports.Col.DateTime" xml:space="preserve">
+    <value>Date and time</value>
+  </data>
+  <data name="Reports.Col.Invoices" xml:space="preserve">
+    <value>Invoices</value>
+  </data>
+  <data name="Reports.Col.Subtotal" xml:space="preserve">
+    <value>Before discount</value>
+  </data>
+  <data name="Reports.Col.Discount" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="Reports.Col.Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Reports.Col.PaidCash" xml:space="preserve">
+    <value>Paid in cash</value>
+  </data>
+  <data name="Reports.Col.OnCredit" xml:space="preserve">
+    <value>On credit</value>
+  </data>
+  <data name="Reports.Col.Returns" xml:space="preserve">
+    <value>Returns</value>
+  </data>
+  <data name="Reports.Col.NetSales" xml:space="preserve">
+    <value>Net sales</value>
+  </data>
+  <data name="Reports.Col.Product" xml:space="preserve">
+    <value>Product</value>
+  </data>
+  <data name="Reports.Col.QuantitySold" xml:space="preserve">
+    <value>Quantity sold</value>
+  </data>
+  <data name="Reports.Col.QuantityReturned" xml:space="preserve">
+    <value>Quantity returned</value>
+  </data>
+  <data name="Reports.Col.Number" xml:space="preserve">
+    <value>Number</value>
+  </data>
+  <data name="Reports.Col.Quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="Reports.Col.NetPrice" xml:space="preserve">
+    <value>Sold for</value>
+  </data>
+  <data name="Reports.Col.Cost" xml:space="preserve">
+    <value>Cost</value>
+  </data>
+  <data name="Reports.Col.Loss" xml:space="preserve">
+    <value>Loss</value>
+  </data>
+  <data name="Reports.Col.ApprovedBy" xml:space="preserve">
+    <value>Approved by</value>
+  </data>
+  <data name="Reports.Col.Reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="Reports.Col.Invoice" xml:space="preserve">
+    <value>Invoice</value>
+  </data>
+  <data name="Reports.Col.Customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Reports.Col.DebtReduction" xml:space="preserve">
+    <value>Debt reduced</value>
+  </data>
+  <data name="Reports.Col.CashRefund" xml:space="preserve">
+    <value>Cash refunded</value>
+  </data>
+  <data name="Reports.Col.Late" xml:space="preserve">
+    <value>Late return</value>
+  </data>
+  <data name="Reports.Col.User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Reports.Col.Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Reports.Col.BatchNumber" xml:space="preserve">
+    <value>Batch</value>
+  </data>
+  <data name="Reports.Col.ExpiryDate" xml:space="preserve">
+    <value>Expiry date</value>
+  </data>
+  <data name="Reports.Col.ExpiryStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Reports.Col.DaysLeft" xml:space="preserve">
+    <value>Days left</value>
+  </data>
+  <data name="Reports.Col.Available" xml:space="preserve">
+    <value>Available</value>
+  </data>
+  <data name="Reports.Col.Quarantined" xml:space="preserve">
+    <value>Quarantined</value>
+  </data>
+  <data name="Reports.Col.UnitCost" xml:space="preserve">
+    <value>Unit cost</value>
+  </data>
+  <data name="Reports.Col.StockValue" xml:space="preserve">
+    <value>Stock value</value>
+  </data>
+  <data name="Reports.Col.MovementType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Reports.Col.QuantityChange" xml:space="preserve">
+    <value>Quantity change</value>
+  </data>
+  <data name="Reports.Col.Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Reports.Col.ValueChange" xml:space="preserve">
+    <value>Value change</value>
+  </data>
+  <data name="Reports.Col.Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Reports.Col.Balance" xml:space="preserve">
+    <value>Balance</value>
+  </data>
+  <data name="Reports.Col.Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="Reports.Col.Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Reports.Col.EntryType" xml:space="preserve">
+    <value>Entry</value>
+  </data>
+  <data name="Reports.Col.Increase" xml:space="preserve">
+    <value>Increase</value>
+  </data>
+  <data name="Reports.Col.Decrease" xml:space="preserve">
+    <value>Decrease</value>
+  </data>
+  <data name="Reports.Col.Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Reports.Col.Count" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="Reports.Col.Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="Reports.Col.Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Reports.Col.Payee" xml:space="preserve">
+    <value>Paid to</value>
+  </data>
+  <data name="Reports.Col.OpenedAt" xml:space="preserve">
+    <value>Opened</value>
+  </data>
+  <data name="Reports.Col.ClosedAt" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="Reports.Col.Cashier" xml:space="preserve">
+    <value>Cashier</value>
+  </data>
+  <data name="Reports.Col.OpeningBalance" xml:space="preserve">
+    <value>Opening cash</value>
+  </data>
+  <data name="Reports.Col.ExpectedBalance" xml:space="preserve">
+    <value>Expected cash</value>
+  </data>
+  <data name="Reports.Col.CountedBalance" xml:space="preserve">
+    <value>Counted cash</value>
+  </data>
+  <data name="Reports.Col.Difference" xml:space="preserve">
+    <value>Difference</value>
+  </data>
+  <data name="Reports.Col.Item" xml:space="preserve">
+    <value>Item</value>
+  </data>
 </root>

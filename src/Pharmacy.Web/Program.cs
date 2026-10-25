@@ -13,6 +13,7 @@ using Pharmacy.Web.Authentication;
 using Pharmacy.Web.Common;
 using Pharmacy.Web.Components;
 using Pharmacy.Web.Localization;
+using Pharmacy.Web.Reports;
 using Serilog;
 
 // Startup logger captures failures before configuration is loaded; AddSerilog below replaces it.
@@ -74,6 +75,7 @@ try
     builder.Services.AddScoped<CircuitHandler, CurrentUserCircuitHandler>();
     builder.Services.AddScoped<SignInService>();
     builder.Services.AddScoped<ServiceRunner>();
+    builder.Services.AddScoped<ReportDocumentBuilder>();
     builder.Services.AddSingleton<SetupState>();
 
     var app = builder.Build();
@@ -102,6 +104,7 @@ try
     app.MapStaticAssets();
     app.MapCultureEndpoints();
     app.MapAccountEndpoints();
+    app.MapReportEndpoints();
     app.MapHealthChecks("/health");
     app.MapRazorComponents<App>()
         .AddInteractiveServerRenderMode();

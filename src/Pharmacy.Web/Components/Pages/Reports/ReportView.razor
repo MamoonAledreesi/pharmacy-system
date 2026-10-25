@@ -1,0 +1,296 @@
+@page "/reports/{Key}"
+@attribute [Authorize(Policy = Permissions.ReportsView)]
+@inject ServiceRunner Services
+@inject ReportDocumentBuilder Builder
+@inject TimeProvider Clock
+
+<PageTitle>@Title - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="reports" aria-label="@L["Reports.BackToList"]" title="@L["Reports.BackToList"]" />
+    <MudText Typo="Typo.h4">@Title</MudText>
+    <MudSpacer />
+    @if (_document is not null)
+    {
+        <AuthorizeView Policy="@Permissions.ReportsExport">
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.TableChart" Href="@ExportUrl(ReportEndpoints.ExcelFormat)"
+                       download="true" data-test="export-excel">
+                @L["Reports.ExportExcel"]
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PictureAsPdf" Href="@ExportUrl(ReportEndpoints.PdfFormat)"
+                       download="true" data-test="export-pdf">
+                @L["Reports.ExportPdf"]
+            </MudButton>
+        </AuthorizeView>
+    }
+</div>
+
+@if (_definition is null)
+{
+    <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">@L["Errors.NotFound"]</MudAlert>
+    return;
+}
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2" Class="align-end">
+        @if (Has(ReportFilters.Period))
+        {
+            <MudItem xs="6" md="3">
+                <MudDatePicker @bind-Date="_from" Label="@L["Purchases.From"]" />
+            </MudItem>
+            <MudItem xs="6" md="3">
+                <MudDatePicker @bind-Date="_to" Label="@L["Purchases.To"]" />
+            </MudItem>
+        }
+        @if (Has(ReportFilters.Customer))
+        {
+            <MudItem xs="12" md="4">
+                <MudAutocomplete T="CustomerListItem" Label="@L["Sales.Customer"]" @bind-Value="_customer" SearchFunc="SearchCustomersAsync"
+                                 ToStringFunc="@(c => c?.Name ?? string.Empty)" MinCharacters="0" DebounceInterval="250" CoerceText="false" />
+            </MudItem>
+        }
+        @if (Has(ReportFilters.Supplier))
+        {
+            <MudItem xs="12" md="4">
+                <MudAutocomplete T="SupplierListItem" Label="@L["Purchases.Supplier"]" @bind-Value="_supplier" SearchFunc="SearchSuppliersAsync"
+                                 ToStringFunc="@(s => s?.Name ?? string.Empty)" MinCharacters="0" DebounceInterval="250" CoerceText="false" />
+            </MudItem>
+        }
+        @if (Has(ReportFilters.ExpenseCategory))
+        {
+            <MudItem xs="12" md="3">
+                <MudSelect T="int?" @bind-Value="_categoryId" Label="@L["Expenses.Category"]" Clearable="true">
+                    @foreach (var category in _categories)
+                    {
+                        <MudSelectItem T="int?" Value="category.Id">@category.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        }
+        @if (Has(ReportFilters.Text))
+        {
+            <MudItem xs="12" md="4">
+                <MudTextField T="string" @bind-Value="_text" Label="@L["Reports.Filter.Text"]" Clearable="true" Immediate="false" />
+            </MudItem>
+        }
+        <MudItem xs="12" md="2">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="RunAsync" Disabled="_running" data-test="run-report">
+                @L["Reports.Run"]
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (_error is not null)
+{
+    <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@_error</MudAlert>
+}
+
+@if (_document is { } document)
+{
+    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-2">@document.GeneratedAt</MudText>
+
+    @if (document.Rows.Count == 0)
+    {
+        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">@L["Reports.NoData"]</MudAlert>
+    }
+    else
+    {
+        <MudSimpleTable Dense="true" Hover="true" Elevation="1">
+            <thead>
+                <tr>
+                    @foreach (var column in document.Columns)
+                    {
+                        <th>@column.Header</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in document.Rows.Take(DisplayLimit))
+                {
+                    <tr>
+                        @for (var c = 0; c < document.Columns.Count; c++)
+                        {
+                            <td>@Cell(row[c], document.Columns[c].Kind)</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+            @if (document.Totals is { } totals)
+            {
+                <tfoot>
+                    <tr>
+                        @for (var c = 0; c < document.Columns.Count; c++)
+                        {
+                            <td><b>@Cell(totals[c], document.Columns[c].Kind)</b></td>
+                        }
+                    </tr>
+                </tfoot>
+            }
+        </MudSimpleTable>
+
+        @if (document.Rows.Count > DisplayLimit)
+        {
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mt-2">
+                @string.Format(CultureInfo.CurrentCulture, L["Reports.DisplayLimit"].Value, DisplayLimit)
+            </MudAlert>
+        }
+    }
+}
+
+@code {
+    // Rendering tens of thousands of rows in the browser would freeze it; the export always has every row.
+    private const int DisplayLimit = 500;
+
+    private ReportDefinition? _definition;
+    private ReportKey _reportKey;
+    private ReportDocument? _document;
+    private IReadOnlyList<LookupItem> _categories = [];
+    private DateTime? _from;
+    private DateTime? _to;
+    private CustomerListItem? _customer;
+    private SupplierListItem? _supplier;
+    private int? _categoryId;
+    private string? _text;
+    private string? _error;
+    private bool _running;
+
+    [Parameter]
+    public string Key { get; set; } = string.Empty;
+
+    private string Title => _definition is null ? L["Nav.Reports"] : L[$"Reports.Title.{_reportKey}"];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _document = null;
+        _error = null;
+        _definition = Enum.TryParse<ReportKey>(Key, ignoreCase: true, out var key) && Enum.IsDefined(key) ? ReportDefinitions.Find(key) : null;
+        if (_definition is null)
+        {
+            return;
+        }
+
+        _reportKey = _definition.Key;
+
+        // The month so far is what people look at first.
+        var today = Clock.GetLocalNow().DateTime.Date;
+        _from = new DateTime(today.Year, today.Month, 1);
+        _to = today;
+
+        if (Has(ReportFilters.ExpenseCategory))
+        {
+            var categories = await Services.For<ExpenseCategoryService>().RunAsync(s => s.GetAllAsync(includeInactive: true));
+            _categories = categories.IsSuccess ? categories.Value : [];
+        }
+
+        // A statement needs a customer or supplier first; the others can be shown right away.
+        if (!Has(ReportFilters.Customer) && !Has(ReportFilters.Supplier))
+        {
+            await RunAsync();
+        }
+    }
+
+    private bool Has(ReportFilters filter) => _definition is not null && _definition.Filters.HasFlag(filter);
+
+    private ReportRequest BuildRequest() => new(
+        _reportKey,
+        _from is { } from ? DateOnly.FromDateTime(from) : null,
+        _to is { } to ? DateOnly.FromDateTime(to) : null,
+        _customer?.Id,
+        _supplier?.Id,
+        _categoryId,
+        _text);
+
+    private async Task RunAsync()
+    {
+        _error = null;
+        _running = true;
+        try
+        {
+            var request = BuildRequest();
+            var result = await Services.For<ReportService>().RunAsync(s => s.RunAsync(request));
+            if (result.IsFailure)
+            {
+                _document = null;
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            _document = Builder.Build(result.Value);
+        }
+        finally
+        {
+            _running = false;
+        }
+    }
+
+    // The export repeats the filters the report on screen was run with.
+    private string ExportUrl(string format)
+    {
+        var request = BuildRequest();
+        var query = new List<string> { $"format={format}" };
+        if (Has(ReportFilters.Period))
+        {
+            query.Add($"from={request.From:yyyy-MM-dd}");
+            query.Add($"to={request.To:yyyy-MM-dd}");
+        }
+
+        if (request.CustomerId is { } customerId)
+        {
+            query.Add($"customerId={customerId}");
+        }
+
+        if (request.SupplierId is { } supplierId)
+        {
+            query.Add($"supplierId={supplierId}");
+        }
+
+        if (request.CategoryId is { } categoryId)
+        {
+            query.Add($"categoryId={categoryId}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Text))
+        {
+            query.Add($"text={Uri.EscapeDataString(request.Text)}");
+        }
+
+        return $"reports/{_reportKey}/export?{string.Join('&', query)}";
+    }
+
+    private Task<IEnumerable<CustomerListItem>> SearchCustomersAsync(string? text, CancellationToken cancellationToken) =>
+        TableDataLoader.SearchAsync<CustomerListItem>(async () =>
+        {
+            var result = await Services.For<CustomerQueryService>().RunAsync(s => s.QuickSearchAsync(text, cancellationToken));
+            return result.IsSuccess ? result.Value : Array.Empty<CustomerListItem>();
+        }, cancellationToken);
+
+    private Task<IEnumerable<SupplierListItem>> SearchSuppliersAsync(string? text, CancellationToken cancellationToken) =>
+        TableDataLoader.SearchAsync<SupplierListItem>(async () =>
+        {
+            var result = await Services.For<SupplierQueryService>().RunAsync(s => s.QuickSearchAsync(text, cancellationToken));
+            return result.IsSuccess ? result.Value : Array.Empty<SupplierListItem>();
+        }, cancellationToken);
+
+    private static RenderFragment Cell(object? value, ReportColumnKind kind) => value switch
+    {
+        null => builder => { },
+        string text => builder => builder.AddContent(0, text),
+        int number => Number(number.ToString("N0", CultureInfo.CurrentCulture)),
+        decimal amount when kind == ReportColumnKind.Percent => Number(amount.ToString("0.0", CultureInfo.CurrentCulture) + "%"),
+        decimal amount => Number(MoneyFormat.Format(amount)),
+        DateOnly day => Number(day.ToString("d", CultureInfo.CurrentCulture)),
+        DateTime moment => Number(moment.ToString("g", CultureInfo.CurrentCulture)),
+        _ => builder => builder.AddContent(0, Convert.ToString(value, CultureInfo.CurrentCulture)),
+    };
+
+    // Numbers and dates stay left-to-right inside right-to-left text.
+    private static RenderFragment Number(string text) => builder =>
+    {
+        builder.OpenElement(0, "span");
+        builder.AddAttribute(1, "dir", "ltr");
+        builder.AddContent(2, text);
+        builder.CloseElement();
+    };
+}

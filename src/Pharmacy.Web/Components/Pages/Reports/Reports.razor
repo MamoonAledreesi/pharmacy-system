@@ -1,0 +1,37 @@
+@page "/reports"
+@attribute [Authorize(Policy = Permissions.ReportsView)]
+@inject IAuthorizationService AuthorizationService
+
+<PageTitle>@L["Nav.Reports"] - @L["App.Name"]</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">@L["Nav.Reports"]</MudText>
+
+@foreach (var group in _groups)
+{
+    <MudText Typo="Typo.h6" Class="mt-4 mb-2">@L[$"Reports.Group.{group.Key}"]</MudText>
+    <MudGrid Spacing="2">
+        @foreach (var report in group)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="1" Class="pa-3 h-100">
+                    <MudLink Href="@($"reports/{report.Key}")" Typo="Typo.subtitle1">@L[$"Reports.Title.{report.Key}"]</MudLink>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">@L[$"Reports.Description.{report.Key}"]</MudText>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+@code {
+    private IReadOnlyList<IGrouping<ReportGroup, ReportDefinition>> _groups = [];
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+        var canSeeCost = (await AuthorizationService.AuthorizeAsync(user, Permissions.ReportsViewCostAndProfit)).Succeeded;
+        _groups = [.. ReportDefinitions.All.Where(d => canSeeCost || !d.NeedsCostAndProfit).GroupBy(d => d.Group)];
+    }
+}

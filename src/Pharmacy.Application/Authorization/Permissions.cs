@@ -33,6 +33,9 @@ public static class Permissions
     public const string ExpensesCreate = "Expenses.Create";
     public const string ExpensesReverse = "Expenses.Reverse";
     public const string ExpensesManage = "Expenses.Manage";
+    public const string ReportsView = "Reports.View";
+    public const string ReportsViewCostAndProfit = "Reports.ViewCostAndProfit";
+    public const string ReportsExport = "Reports.Export";
     public const string PayablesPay = "Payables.Pay";
     public const string PayablesReverse = "Payables.Reverse";
     public const string PayablesSetOpeningBalance = "Payables.SetOpeningBalance";
@@ -56,6 +59,7 @@ public static class Permissions
             CashView, CashOpenShift, CashManualMovement, CashForceClose,
             SuppliersView, SuppliersManage, PurchasingView, PurchasingCreate, PurchasingReturn,
             ExpensesView, ExpensesCreate, ExpensesReverse, ExpensesManage,
+            ReportsView, ReportsViewCostAndProfit, ReportsExport,
             PayablesPay, PayablesReverse, PayablesSetOpeningBalance,
             CustomersView, CustomersManage, ReceivablesCollect, ReceivablesReverse, ReceivablesSetOpeningBalance,
             SalesView, SalesCreate, SalesViewCost, SalesGrantHighDiscount, SalesSellBelowCost, SalesReturn, SalesLateReturn,

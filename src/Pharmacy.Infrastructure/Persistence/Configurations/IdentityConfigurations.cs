@@ -154,6 +154,13 @@ internal sealed class IdentityTableConfiguration :
         (4, Permissions.ExpensesCreate),
         (4, Permissions.ExpensesReverse),
         (4, Permissions.ExpensesManage),
+
+        // Reports (Task 11). The accountant sees costs and profit and exports; pharmacists and store keepers only read.
+        (2, Permissions.ReportsView),
+        (4, Permissions.ReportsView),
+        (5, Permissions.ReportsView),
+        (4, Permissions.ReportsViewCostAndProfit),
+        (4, Permissions.ReportsExport),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

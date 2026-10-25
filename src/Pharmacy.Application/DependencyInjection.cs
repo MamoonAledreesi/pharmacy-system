@@ -6,6 +6,7 @@ using Pharmacy.Application.Expenses;
 using Pharmacy.Application.Inventory;
 using Pharmacy.Application.Purchasing;
 using Pharmacy.Application.Receivables;
+using Pharmacy.Application.Reports;
 using Pharmacy.Application.Sales;
 using Pharmacy.Application.Settings;
 
@@ -55,6 +56,8 @@ public static class DependencyInjection
         services.AddScoped<ExpenseService>();
         services.AddScoped<ExpenseCategoryService>();
         services.AddScoped<ExpenseQueryService>();
+
+        services.AddScoped<ReportService>();
 
         return services;
     }

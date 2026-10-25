@@ -2397,4 +2397,436 @@
   <data name="Expenses.ReasonRequired" xml:space="preserve">
     <value>السبب مطلوب.</value>
   </data>
+  <data name="PermissionModules.Reports" xml:space="preserve">
+    <value>التقارير</value>
+  </data>
+  <data name="Permissions.Reports.View" xml:space="preserve">
+    <value>عرض التقارير</value>
+  </data>
+  <data name="Permissions.Reports.ViewCostAndProfit" xml:space="preserve">
+    <value>عرض التكلفة والأرباح في التقارير</value>
+  </data>
+  <data name="Permissions.Reports.Export" xml:space="preserve">
+    <value>تصدير التقارير إلى Excel وPDF</value>
+  </data>
+  <data name="Reports.GeneratedAt" xml:space="preserve">
+    <value>وقت الإصدار</value>
+  </data>
+  <data name="Reports.Page" xml:space="preserve">
+    <value>صفحة</value>
+  </data>
+  <data name="Reports.BackToList" xml:space="preserve">
+    <value>العودة إلى التقارير</value>
+  </data>
+  <data name="Reports.ExportExcel" xml:space="preserve">
+    <value>تصدير إلى Excel</value>
+  </data>
+  <data name="Reports.ExportPdf" xml:space="preserve">
+    <value>تصدير إلى PDF</value>
+  </data>
+  <data name="Reports.Run" xml:space="preserve">
+    <value>عرض التقرير</value>
+  </data>
+  <data name="Reports.NoData" xml:space="preserve">
+    <value>لا توجد بيانات لعرضها بهذه الفلاتر.</value>
+  </data>
+  <data name="Reports.DisplayLimit" xml:space="preserve">
+    <value>تُعرض هنا أول {0} صف فقط. صدّر التقرير للحصول على كل الصفوف.</value>
+  </data>
+  <data name="Reports.Filter.Text" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="Reports.Filter.From" xml:space="preserve">
+    <value>من</value>
+  </data>
+  <data name="Reports.Filter.To" xml:space="preserve">
+    <value>إلى</value>
+  </data>
+  <data name="Reports.Filter.Customer" xml:space="preserve">
+    <value>العميل</value>
+  </data>
+  <data name="Reports.Filter.Supplier" xml:space="preserve">
+    <value>المورد</value>
+  </data>
+  <data name="Reports.Filter.Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="Reports.TotalRow" xml:space="preserve">
+    <value>الإجمالي</value>
+  </data>
+  <data name="Reports.BroughtForward" xml:space="preserve">
+    <value>الرصيد المنقول</value>
+  </data>
+  <data name="Reports.Yes" xml:space="preserve">
+    <value>نعم</value>
+  </data>
+  <data name="Reports.No" xml:space="preserve">
+    <value>لا</value>
+  </data>
+  <data name="Reports.Status.Active" xml:space="preserve">
+    <value>سارٍ</value>
+  </data>
+  <data name="Reports.Status.Reversed" xml:space="preserve">
+    <value>ملغى</value>
+  </data>
+  <data name="Reports.Status.Open" xml:space="preserve">
+    <value>مفتوحة</value>
+  </data>
+  <data name="Reports.Status.Closed" xml:space="preserve">
+    <value>مغلقة</value>
+  </data>
+  <data name="Reports.Status.ForceClosed" xml:space="preserve">
+    <value>أُغلقت إجبارياً</value>
+  </data>
+  <data name="Reports.Expiry.Ok" xml:space="preserve">
+    <value>صالح</value>
+  </data>
+  <data name="Reports.Expiry.NoExpiry" xml:space="preserve">
+    <value>بلا صلاحية</value>
+  </data>
+  <data name="Reports.Error.InvalidPeriod" xml:space="preserve">
+    <value>يجب ألا يكون تاريخ البداية بعد تاريخ النهاية.</value>
+  </data>
+  <data name="Reports.Error.TooLarge" xml:space="preserve">
+    <value>عدد صفوف التقرير كبير جداً. اختر فترة أقصر.</value>
+  </data>
+  <data name="Reports.Error.CustomerRequired" xml:space="preserve">
+    <value>اختر العميل أولاً.</value>
+  </data>
+  <data name="Reports.Error.SupplierRequired" xml:space="preserve">
+    <value>اختر المورد أولاً.</value>
+  </data>
+  <data name="Reports.Group.Sales" xml:space="preserve">
+    <value>المبيعات</value>
+  </data>
+  <data name="Reports.Group.Purchases" xml:space="preserve">
+    <value>المشتريات</value>
+  </data>
+  <data name="Reports.Group.Inventory" xml:space="preserve">
+    <value>المخزون</value>
+  </data>
+  <data name="Reports.Group.Accounts" xml:space="preserve">
+    <value>حسابات العملاء والموردين</value>
+  </data>
+  <data name="Reports.Group.Finance" xml:space="preserve">
+    <value>المصروفات والخزينة والأرباح</value>
+  </data>
+  <data name="Reports.Title.SalesDaily" xml:space="preserve">
+    <value>المبيعات اليومية</value>
+  </data>
+  <data name="Reports.Description.SalesDaily" xml:space="preserve">
+    <value>الفواتير والخصومات والنقد والآجل والمرتجعات لكل يوم.</value>
+  </data>
+  <data name="Reports.Title.SalesByProduct" xml:space="preserve">
+    <value>المبيعات حسب المنتج</value>
+  </data>
+  <data name="Reports.Description.SalesByProduct" xml:space="preserve">
+    <value>كمية وقيمة المباع والمرتجع لكل منتج.</value>
+  </data>
+  <data name="Reports.Title.BelowCostSales" xml:space="preserve">
+    <value>البيع بأقل من التكلفة</value>
+  </data>
+  <data name="Reports.Description.BelowCostSales" xml:space="preserve">
+    <value>بنود فواتير بيعت بأقل من تكلفتها، مع من وافق عليها وسببها.</value>
+  </data>
+  <data name="Reports.Title.SalesReturns" xml:space="preserve">
+    <value>مرتجعات المبيعات</value>
+  </data>
+  <data name="Reports.Description.SalesReturns" xml:space="preserve">
+    <value>مرتجعات العملاء مع الدين المخفَّض والنقد المسترد.</value>
+  </data>
+  <data name="Reports.Title.PurchasesDaily" xml:space="preserve">
+    <value>المشتريات اليومية</value>
+  </data>
+  <data name="Reports.Description.PurchasesDaily" xml:space="preserve">
+    <value>فواتير الشراء لكل يوم، المدفوع نقداً والآجل.</value>
+  </data>
+  <data name="Reports.Title.PurchasesBySupplier" xml:space="preserve">
+    <value>المشتريات حسب المورد</value>
+  </data>
+  <data name="Reports.Description.PurchasesBySupplier" xml:space="preserve">
+    <value>ما اشتُري من كل مورد وكيف سُدِّد.</value>
+  </data>
+  <data name="Reports.Title.PurchaseReturns" xml:space="preserve">
+    <value>مرتجعات المشتريات</value>
+  </data>
+  <data name="Reports.Description.PurchaseReturns" xml:space="preserve">
+    <value>البضاعة المعادة إلى الموردين مع الدين المخفَّض والنقد المسترد.</value>
+  </data>
+  <data name="Reports.Title.StockByBatch" xml:space="preserve">
+    <value>المخزون حسب الدفعة</value>
+  </data>
+  <data name="Reports.Description.StockByBatch" xml:space="preserve">
+    <value>كل دفعة فيها مخزون مع تاريخ الانتهاء وحالته.</value>
+  </data>
+  <data name="Reports.Title.ExpiryStatus" xml:space="preserve">
+    <value>المخزون المنتهي وقريب الانتهاء</value>
+  </data>
+  <data name="Reports.Description.ExpiryStatus" xml:space="preserve">
+    <value>الدفعات المنتهية أو التي توشك، الأقرب انتهاءً أولاً.</value>
+  </data>
+  <data name="Reports.Title.WriteOffsAndAdjustments" xml:space="preserve">
+    <value>الإتلاف والتسويات</value>
+  </data>
+  <data name="Reports.Description.WriteOffsAndAdjustments" xml:space="preserve">
+    <value>المخزون المُتلَف أو المصحَّح مع السبب ومن نفّذه.</value>
+  </data>
+  <data name="Reports.Title.CustomerBalances" xml:space="preserve">
+    <value>أرصدة العملاء</value>
+  </data>
+  <data name="Reports.Description.CustomerBalances" xml:space="preserve">
+    <value>ما على كل عميل اليوم.</value>
+  </data>
+  <data name="Reports.Title.SupplierBalances" xml:space="preserve">
+    <value>أرصدة الموردين</value>
+  </data>
+  <data name="Reports.Description.SupplierBalances" xml:space="preserve">
+    <value>ما على الصيدلية لكل مورد اليوم.</value>
+  </data>
+  <data name="Reports.Title.Collections" xml:space="preserve">
+    <value>تحصيل الديون</value>
+  </data>
+  <data name="Reports.Description.Collections" xml:space="preserve">
+    <value>المبالغ المحصَّلة من العملاء مقابل ديونهم.</value>
+  </data>
+  <data name="Reports.Title.CustomerStatement" xml:space="preserve">
+    <value>كشف حساب عميل</value>
+  </data>
+  <data name="Reports.Description.CustomerStatement" xml:space="preserve">
+    <value>كل حركة على حساب العميل مع الرصيد الجاري.</value>
+  </data>
+  <data name="Reports.Title.SupplierStatement" xml:space="preserve">
+    <value>كشف حساب مورد</value>
+  </data>
+  <data name="Reports.Description.SupplierStatement" xml:space="preserve">
+    <value>كل حركة على حساب المورد مع الرصيد الجاري.</value>
+  </data>
+  <data name="Reports.Title.ExpensesByCategory" xml:space="preserve">
+    <value>المصروفات حسب الفئة</value>
+  </data>
+  <data name="Reports.Description.ExpensesByCategory" xml:space="preserve">
+    <value>ما صُرف في كل فئة ونسبتها من الإجمالي.</value>
+  </data>
+  <data name="Reports.Title.ExpensesDetail" xml:space="preserve">
+    <value>تفاصيل المصروفات</value>
+  </data>
+  <data name="Reports.Description.ExpensesDetail" xml:space="preserve">
+    <value>كل مصروف في الفترة بما فيها الملغاة.</value>
+  </data>
+  <data name="Reports.Title.CashShifts" xml:space="preserve">
+    <value>ورديات الخزينة</value>
+  </data>
+  <data name="Reports.Description.CashShifts" xml:space="preserve">
+    <value>النقد الافتتاحي والمتوقع والمعدود لكل وردية والفرق.</value>
+  </data>
+  <data name="Reports.Title.Profit" xml:space="preserve">
+    <value>الأرباح</value>
+  </data>
+  <data name="Reports.Description.Profit" xml:space="preserve">
+    <value>صافي المبيعات وتكلفة البضاعة ومجمل الربح والربح التشغيلي.</value>
+  </data>
+  <data name="Reports.Profit.Sales" xml:space="preserve">
+    <value>المبيعات</value>
+  </data>
+  <data name="Reports.Profit.SalesReturns" xml:space="preserve">
+    <value>مرتجعات المبيعات</value>
+  </data>
+  <data name="Reports.Profit.NetSales" xml:space="preserve">
+    <value>صافي المبيعات</value>
+  </data>
+  <data name="Reports.Profit.CostOfGoods" xml:space="preserve">
+    <value>تكلفة البضاعة المباعة</value>
+  </data>
+  <data name="Reports.Profit.GrossProfit" xml:space="preserve">
+    <value>مجمل الربح</value>
+  </data>
+  <data name="Reports.Profit.Expenses" xml:space="preserve">
+    <value>المصروفات</value>
+  </data>
+  <data name="Reports.Profit.WriteOffLosses" xml:space="preserve">
+    <value>خسائر الإتلاف</value>
+  </data>
+  <data name="Reports.Profit.AdjustmentShortfall" xml:space="preserve">
+    <value>عجز تسويات المخزون</value>
+  </data>
+  <data name="Reports.Profit.OperatingProfit" xml:space="preserve">
+    <value>الربح التشغيلي</value>
+  </data>
+  <data name="Reports.Col.Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="Reports.Col.DateTime" xml:space="preserve">
+    <value>التاريخ والوقت</value>
+  </data>
+  <data name="Reports.Col.Invoices" xml:space="preserve">
+    <value>الفواتير</value>
+  </data>
+  <data name="Reports.Col.Subtotal" xml:space="preserve">
+    <value>قبل الخصم</value>
+  </data>
+  <data name="Reports.Col.Discount" xml:space="preserve">
+    <value>الخصم</value>
+  </data>
+  <data name="Reports.Col.Total" xml:space="preserve">
+    <value>الإجمالي</value>
+  </data>
+  <data name="Reports.Col.PaidCash" xml:space="preserve">
+    <value>المدفوع نقداً</value>
+  </data>
+  <data name="Reports.Col.OnCredit" xml:space="preserve">
+    <value>الآجل</value>
+  </data>
+  <data name="Reports.Col.Returns" xml:space="preserve">
+    <value>المرتجعات</value>
+  </data>
+  <data name="Reports.Col.NetSales" xml:space="preserve">
+    <value>صافي المبيعات</value>
+  </data>
+  <data name="Reports.Col.Product" xml:space="preserve">
+    <value>المنتج</value>
+  </data>
+  <data name="Reports.Col.QuantitySold" xml:space="preserve">
+    <value>الكمية المباعة</value>
+  </data>
+  <data name="Reports.Col.QuantityReturned" xml:space="preserve">
+    <value>الكمية المرتجعة</value>
+  </data>
+  <data name="Reports.Col.Number" xml:space="preserve">
+    <value>الرقم</value>
+  </data>
+  <data name="Reports.Col.Quantity" xml:space="preserve">
+    <value>الكمية</value>
+  </data>
+  <data name="Reports.Col.NetPrice" xml:space="preserve">
+    <value>بيع بمبلغ</value>
+  </data>
+  <data name="Reports.Col.Cost" xml:space="preserve">
+    <value>التكلفة</value>
+  </data>
+  <data name="Reports.Col.Loss" xml:space="preserve">
+    <value>الخسارة</value>
+  </data>
+  <data name="Reports.Col.ApprovedBy" xml:space="preserve">
+    <value>وافق عليه</value>
+  </data>
+  <data name="Reports.Col.Reason" xml:space="preserve">
+    <value>السبب</value>
+  </data>
+  <data name="Reports.Col.Invoice" xml:space="preserve">
+    <value>الفاتورة</value>
+  </data>
+  <data name="Reports.Col.Customer" xml:space="preserve">
+    <value>العميل</value>
+  </data>
+  <data name="Reports.Col.DebtReduction" xml:space="preserve">
+    <value>الدين المخفَّض</value>
+  </data>
+  <data name="Reports.Col.CashRefund" xml:space="preserve">
+    <value>النقد المسترد</value>
+  </data>
+  <data name="Reports.Col.Late" xml:space="preserve">
+    <value>إرجاع متأخر</value>
+  </data>
+  <data name="Reports.Col.User" xml:space="preserve">
+    <value>المستخدم</value>
+  </data>
+  <data name="Reports.Col.Supplier" xml:space="preserve">
+    <value>المورد</value>
+  </data>
+  <data name="Reports.Col.BatchNumber" xml:space="preserve">
+    <value>الدفعة</value>
+  </data>
+  <data name="Reports.Col.ExpiryDate" xml:space="preserve">
+    <value>تاريخ الانتهاء</value>
+  </data>
+  <data name="Reports.Col.ExpiryStatus" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="Reports.Col.DaysLeft" xml:space="preserve">
+    <value>الأيام المتبقية</value>
+  </data>
+  <data name="Reports.Col.Available" xml:space="preserve">
+    <value>المتاح</value>
+  </data>
+  <data name="Reports.Col.Quarantined" xml:space="preserve">
+    <value>في الحجر</value>
+  </data>
+  <data name="Reports.Col.UnitCost" xml:space="preserve">
+    <value>تكلفة الوحدة</value>
+  </data>
+  <data name="Reports.Col.StockValue" xml:space="preserve">
+    <value>قيمة المخزون</value>
+  </data>
+  <data name="Reports.Col.MovementType" xml:space="preserve">
+    <value>النوع</value>
+  </data>
+  <data name="Reports.Col.QuantityChange" xml:space="preserve">
+    <value>تغيّر الكمية</value>
+  </data>
+  <data name="Reports.Col.Note" xml:space="preserve">
+    <value>ملاحظة</value>
+  </data>
+  <data name="Reports.Col.ValueChange" xml:space="preserve">
+    <value>تغيّر القيمة</value>
+  </data>
+  <data name="Reports.Col.Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="Reports.Col.Balance" xml:space="preserve">
+    <value>الرصيد</value>
+  </data>
+  <data name="Reports.Col.Amount" xml:space="preserve">
+    <value>المبلغ</value>
+  </data>
+  <data name="Reports.Col.Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="Reports.Col.EntryType" xml:space="preserve">
+    <value>الحركة</value>
+  </data>
+  <data name="Reports.Col.Increase" xml:space="preserve">
+    <value>زيادة</value>
+  </data>
+  <data name="Reports.Col.Decrease" xml:space="preserve">
+    <value>نقص</value>
+  </data>
+  <data name="Reports.Col.Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="Reports.Col.Count" xml:space="preserve">
+    <value>العدد</value>
+  </data>
+  <data name="Reports.Col.Share" xml:space="preserve">
+    <value>النسبة</value>
+  </data>
+  <data name="Reports.Col.Description" xml:space="preserve">
+    <value>الوصف</value>
+  </data>
+  <data name="Reports.Col.Payee" xml:space="preserve">
+    <value>المدفوع له</value>
+  </data>
+  <data name="Reports.Col.OpenedAt" xml:space="preserve">
+    <value>الفتح</value>
+  </data>
+  <data name="Reports.Col.ClosedAt" xml:space="preserve">
+    <value>الإغلاق</value>
+  </data>
+  <data name="Reports.Col.Cashier" xml:space="preserve">
+    <value>الكاشير</value>
+  </data>
+  <data name="Reports.Col.OpeningBalance" xml:space="preserve">
+    <value>النقد الافتتاحي</value>
+  </data>
+  <data name="Reports.Col.ExpectedBalance" xml:space="preserve">
+    <value>النقد المتوقع</value>
+  </data>
+  <data name="Reports.Col.CountedBalance" xml:space="preserve">
+    <value>النقد المعدود</value>
+  </data>
+  <data name="Reports.Col.Difference" xml:space="preserve">
+    <value>الفرق</value>
+  </data>
+  <data name="Reports.Col.Item" xml:space="preserve">
+    <value>البند</value>
+  </data>
 </root>

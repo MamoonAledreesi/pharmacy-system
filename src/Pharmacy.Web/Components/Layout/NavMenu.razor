@@ -50,13 +50,9 @@
         </MudNavGroup>
     </AuthorizeView>
 
-    @* Module entries are enabled as each module is delivered (see the roadmap). *@
-    @foreach (var (key, icon) in _upcomingModules)
-    {
-        <MudNavLink Disabled="true" Icon="@icon" title="@L["Nav.ComingSoon"]">
-            @L[key]
-        </MudNavLink>
-    }
+    <AuthorizeView Policy="@Permissions.ReportsView">
+        <MudNavLink Href="reports" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Assessment">@L["Nav.Reports"]</MudNavLink>
+    </AuthorizeView>
 
     @* Administration entries are shown only to users who hold the permission. *@
     <AuthorizeView Policy="@Permissions.UsersManage">
@@ -71,9 +67,3 @@
     </AuthorizeView>
 </MudNavMenu>
 
-@code {
-    private static readonly (string Key, string Icon)[] _upcomingModules =
-    [
-        ("Nav.Reports", Icons.Material.Filled.Assessment),
-    ];
-}

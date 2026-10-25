@@ -481,6 +481,41 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Expenses.Manage",
                             RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 63,
+                            ClaimType = "permission",
+                            ClaimValue = "Reports.View",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 64,
+                            ClaimType = "permission",
+                            ClaimValue = "Reports.View",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 65,
+                            ClaimType = "permission",
+                            ClaimValue = "Reports.View",
+                            RoleId = 5
+                        },
+                        new
+                        {
+                            Id = 66,
+                            ClaimType = "permission",
+                            ClaimValue = "Reports.ViewCostAndProfit",
+                            RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 67,
+                            ClaimType = "permission",
+                            ClaimValue = "Reports.Export",
+                            RoleId = 4
                         });
                 });
 
