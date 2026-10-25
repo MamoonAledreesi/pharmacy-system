@@ -9,6 +9,7 @@ using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Purchasing;
 using Pharmacy.Domain.Receivables;
+using Pharmacy.Domain.Sales;
 using Pharmacy.Domain.Settings;
 using Pharmacy.Infrastructure.Identity;
 
@@ -59,6 +60,8 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
     public DbSet<CustomerAccountEntry> CustomerAccountEntries => Set<CustomerAccountEntry>();
 
     public DbSet<DebtCollection> DebtCollections => Set<DebtCollection>();
+
+    public DbSet<SalesInvoice> SalesInvoices => Set<SalesInvoice>();
 
     public Task<TResult> ExecuteInTransactionAsync<TResult>(Func<Task<TResult>> work, CancellationToken cancellationToken = default)
         where TResult : Result =>

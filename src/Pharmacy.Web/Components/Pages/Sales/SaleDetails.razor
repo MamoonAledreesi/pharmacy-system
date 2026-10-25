@@ -1,0 +1,134 @@
+@page "/sales/{InvoiceId:int}"
+@attribute [Authorize(Policy = Permissions.SalesView)]
+@inject ServiceRunner Services
+
+<PageTitle>@L["Sales.Invoice"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="sales" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@L["Sales.Invoice"] <span dir="ltr">@_invoice?.Number</span></MudText>
+    <MudSpacer />
+    @if (_invoice is not null)
+    {
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print" Href="@($"sales/{_invoice.Id}/print?size=a4")" Target="_blank">
+            @L["Sales.PrintA4"]
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Receipt" Href="@($"sales/{_invoice.Id}/print?size=receipt")" Target="_blank">
+            @L["Sales.PrintReceipt"]
+        </MudButton>
+    }
+</div>
+
+@if (_notFound)
+{
+    <MudAlert Severity="Severity.Warning">@L["Errors.NotFound"]</MudAlert>
+    return;
+}
+
+@if (_invoice is not { } invoice)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="6">
+            <MudSimpleTable Dense="true" Elevation="0">
+                <tbody>
+                    <tr><td>@L["Audit.Time"]</td><td>@LocalizerExtensions.LocalTime(invoice.CreatedAtUtc)</td></tr>
+                    <tr>
+                        <td>@L["Sales.Customer"]</td>
+                        <td>
+                            <AuthorizeView Policy="@Permissions.CustomersView">
+                                <Authorized><MudLink Href="@($"customers/{invoice.CustomerId}")">@invoice.CustomerName</MudLink></Authorized>
+                                <NotAuthorized>@invoice.CustomerName</NotAuthorized>
+                            </AuthorizeView>
+                        </td>
+                    </tr>
+                    <tr><td>@L["Cash.Note"]</td><td>@invoice.Note</td></tr>
+                    <tr><td>@L["Purchases.EnteredBy"]</td><td dir="ltr">@invoice.UserName</td></tr>
+                    @if (invoice.DiscountApprovedBy is not null)
+                    {
+                        <tr><td>@L["Sales.DiscountApprovedBy"]</td><td dir="ltr">@invoice.DiscountApprovedBy</td></tr>
+                    }
+                    @if (invoice.BelowCostReason is not null)
+                    {
+                        <tr><td>@L["Sales.BelowCostReason"]</td><td>@invoice.BelowCostReason</td></tr>
+                    }
+                    @if (invoice.BelowCostApprovedBy is not null)
+                    {
+                        <tr><td>@L["Sales.BelowCostApprovedBy"]</td><td dir="ltr">@invoice.BelowCostApprovedBy</td></tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudSimpleTable Dense="true" Elevation="0">
+                <tbody>
+                    <tr><td>@L["Sales.Subtotal"]</td><td dir="ltr">@MoneyFormat.Format(invoice.Subtotal)</td></tr>
+                    <tr><td>@L["Sales.Discount"]</td><td dir="ltr">@MoneyFormat.Format(invoice.DiscountAmount) (@invoice.DiscountPercent.ToString("0.##", CultureInfo.CurrentCulture)%)</td></tr>
+                    <tr><td><b>@L["Purchases.Total"]</b></td><td dir="ltr"><b>@MoneyFormat.Format(invoice.Total)</b></td></tr>
+                    <tr><td>@L["Purchases.PaidCash"]</td><td dir="ltr">@MoneyFormat.Format(invoice.PaidCash)</td></tr>
+                    <tr><td>@L["Purchases.OnCredit"]</td><td dir="ltr">@MoneyFormat.Format(invoice.OnCredit)</td></tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudTable Items="invoice.Lines" T="SaleLineDetail" Dense="true" Hover="true" Elevation="1">
+    <HeaderContent>
+        <MudTh>@L["Inventory.Product"]</MudTh>
+        <MudTh>@L["Products.Unit"]</MudTh>
+        <MudTh>@L["Inventory.Quantity"]</MudTh>
+        <MudTh>@L["Sales.UnitPrice"]</MudTh>
+        <MudTh>@L["Sales.DiscountShare"]</MudTh>
+        <MudTh>@L["Sales.LineNet"]</MudTh>
+        <MudTh>@L["Sales.Batches"]</MudTh>
+        @if (invoice.CostVisible)
+        {
+            <MudTh>@L["Sales.Cost"]</MudTh>
+        }
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Inventory.Product"]">
+            @context.Product.For(SupportedCultures.IsArabicUi) @context.Strength
+            @if (context.IsBelowCost)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Error" Variant="Variant.Outlined">@L["Sales.BelowCostChip"]</MudChip>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Products.Unit"]">@context.Unit.For(SupportedCultures.IsArabicUi)</MudTd>
+        <MudTd DataLabel="@L["Inventory.Quantity"]">@context.Quantity</MudTd>
+        <MudTd DataLabel="@L["Sales.UnitPrice"]"><span dir="ltr">@context.UnitPrice.ToString("0.00##", CultureInfo.CurrentCulture)</span></MudTd>
+        <MudTd DataLabel="@L["Sales.DiscountShare"]"><span dir="ltr">@MoneyFormat.Format(context.DiscountShare)</span></MudTd>
+        <MudTd DataLabel="@L["Sales.LineNet"]"><span dir="ltr">@MoneyFormat.Format(context.NetTotal)</span></MudTd>
+        <MudTd DataLabel="@L["Sales.Batches"]">
+            @foreach (var batch in context.Batches)
+            {
+                <div dir="ltr">@batch.BatchNumber × @batch.BaseQuantity @(batch.ExpiryDate is { } expiry ? $"({expiry.ToString("d", CultureInfo.CurrentCulture)})" : string.Empty)</div>
+            }
+        </MudTd>
+        @if (invoice.CostVisible)
+        {
+            <MudTd DataLabel="@L["Sales.Cost"]"><span dir="ltr">@MoneyFormat.Format(context.CostTotal ?? 0m)</span></MudTd>
+        }
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private SaleDetail? _invoice;
+    private bool _notFound;
+
+    [Parameter]
+    public int InvoiceId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Services.For<SalesQueryService>().RunAsync(s => s.GetAsync(InvoiceId));
+        _notFound = result.IsFailure;
+        _invoice = result.IsSuccess ? result.Value : null;
+    }
+}

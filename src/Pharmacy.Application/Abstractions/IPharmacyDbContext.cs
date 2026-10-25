@@ -7,6 +7,7 @@ using Pharmacy.Domain.Common;
 using Pharmacy.Domain.Inventory;
 using Pharmacy.Domain.Purchasing;
 using Pharmacy.Domain.Receivables;
+using Pharmacy.Domain.Sales;
 using Pharmacy.Domain.Settings;
 
 namespace Pharmacy.Application.Abstractions;
@@ -52,6 +53,8 @@ public interface IPharmacyDbContext
     DbSet<CustomerAccountEntry> CustomerAccountEntries { get; }
 
     DbSet<DebtCollection> DebtCollections { get; }
+
+    DbSet<SalesInvoice> SalesInvoices { get; }
 
     DbSet<TEntity> Set<TEntity>()
         where TEntity : class;

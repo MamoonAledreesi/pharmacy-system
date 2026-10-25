@@ -26,12 +26,15 @@ public enum CashMovementType
 
     /// <summary>A debt collection that was entered by mistake and taken back.</summary>
     DebtCollectionReversal = 6,
+
+    /// <summary>Cash received for a sales invoice.</summary>
+    SalePayment = 7,
 }
 
 public static class CashMovementTypes
 {
     /// <summary>Types that bring cash into the drawer.</summary>
-    public static IReadOnlySet<CashMovementType> Receipts { get; } = new HashSet<CashMovementType> { CashMovementType.ManualIn, CashMovementType.SupplierPaymentReversal, CashMovementType.DebtCollection };
+    public static IReadOnlySet<CashMovementType> Receipts { get; } = new HashSet<CashMovementType> { CashMovementType.ManualIn, CashMovementType.SupplierPaymentReversal, CashMovementType.DebtCollection, CashMovementType.SalePayment };
 
     /// <summary>Types that take cash out of the drawer.</summary>
     public static IReadOnlySet<CashMovementType> Payments { get; } = new HashSet<CashMovementType> { CashMovementType.ManualOut, CashMovementType.PurchasePayment, CashMovementType.SupplierPayment, CashMovementType.DebtCollectionReversal };

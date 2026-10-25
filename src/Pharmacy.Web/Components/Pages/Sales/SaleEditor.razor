@@ -1,0 +1,432 @@
+@page "/sales/new"
+@attribute [Authorize(Policy = Permissions.SalesCreate)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IAuthorizationService AuthorizationService
+
+<PageTitle>@L["Sales.New"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="sales" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@L["Sales.New"]</MudText>
+</div>
+
+@if (_error is not null)
+{
+    <MudAlert Severity="Severity.Error" Class="mb-3">@_error</MudAlert>
+}
+
+<MudGrid Spacing="3">
+    <MudItem xs="12" md="8">
+        <MudPaper Class="pa-3 mb-3" Elevation="1">
+            <MudGrid Spacing="2" Class="align-end">
+                <MudItem xs="12" md="5">
+                    <MudAutocomplete T="ProductListItem" Label="@L["Inventory.Product"]" Placeholder="@L["Products.SearchHint"]"
+                                     Value="_product" ValueChanged="OnProductSelected" SearchFunc="SearchProductsAsync"
+                                     ToStringFunc="ProductText" MinCharacters="1" DebounceInterval="250" CoerceText="false" Clearable="true" autofocus />
+                </MudItem>
+                <MudItem xs="6" md="2">
+                    <MudSelect T="int" Value="_unitId" ValueChanged="OnUnitChanged" Label="@L["Products.Unit"]" Disabled="@(_product is null)">
+                        @foreach (var unit in _product?.Units ?? [])
+                        {
+                            <MudSelectItem T="int" Value="unit.Id">@unit.Unit.For(SupportedCultures.IsArabicUi)</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="6" md="2">
+                    <MudNumericField T="int?" @bind-Value="_quantity" Label="@L["Inventory.Quantity"]" Min="1" />
+                </MudItem>
+                <MudItem xs="6" md="2">
+                    <MudNumericField T="decimal?" @bind-Value="_price" Label="@L["Sales.UnitPrice"]" Min="0" Format="0.00##" />
+                </MudItem>
+                <MudItem xs="6" md="1">
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled"
+                                   aria-label="@L["Sales.AddLine"]" title="@L["Sales.AddLine"]" Disabled="@(_product is null)" OnClick="AddLineAsync" />
+                </MudItem>
+            </MudGrid>
+            @if (_lineError is not null)
+            {
+                <MudText Typo="Typo.caption" Color="Color.Error">@_lineError</MudText>
+            }
+        </MudPaper>
+
+        <MudTable Items="_lines" T="SaleEditorLine" Dense="true" Hover="true" Elevation="1">
+            <HeaderContent>
+                <MudTh>@L["Inventory.Product"]</MudTh>
+                <MudTh>@L["Products.Unit"]</MudTh>
+                <MudTh>@L["Inventory.Quantity"]</MudTh>
+                <MudTh>@L["Sales.UnitPrice"]</MudTh>
+                <MudTh>@L["Sales.LineSubtotal"]</MudTh>
+                <MudTh>@L["Sales.DiscountShare"]</MudTh>
+                <MudTh>@L["Sales.LineNet"]</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                @{
+                    var index = _lines.IndexOf(context);
+                    var preview = _preview is { } p && index < p.Lines.Count ? p.Lines[index] : null;
+                }
+                <MudTd DataLabel="@L["Inventory.Product"]">
+                    @context.ProductText
+                    @if (preview is { InStock: false })
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Error">@L["Sales.OutOfStock", preview.SellableBaseQuantity]</MudChip>
+                    }
+                    @if (preview is { HasNearExpiry: true })
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Sales.NearExpiryBatch"]</MudChip>
+                    }
+                    @if (preview is { BelowCost: true })
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Error" Variant="Variant.Outlined">@L["Sales.BelowCostChip"]</MudChip>
+                    }
+                </MudTd>
+                <MudTd DataLabel="@L["Products.Unit"]">@context.UnitText</MudTd>
+                <MudTd DataLabel="@L["Inventory.Quantity"]">@context.Request.Quantity</MudTd>
+                <MudTd DataLabel="@L["Sales.UnitPrice"]"><span dir="ltr">@context.Request.UnitPrice.ToString("0.00##", CultureInfo.CurrentCulture)</span></MudTd>
+                <MudTd DataLabel="@L["Sales.LineSubtotal"]"><span dir="ltr">@MoneyFormat.Format(Subtotal(index))</span></MudTd>
+                <MudTd DataLabel="@L["Sales.DiscountShare"]"><span dir="ltr">@MoneyFormat.Format(Share(index))</span></MudTd>
+                <MudTd DataLabel="@L["Sales.LineNet"]"><span dir="ltr">@MoneyFormat.Format(Subtotal(index) - Share(index))</span></MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error"
+                                   aria-label="@L["Common.Remove"]" title="@L["Common.Remove"]" OnClick="() => RemoveLineAsync(context)" />
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>@L["Sales.NoLinesYet"]</MudText>
+            </NoRecordsContent>
+        </MudTable>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <MudPaper Class="pa-3 mb-3" Elevation="1">
+            <MudAutocomplete T="CustomerListItem" Label="@L["Sales.Customer"]" Value="_customer" ValueChanged="OnCustomerChanged"
+                             SearchFunc="SearchCustomersAsync" ToStringFunc="CustomerText" MinCharacters="0" DebounceInterval="250"
+                             CoerceText="false" ShowProgressIndicator="true" />
+            <MudTextField @bind-Value="_note" Label="@L["Cash.Note"]" MaxLength="SalesInvoice.NoteMaxLength" Class="mt-2" />
+        </MudPaper>
+
+        <MudPaper Class="pa-3 mb-3" Elevation="1">
+            <MudText Typo="Typo.subtitle2">@L["Sales.Discount"]</MudText>
+            <div class="d-flex align-end gap-2">
+                <MudNumericField T="decimal?" Value="_discountValue" ValueChanged="OnDiscountValueChanged" Min="0" Format="0.00" Immediate="true"
+                                 Label="@(_discountIsPercent ? L["Sales.DiscountPercent"] : L["Sales.DiscountAmount"])" Class="flex-grow-1" />
+                <MudToggleGroup T="bool" Value="_discountIsPercent" ValueChanged="OnDiscountModeChanged" Size="Size.Small" Color="Color.Primary" Class="mb-2">
+                    <MudToggleItem T="bool" Value="false" Text="@L["Sales.ByAmount"]" />
+                    <MudToggleItem T="bool" Value="true" Text="%" />
+                </MudToggleGroup>
+            </div>
+            @if (_preview is { DiscountNeedsApproval: true })
+            {
+                <MudText Typo="Typo.caption" Color="Color.Warning">@L["Sales.DiscountNeedsApprovalNote", _preview.MaxDiscountPercent.ToString("0.##", CultureInfo.CurrentCulture)]</MudText>
+            }
+        </MudPaper>
+
+        <MudPaper Class="pa-3 mb-3" Elevation="1">
+            <MudText Typo="Typo.subtitle2">@L["Purchases.Payment"]</MudText>
+            <MudRadioGroup T="PaymentMode" @bind-Value="_mode">
+                <MudRadio T="PaymentMode" Value="PaymentMode.Cash" Color="Color.Primary">@L["Purchases.PayCash"]</MudRadio>
+                <MudRadio T="PaymentMode" Value="PaymentMode.Credit" Color="Color.Primary" Disabled="@(!CanUseCredit)">@L["Purchases.PayCredit"]</MudRadio>
+                <MudRadio T="PaymentMode" Value="PaymentMode.Mixed" Color="Color.Primary" Disabled="@(!CanUseCredit)">@L["Purchases.PayMixed"]</MudRadio>
+            </MudRadioGroup>
+            @if (!CanUseCredit)
+            {
+                <MudText Typo="Typo.caption" Class="d-block">@L["Sales.CreditNeedsCustomer"]</MudText>
+            }
+            @if (_mode == PaymentMode.Mixed)
+            {
+                <MudNumericField T="decimal?" @bind-Value="_mixedPaid" Label="@L["Purchases.PaidCash"]" Min="0" Max="Net" Format="0.00" Immediate="true" Class="mt-2" />
+            }
+        </MudPaper>
+
+        <MudPaper Class="pa-3 mb-3" Elevation="1">
+            <MudSimpleTable Dense="true" Elevation="0">
+                <tbody>
+                    <tr><td>@L["Sales.Subtotal"]</td><td dir="ltr">@MoneyFormat.Format(_priced is { IsSuccess: true } ? _priced.Value.Subtotal : 0m)</td></tr>
+                    <tr><td>@L["Sales.Discount"]</td><td dir="ltr">@MoneyFormat.Format(_priced is { IsSuccess: true } ? _priced.Value.Discount : 0m)</td></tr>
+                    <tr><td><b>@L["Purchases.Total"]</b></td><td dir="ltr"><b>@MoneyFormat.Format(Net)</b></td></tr>
+                    <tr><td>@L["Purchases.PaidCash"]</td><td dir="ltr">@MoneyFormat.Format(PaidCash)</td></tr>
+                    <tr><td>@L["Purchases.OnCredit"]</td><td dir="ltr">@MoneyFormat.Format(Net - PaidCash)</td></tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudPaper>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" StartIcon="@Icons.Material.Filled.Check"
+                   Disabled="@(_saving || _lines.Count == 0 || _preview is { AllInStock: false })" OnClick="() => PostAsync()">
+            @L["Sales.Post"]
+        </MudButton>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private enum PaymentMode
+    {
+        Cash,
+        Credit,
+        Mixed,
+    }
+
+    // One id per opened form: a double click or a retry posts the sale only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private readonly List<SaleEditorLine> _lines = [];
+    private ProductListItem? _product;
+    private int _unitId;
+    private int? _quantity = 1;
+    private decimal? _price;
+    private string? _lineError;
+    private CustomerListItem? _customer;
+    private string? _note;
+    private bool _discountIsPercent;
+    private decimal? _discountValue;
+    private PaymentMode _mode = PaymentMode.Cash;
+    private decimal? _mixedPaid;
+    private Pharmacy.Domain.Common.Result<PricedSale>? _priced;
+    private SalePreview? _preview;
+    private bool _canSellBelowCost;
+    private string? _belowCostReason;
+    private SupervisorCredentials? _supervisor;
+    private string? _error;
+    private bool _saving;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    private bool CanUseCredit => _customer is { IsDefaultCash: false };
+
+    private decimal Net => _priced is { IsSuccess: true } ? _priced.Value.Net : 0m;
+
+    private decimal PaidCash => _mode switch
+    {
+        PaymentMode.Cash => Net,
+        PaymentMode.Credit => 0m,
+        _ => Math.Clamp(_mixedPaid ?? 0m, 0m, Net),
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+        _canSellBelowCost = (await AuthorizationService.AuthorizeAsync(user, Permissions.SalesSellBelowCost)).Succeeded;
+
+        // The default cash customer is listed first.
+        var customers = await Services.For<CustomerQueryService>().RunAsync(s => s.SearchAsync(new CustomerQuery(null, false, 0, 1)));
+        _customer = customers.IsSuccess ? customers.Value.Items.FirstOrDefault(c => c.IsDefaultCash) : null;
+    }
+
+    private decimal Subtotal(int index) => _priced is { IsSuccess: true } p && index >= 0 && index < p.Value.LineSubtotals.Count ? p.Value.LineSubtotals[index] : 0m;
+
+    private decimal Share(int index) => _priced is { IsSuccess: true } p && index >= 0 && index < p.Value.DiscountShares.Count ? p.Value.DiscountShares[index] : 0m;
+
+    // MudAutocomplete also asks for the text of "no selection" (null) when it first renders.
+    private static string ProductText(ProductListItem? product) =>
+        product is null ? string.Empty : $"{product.DisplayName(SupportedCultures.IsArabicUi)} {product.Strength}".Trim();
+
+    private static string CustomerText(CustomerListItem? customer) => customer?.Name ?? string.Empty;
+
+    private Task<IEnumerable<ProductListItem>> SearchProductsAsync(string text, CancellationToken cancellationToken) =>
+        TableDataLoader.SearchAsync<ProductListItem>(async () =>
+        {
+            var result = await Services.For<ProductQueryService>().RunAsync(s => s.QuickSearchAsync(text, cancellationToken));
+            return result.IsSuccess ? result.Value : Array.Empty<ProductListItem>();
+        }, cancellationToken);
+
+    private Task<IEnumerable<CustomerListItem>> SearchCustomersAsync(string? text, CancellationToken cancellationToken) =>
+        TableDataLoader.SearchAsync<CustomerListItem>(async () =>
+        {
+            var result = await Services.For<CustomerQueryService>().RunAsync(s => s.QuickSearchAsync(text, cancellationToken));
+            return result.IsSuccess ? result.Value : Array.Empty<CustomerListItem>();
+        }, cancellationToken);
+
+    private void OnProductSelected(ProductListItem? product)
+    {
+        _product = product;
+        _lineError = null;
+        if (product is not null)
+        {
+            _unitId = (product.Units.FirstOrDefault(u => u.IsBase) ?? product.Units[0]).Id;
+            _price = product.Units.First(u => u.Id == _unitId).DefaultSellingPrice;
+            _quantity = 1;
+        }
+    }
+
+    private void OnUnitChanged(int unitId)
+    {
+        _unitId = unitId;
+        _price = _product?.Units.FirstOrDefault(u => u.Id == unitId)?.DefaultSellingPrice;
+    }
+
+    private void OnCustomerChanged(CustomerListItem? customer)
+    {
+        _customer = customer;
+        if (!CanUseCredit)
+        {
+            _mode = PaymentMode.Cash;
+        }
+    }
+
+    private async Task AddLineAsync()
+    {
+        _lineError = null;
+        if (_product is null || _product.Units.FirstOrDefault(u => u.Id == _unitId) is not { } unit)
+        {
+            return;
+        }
+
+        if (_quantity is not > 0)
+        {
+            _lineError = L.Message(new Error(InventoryErrors.InvalidQuantity));
+            return;
+        }
+
+        if (_price is not { } price || !SalePricing.IsValidPrice(price))
+        {
+            _lineError = L.Message(new Error(SalesErrors.InvalidPrice));
+            return;
+        }
+
+        _lines.Add(new SaleEditorLine(
+            new SaleLineRequest(_product.Id, unit.Id, _quantity.Value, price),
+            ProductText(_product),
+            unit.Unit.For(SupportedCultures.IsArabicUi)));
+        _product = null;
+        _price = null;
+        _quantity = 1;
+        await RefreshAsync();
+    }
+
+    private async Task RemoveLineAsync(SaleEditorLine line)
+    {
+        _lines.Remove(line);
+        await RefreshAsync();
+    }
+
+    private Task OnDiscountValueChanged(decimal? value)
+    {
+        _discountValue = value;
+        return RefreshAsync();
+    }
+
+    private Task OnDiscountModeChanged(bool isPercent)
+    {
+        _discountIsPercent = isPercent;
+        return RefreshAsync();
+    }
+
+    // Prices the sale locally (no round trip) and asks the server what the stock says about it.
+    private async Task RefreshAsync()
+    {
+        // Anything the supervisor or the reason covered no longer applies once the sale changes.
+        _supervisor = null;
+        _belowCostReason = null;
+        _preview = null;
+        _priced = null;
+        if (_lines.Count == 0)
+        {
+            return;
+        }
+
+        var requests = _lines.Select(l => l.Request).ToList();
+        var discount = DiscountInput();
+        _priced = SalePricing.Price(requests.Select(l => new PricedLineInput(l.Quantity, l.UnitPrice)).ToList(), new InvoiceDiscount(discount.Amount, discount.Percent));
+        if (_priced.IsFailure)
+        {
+            _error = L.Message(_priced.Error!);
+            return;
+        }
+
+        _error = null;
+        var preview = await Services.For<SalesQueryService>().RunAsync(s => s.PreviewAsync(new SalePreviewRequest(requests, discount.Amount, discount.Percent)));
+        _preview = preview.IsSuccess ? preview.Value : null;
+    }
+
+    private (decimal? Amount, decimal? Percent) DiscountInput() =>
+        _discountValue is not > 0 ? (null, null) : _discountIsPercent ? (null, _discountValue) : (_discountValue, null);
+
+    private async Task PostAsync()
+    {
+        _error = null;
+        if (_customer is null)
+        {
+            _error = L.Message(new Error(SalesErrors.UnknownCustomer));
+            return;
+        }
+
+        // Ask for what the sale needs before posting, when the preview already knows.
+        var needReason = _preview is { AnyBelowCost: true } && string.IsNullOrWhiteSpace(_belowCostReason);
+        var needSupervisor = _supervisor is null && _preview is { } p && ((p.AnyBelowCost && !_canSellBelowCost) || p.DiscountNeedsApproval);
+        if ((needReason || needSupervisor) && !await AskApprovalAsync(needReason, needSupervisor, previousError: null))
+        {
+            return;
+        }
+
+        await SendAsync();
+    }
+
+    private async Task SendAsync()
+    {
+        _saving = true;
+        try
+        {
+            var discount = DiscountInput();
+            var request = new SaleRequest(
+                _operationId, _customer!.Id, [.. _lines.Select(l => l.Request)], discount.Amount, discount.Percent,
+                PaidCash, _note, _belowCostReason, _supervisor);
+            var result = await Services.For<SalesService>().RunAsync(s => s.CreateAsync(request));
+
+            if (result.IsSuccess)
+            {
+                Snackbar.Add(L["Sales.Posted"], Severity.Success);
+                Navigation.NavigateTo($"sales/{result.Value}");
+                return;
+            }
+
+            _supervisor = null;
+            var code = result.Error!.Code;
+            if (code is SalesErrors.BelowCostNeedsApproval or SalesErrors.BelowCostReasonRequired or SalesErrors.HighDiscountNeedsApproval
+                or SalesErrors.SupervisorNotAccepted)
+            {
+                // The server knows better than the preview (stock changed meanwhile): collect what is missing and try again.
+                var belowCost = code is SalesErrors.BelowCostNeedsApproval or SalesErrors.BelowCostReasonRequired || _preview is { AnyBelowCost: true };
+                var needSupervisor = code is not SalesErrors.BelowCostReasonRequired;
+                if (await AskApprovalAsync(belowCost, needSupervisor, code == SalesErrors.SupervisorNotAccepted ? L.Message(result.Error) : null))
+                {
+                    _saving = false;
+                    await SendAsync();
+                }
+
+                return;
+            }
+
+            _error = L.Message(result.Error);
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    private async Task<bool> AskApprovalAsync(bool needReason, bool needSupervisor, string? previousError)
+    {
+        var parameters = new DialogParameters<SupervisorApprovalDialog>
+        {
+            { d => d.NeedBelowCostReason, needReason },
+            { d => d.NeedSupervisor, needSupervisor },
+            { d => d.NeedHighDiscount, _preview is { DiscountNeedsApproval: true } },
+            { d => d.MaxDiscountPercent, _preview?.MaxDiscountPercent ?? 0m },
+            { d => d.InitialReason, _belowCostReason },
+            { d => d.PreviousError, previousError },
+        };
+        var dialog = await DialogService.ShowAsync<SupervisorApprovalDialog>(
+            L["Sales.ApprovalTitle"], parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        if (await dialog.Result is not { Canceled: false, Data: SaleApproval approval })
+        {
+            return false;
+        }
+
+        _belowCostReason = approval.Reason ?? _belowCostReason;
+        _supervisor = approval.Supervisor;
+        return true;
+    }
+}

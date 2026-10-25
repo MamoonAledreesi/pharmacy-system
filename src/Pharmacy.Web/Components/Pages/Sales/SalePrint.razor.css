@@ -1,0 +1,78 @@
+.invoice {
+    margin: 0 auto;
+    padding: 12px;
+    color: #000;
+    background: #fff;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+.invoice.a4 {
+    max-width: 210mm;
+    font-size: 14px;
+}
+
+.invoice.receipt {
+    width: 80mm;
+    font-size: 12px;
+}
+
+header {
+    text-align: center;
+    border-bottom: 1px solid #000;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+h1, h2 {
+    margin: 0;
+    font-size: 1.3em;
+}
+
+h2 {
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.meta div {
+    margin: 2px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+}
+
+th, td {
+    padding: 3px 4px;
+    border-bottom: 1px solid #999;
+    text-align: start;
+}
+
+.totals div {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+}
+
+.totals .grand {
+    font-weight: 700;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    margin: 4px 0;
+}
+
+footer {
+    text-align: center;
+    margin-top: 10px;
+}
+
+@media print {
+    .no-print {
+        display: none;
+    }
+
+    @page {
+        margin: 6mm;
+    }
+}

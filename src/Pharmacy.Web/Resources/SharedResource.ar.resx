@@ -1860,4 +1860,214 @@
   <data name="Receivables.OpeningBalanceAlreadySet" xml:space="preserve">
     <value>لهذا العميل رصيد افتتاحي بالفعل.</value>
   </data>
+  <data name="Nav.SalesInvoices" xml:space="preserve">
+    <value>فواتير البيع</value>
+  </data>
+  <data name="Settings.Sales" xml:space="preserve">
+    <value>المبيعات</value>
+  </data>
+  <data name="Settings.MaxDiscountPercent" xml:space="preserve">
+    <value>أعلى خصم بدون موافقة (%)</value>
+  </data>
+  <data name="Settings.MaxDiscountPercentHint" xml:space="preserve">
+    <value>البائع الذي لا يملك صلاحية الخصم العالي يحتاج موافقة مشرف لخصم أكبر على الفاتورة.</value>
+  </data>
+  <data name="Settings.InvalidMaxDiscountPercent" xml:space="preserve">
+    <value>يجب أن يكون حد الخصم بين 0 و100 وبخانتين عشريتين على الأكثر.</value>
+  </data>
+  <data name="Sales.New" xml:space="preserve">
+    <value>بيع جديد</value>
+  </data>
+  <data name="Sales.Invoice" xml:space="preserve">
+    <value>فاتورة بيع</value>
+  </data>
+  <data name="Sales.Search" xml:space="preserve">
+    <value>بحث برقم الفاتورة أو العميل</value>
+  </data>
+  <data name="Sales.NoResults" xml:space="preserve">
+    <value>لا توجد فواتير بيع.</value>
+  </data>
+  <data name="Sales.Customer" xml:space="preserve">
+    <value>العميل</value>
+  </data>
+  <data name="Sales.UnitPrice" xml:space="preserve">
+    <value>سعر الوحدة</value>
+  </data>
+  <data name="Sales.AddLine" xml:space="preserve">
+    <value>إضافة الصنف</value>
+  </data>
+  <data name="Sales.NoLinesYet" xml:space="preserve">
+    <value>لم تُضف أصناف بعد.</value>
+  </data>
+  <data name="Sales.LineSubtotal" xml:space="preserve">
+    <value>الإجمالي</value>
+  </data>
+  <data name="Sales.DiscountShare" xml:space="preserve">
+    <value>الخصم</value>
+  </data>
+  <data name="Sales.LineNet" xml:space="preserve">
+    <value>الصافي</value>
+  </data>
+  <data name="Sales.Subtotal" xml:space="preserve">
+    <value>المجموع</value>
+  </data>
+  <data name="Sales.Discount" xml:space="preserve">
+    <value>الخصم</value>
+  </data>
+  <data name="Sales.DiscountAmount" xml:space="preserve">
+    <value>مبلغ الخصم</value>
+  </data>
+  <data name="Sales.DiscountPercent" xml:space="preserve">
+    <value>نسبة الخصم</value>
+  </data>
+  <data name="Sales.ByAmount" xml:space="preserve">
+    <value>مبلغ</value>
+  </data>
+  <data name="Sales.DiscountNeedsApprovalNote" xml:space="preserve">
+    <value>الخصم الأكبر من {0}% يحتاج موافقة مشرف.</value>
+  </data>
+  <data name="Sales.CreditNeedsCustomer" xml:space="preserve">
+    <value>اختر عميلاً مسمى (غير العميل النقدي الافتراضي) للبيع الآجل.</value>
+  </data>
+  <data name="Sales.Post" xml:space="preserve">
+    <value>ترحيل البيع</value>
+  </data>
+  <data name="Sales.Posted" xml:space="preserve">
+    <value>تم ترحيل البيع.</value>
+  </data>
+  <data name="Sales.OutOfStock" xml:space="preserve">
+    <value>المخزون لا يكفي (المتاح للبيع: {0})</value>
+  </data>
+  <data name="Sales.NearExpiryBatch" xml:space="preserve">
+    <value>من دفعة قريبة الانتهاء</value>
+  </data>
+  <data name="Sales.BelowCostChip" xml:space="preserve">
+    <value>تحت التكلفة</value>
+  </data>
+  <data name="Sales.Batches" xml:space="preserve">
+    <value>الدفعات</value>
+  </data>
+  <data name="Sales.Cost" xml:space="preserve">
+    <value>التكلفة</value>
+  </data>
+  <data name="Sales.PrintA4" xml:space="preserve">
+    <value>طباعة A4</value>
+  </data>
+  <data name="Sales.PrintReceipt" xml:space="preserve">
+    <value>طباعة إيصال</value>
+  </data>
+  <data name="Sales.Print" xml:space="preserve">
+    <value>طباعة</value>
+  </data>
+  <data name="Sales.ThankYou" xml:space="preserve">
+    <value>شكراً لكم. نتمنى لكم الصحة والعافية.</value>
+  </data>
+  <data name="Sales.ApprovalTitle" xml:space="preserve">
+    <value>مطلوب موافقة</value>
+  </data>
+  <data name="Sales.BelowCostWarning" xml:space="preserve">
+    <value>بعض الأصناف تُباع بأقل من تكلفتها. اكتب السبب.</value>
+  </data>
+  <data name="Sales.BelowCostReason" xml:space="preserve">
+    <value>سبب البيع بأقل من التكلفة</value>
+  </data>
+  <data name="Sales.BelowCostApprovedBy" xml:space="preserve">
+    <value>وافق على البيع تحت التكلفة</value>
+  </data>
+  <data name="Sales.DiscountApprovedBy" xml:space="preserve">
+    <value>وافق على الخصم العالي</value>
+  </data>
+  <data name="Sales.SupervisorHint" xml:space="preserve">
+    <value>يجب أن يدخل المشرف اسم المستخدم وكلمة المرور الخاصة به للموافقة.</value>
+  </data>
+  <data name="Sales.SupervisorHintDiscount" xml:space="preserve">
+    <value>الخصم أكبر من {0}%. يجب أن يدخل المشرف اسم المستخدم وكلمة المرور الخاصة به للموافقة.</value>
+  </data>
+  <data name="Sales.SupervisorUserName" xml:space="preserve">
+    <value>اسم مستخدم المشرف</value>
+  </data>
+  <data name="Sales.SupervisorPassword" xml:space="preserve">
+    <value>كلمة مرور المشرف</value>
+  </data>
+  <data name="Sales.ConfirmApproval" xml:space="preserve">
+    <value>موافقة ومتابعة</value>
+  </data>
+  <data name="CashMovementTypes.SalePayment" xml:space="preserve">
+    <value>قبض مبيعات</value>
+  </data>
+  <data name="PermissionModules.Sales" xml:space="preserve">
+    <value>المبيعات</value>
+  </data>
+  <data name="Permissions.Sales.View" xml:space="preserve">
+    <value>عرض فواتير البيع</value>
+  </data>
+  <data name="Permissions.Sales.Create" xml:space="preserve">
+    <value>إنشاء فواتير البيع</value>
+  </data>
+  <data name="Permissions.Sales.ViewCost" xml:space="preserve">
+    <value>عرض التكلفة في المبيعات</value>
+  </data>
+  <data name="Permissions.Sales.GrantHighDiscount" xml:space="preserve">
+    <value>منح خصم أعلى من الحد</value>
+  </data>
+  <data name="Permissions.Sales.SellBelowCost" xml:space="preserve">
+    <value>البيع بأقل من التكلفة</value>
+  </data>
+  <data name="AuditActions.Sales.SaleCreated" xml:space="preserve">
+    <value>ترحيل فاتورة بيع</value>
+  </data>
+  <data name="AuditActions.Sales.BelowCost" xml:space="preserve">
+    <value>بيع بأقل من التكلفة</value>
+  </data>
+  <data name="AuditActions.Sales.HighDiscount" xml:space="preserve">
+    <value>خصم أعلى من الحد</value>
+  </data>
+  <data name="Sales.NoLines" xml:space="preserve">
+    <value>أضف صنفاً واحداً على الأقل.</value>
+  </data>
+  <data name="Sales.TooManyLines" xml:space="preserve">
+    <value>لا يمكن أن تحتوي الفاتورة على أكثر من {0} صنف.</value>
+  </data>
+  <data name="Sales.InvalidPrice" xml:space="preserve">
+    <value>يجب أن يكون السعر أكبر من صفر وبأربع خانات عشرية على الأكثر.</value>
+  </data>
+  <data name="Sales.TotalTooLarge" xml:space="preserve">
+    <value>لا يمكن أن يتجاوز الإجمالي {0:N2}.</value>
+  </data>
+  <data name="Sales.InvalidDiscount" xml:space="preserve">
+    <value>الخصم غير صالح.</value>
+  </data>
+  <data name="Sales.DiscountTooLarge" xml:space="preserve">
+    <value>يجب أن يكون الخصم أقل من مجموع الفاتورة.</value>
+  </data>
+  <data name="Sales.InvalidPaidAmount" xml:space="preserve">
+    <value>يجب أن يكون المدفوع نقداً بين صفر وإجمالي الفاتورة.</value>
+  </data>
+  <data name="Sales.FieldTooLong" xml:space="preserve">
+    <value>أحد الحقول أطول من المسموح.</value>
+  </data>
+  <data name="Sales.UnknownCustomer" xml:space="preserve">
+    <value>اختر العميل.</value>
+  </data>
+  <data name="Sales.InactiveCustomer" xml:space="preserve">
+    <value>هذا العميل غير نشط.</value>
+  </data>
+  <data name="Sales.CreditNeedsRegisteredCustomer" xml:space="preserve">
+    <value>البيع الآجل يحتاج عميلاً مسمى وليس العميل النقدي الافتراضي.</value>
+  </data>
+  <data name="Sales.BelowCostNeedsApproval" xml:space="preserve">
+    <value>البيع بأقل من التكلفة يحتاج موافقة مشرف.</value>
+  </data>
+  <data name="Sales.HighDiscountNeedsApproval" xml:space="preserve">
+    <value>الخصم الأكبر من {0}% يحتاج موافقة مشرف.</value>
+  </data>
+  <data name="Sales.BelowCostReasonRequired" xml:space="preserve">
+    <value>اكتب سبب البيع بأقل من التكلفة.</value>
+  </data>
+  <data name="Sales.SupervisorNotAccepted" xml:space="preserve">
+    <value>تعذر تأكيد المشرف: اسم المستخدم أو كلمة المرور خطأ، أو لا يملك صلاحية هذه الموافقة.</value>
+  </data>
+  <data name="Sales.UnknownInvoice" xml:space="preserve">
+    <value>لم يتم العثور على الفاتورة.</value>
+  </data>
 </root>

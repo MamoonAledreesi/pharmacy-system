@@ -14,6 +14,7 @@ public sealed class PharmacySettings
     public const int AddressMaxLength = 300;
     public const int DefaultNearExpiryDays = 90;
     public const int MaxNearExpiryDays = 3650;
+    public const decimal DefaultMaxDiscountPercent = 10m;
 
     public static PharmacySettingsData Defaults { get; } = new(
         NameArabic: "الصيدلية",
@@ -22,7 +23,8 @@ public sealed class PharmacySettings
         Address: null,
         ThemeMode: ThemeMode.Light,
         PrimaryColor: ThemeColor.MedicalGreen,
-        NearExpiryDays: DefaultNearExpiryDays);
+        NearExpiryDays: DefaultNearExpiryDays,
+        MaxDiscountPercent: DefaultMaxDiscountPercent);
 
     // Used by EF Core.
     private PharmacySettings()
@@ -46,13 +48,16 @@ public sealed class PharmacySettings
     /// <summary>Batches expiring within this many days are shown as near expiry (a product may override it).</summary>
     public int NearExpiryDays { get; private set; } = DefaultNearExpiryDays;
 
+    /// <summary>The largest invoice discount, in percent, a seller may give without the high-discount permission.</summary>
+    public decimal MaxDiscountPercent { get; private set; } = DefaultMaxDiscountPercent;
+
     /// <summary>Optimistic concurrency token (SQL Server rowversion).</summary>
     public byte[] RowVersion { get; private set; } = [];
 
     public static PharmacySettings CreateDefault() => new();
 
     public PharmacySettingsData ToData() =>
-        new(NameArabic, NameEnglish, Phone, Address, ThemeMode, PrimaryColor, NearExpiryDays);
+        new(NameArabic, NameEnglish, Phone, Address, ThemeMode, PrimaryColor, NearExpiryDays, MaxDiscountPercent);
 
     public Result Update(PharmacySettingsData values)
     {
@@ -63,7 +68,7 @@ public sealed class PharmacySettings
         var phone = NullIfBlank(values.Phone);
         var address = NullIfBlank(values.Address);
 
-        var error = Validate(nameArabic, nameEnglish, phone, address, values.ThemeMode, values.PrimaryColor, values.NearExpiryDays);
+        var error = Validate(nameArabic, nameEnglish, phone, address, values.ThemeMode, values.PrimaryColor, values.NearExpiryDays, values.MaxDiscountPercent);
         if (error is not null)
         {
             return Result.Failure(error);
@@ -76,11 +81,12 @@ public sealed class PharmacySettings
         ThemeMode = values.ThemeMode;
         PrimaryColor = values.PrimaryColor;
         NearExpiryDays = values.NearExpiryDays;
+        MaxDiscountPercent = values.MaxDiscountPercent;
         return Result.Success();
     }
 
     private static Error? Validate(
-        string nameArabic, string nameEnglish, string? phone, string? address, ThemeMode themeMode, ThemeColor color, int nearExpiryDays)
+        string nameArabic, string nameEnglish, string? phone, string? address, ThemeMode themeMode, ThemeColor color, int nearExpiryDays, decimal maxDiscountPercent)
     {
         if (nameArabic.Length == 0)
         {
@@ -120,6 +126,11 @@ public sealed class PharmacySettings
         if (nearExpiryDays is < 1 or > MaxNearExpiryDays)
         {
             return SettingsErrors.TooLong(SettingsErrors.InvalidNearExpiryDays, MaxNearExpiryDays);
+        }
+
+        if (maxDiscountPercent is < 0 or > 100 || decimal.Round(maxDiscountPercent, 2) != maxDiscountPercent)
+        {
+            return new Error(SettingsErrors.InvalidMaxDiscountPercent);
         }
 
         return null;

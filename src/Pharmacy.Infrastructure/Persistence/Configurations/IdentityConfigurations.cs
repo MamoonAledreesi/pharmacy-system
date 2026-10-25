@@ -128,6 +128,18 @@ internal sealed class IdentityTableConfiguration :
         (2, Permissions.ReceivablesCollect),
         (3, Permissions.ReceivablesCollect),
         (4, Permissions.ReceivablesCollect),
+
+        // Sales (Task 7). Cashiers sell but never see costs; the pharmacist can also approve high discounts and
+        // below-cost sales (so can act as the supervisor); the accountant reads sales and costs.
+        (2, Permissions.SalesView),
+        (3, Permissions.SalesView),
+        (4, Permissions.SalesView),
+        (2, Permissions.SalesCreate),
+        (3, Permissions.SalesCreate),
+        (2, Permissions.SalesViewCost),
+        (4, Permissions.SalesViewCost),
+        (2, Permissions.SalesGrantHighDiscount),
+        (2, Permissions.SalesSellBelowCost),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

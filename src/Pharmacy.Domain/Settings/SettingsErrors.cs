@@ -13,6 +13,7 @@ public static class SettingsErrors
     public const string InvalidThemeMode = "Settings.InvalidThemeMode";
     public const string InvalidColor = "Settings.InvalidColor";
     public const string InvalidNearExpiryDays = "Settings.InvalidNearExpiryDays";
+    public const string InvalidMaxDiscountPercent = "Settings.InvalidMaxDiscountPercent";
 
     internal static Error TooLong(string code, int maxLength) => new(code, maxLength);
 }

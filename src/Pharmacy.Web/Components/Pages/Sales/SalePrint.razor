@@ -1,0 +1,102 @@
+@page "/sales/{InvoiceId:int}/print"
+@layout PrintLayout
+@attribute [Authorize(Policy = Permissions.SalesView)]
+@inject ServiceRunner Services
+@inject PharmacySettingsState SettingsState
+
+<PageTitle>@(_invoice?.Number ?? L["Sales.Invoice"])</PageTitle>
+
+@if (_invoice is not { } invoice)
+{
+    <p>@(_notFound ? L["Errors.NotFound"] : string.Empty)</p>
+    return;
+}
+
+@{
+    var pharmacy = SettingsState.Current ?? PharmacySettings.Defaults;
+    var arabic = SupportedCultures.IsArabicUi;
+}
+
+<article class="@(Receipt ? "invoice receipt" : "invoice a4")">
+    <header>
+        <h1>@pharmacy.NameArabic</h1>
+        <h2 dir="ltr">@pharmacy.NameEnglish</h2>
+        @if (!string.IsNullOrWhiteSpace(pharmacy.Phone))
+        {
+            <div dir="ltr">@pharmacy.Phone</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(pharmacy.Address))
+        {
+            <div>@pharmacy.Address</div>
+        }
+    </header>
+
+    <section class="meta">
+        <div>@L["Sales.Invoice"]: <b dir="ltr">@invoice.Number</b></div>
+        <div>@L["Audit.Time"]: @LocalizerExtensions.LocalTime(invoice.CreatedAtUtc)</div>
+        <div>@L["Sales.Customer"]: @invoice.CustomerName</div>
+        <div>@L["Purchases.EnteredBy"]: <span dir="ltr">@invoice.UserName</span></div>
+    </section>
+
+    <table>
+        <thead>
+            <tr>
+                <th>@L["Inventory.Product"]</th>
+                <th>@L["Inventory.Quantity"]</th>
+                <th>@L["Sales.UnitPrice"]</th>
+                <th>@L["Sales.LineNet"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var line in invoice.Lines)
+            {
+                <tr>
+                    <td>@line.Product.For(arabic) @line.Strength <small>(@line.Unit.For(arabic))</small></td>
+                    <td dir="ltr">@line.Quantity</td>
+                    <td dir="ltr">@line.UnitPrice.ToString("0.00##", CultureInfo.CurrentCulture)</td>
+                    <td dir="ltr">@MoneyFormat.Format(line.LineSubtotal)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <section class="totals">
+        <div><span>@L["Sales.Subtotal"]</span><span dir="ltr">@MoneyFormat.Format(invoice.Subtotal)</span></div>
+        @if (invoice.DiscountAmount > 0)
+        {
+            <div><span>@L["Sales.Discount"] (@invoice.DiscountPercent.ToString("0.##", CultureInfo.CurrentCulture)%)</span><span dir="ltr">-@MoneyFormat.Format(invoice.DiscountAmount)</span></div>
+        }
+        <div class="grand"><span>@L["Purchases.Total"]</span><span dir="ltr">@MoneyFormat.Format(invoice.Total)</span></div>
+        <div><span>@L["Purchases.PaidCash"]</span><span dir="ltr">@MoneyFormat.Format(invoice.PaidCash)</span></div>
+        @if (invoice.OnCredit > 0)
+        {
+            <div><span>@L["Purchases.OnCredit"]</span><span dir="ltr">@MoneyFormat.Format(invoice.OnCredit)</span></div>
+        }
+    </section>
+
+    <footer>
+        <p>@L["Sales.ThankYou"]</p>
+        <button type="button" class="no-print" onclick="window.print()">@L["Sales.Print"]</button>
+    </footer>
+</article>
+
+@code {
+    private SaleDetail? _invoice;
+    private bool _notFound;
+
+    [Parameter]
+    public int InvoiceId { get; set; }
+
+    /// <summary>"receipt" prints a narrow 80 mm receipt; anything else prints A4.</summary>
+    [SupplyParameterFromQuery(Name = "size")]
+    public string? Size { get; set; }
+
+    private bool Receipt => string.Equals(Size, "receipt", StringComparison.OrdinalIgnoreCase);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Services.For<SalesQueryService>().RunAsync(s => s.GetAsync(InvoiceId));
+        _notFound = result.IsFailure;
+        _invoice = result.IsSuccess ? result.Value : null;
+    }
+}

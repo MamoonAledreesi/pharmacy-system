@@ -1,0 +1,81 @@
+@* Collects what a sale still needs: the reason for selling below cost and/or a supervisor's own credentials. *@
+<MudDialog>
+    <DialogContent>
+        @if (_error is not null)
+        {
+            <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">@_error</MudAlert>
+        }
+
+        @if (NeedBelowCostReason)
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true" Class="mb-3">@L["Sales.BelowCostWarning"]</MudAlert>
+            <MudTextField @bind-Value="_reason" Label="@L["Sales.BelowCostReason"]" MaxLength="SalesInvoice.ReasonMaxLength" Lines="2" Required="true" />
+        }
+
+        @if (NeedSupervisor)
+        {
+            <MudAlert Severity="Severity.Info" Dense="true" Class="my-3">
+                @(NeedHighDiscount ? L["Sales.SupervisorHintDiscount", MaxDiscountPercent.ToString("0.##", CultureInfo.CurrentCulture)] : L["Sales.SupervisorHint"])
+            </MudAlert>
+            <MudTextField @bind-Value="_userName" Label="@L["Sales.SupervisorUserName"]" Style="direction: ltr" autocomplete="off" />
+            <MudTextField @bind-Value="_password" Label="@L["Sales.SupervisorPassword"]" InputType="InputType.Password" Class="mt-2" autocomplete="off" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Cancel()">@L["Common.Cancel"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Confirm">@L["Sales.ConfirmApproval"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public bool NeedBelowCostReason { get; set; }
+
+    [Parameter]
+    public bool NeedSupervisor { get; set; }
+
+    [Parameter]
+    public bool NeedHighDiscount { get; set; }
+
+    [Parameter]
+    public decimal MaxDiscountPercent { get; set; }
+
+    [Parameter]
+    public string? InitialReason { get; set; }
+
+    /// <summary>Shown when the previous attempt was refused, for example a wrong supervisor password.</summary>
+    [Parameter]
+    public string? PreviousError { get; set; }
+
+    private string? _reason;
+    private string? _userName;
+    private string? _password;
+    private string? _error;
+
+    protected override void OnInitialized()
+    {
+        _reason = InitialReason;
+        _error = PreviousError;
+    }
+
+    private void Confirm()
+    {
+        if (NeedBelowCostReason && string.IsNullOrWhiteSpace(_reason))
+        {
+            _error = L.Message(new Error(SalesErrors.BelowCostReasonRequired));
+            return;
+        }
+
+        if (NeedSupervisor && (string.IsNullOrWhiteSpace(_userName) || string.IsNullOrEmpty(_password)))
+        {
+            _error = L.Message(new Error(SalesErrors.SupervisorNotAccepted));
+            return;
+        }
+
+        MudDialog.Close(DialogResult.Ok(new SaleApproval(
+            NeedBelowCostReason ? _reason : null, NeedSupervisor ? new SupervisorCredentials(_userName, _password) : null)));
+    }
+}

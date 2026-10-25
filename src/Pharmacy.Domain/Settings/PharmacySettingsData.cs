@@ -8,4 +8,5 @@ public sealed record PharmacySettingsData(
     string? Address,
     ThemeMode ThemeMode,
     ThemeColor PrimaryColor,
-    int NearExpiryDays = PharmacySettings.DefaultNearExpiryDays);
+    int NearExpiryDays = PharmacySettings.DefaultNearExpiryDays,
+    decimal MaxDiscountPercent = PharmacySettings.DefaultMaxDiscountPercent);

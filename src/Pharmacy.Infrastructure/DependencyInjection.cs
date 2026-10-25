@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pharmacy.Application.Abstractions;
+using Pharmacy.Application.Sales;
 using Pharmacy.Application.Users;
 using Pharmacy.Infrastructure.Identity;
 using Pharmacy.Infrastructure.Persistence;
@@ -29,6 +30,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUserManagementService, UserManagementService>();
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ISupervisorVerifier, SupervisorVerifier>();
 
         return services;
     }
@@ -61,3 +63,4 @@ public static class DependencyInjection
             .AddClaimsPrincipalFactory<PharmacyUserClaimsPrincipalFactory>();
     }
 }
+

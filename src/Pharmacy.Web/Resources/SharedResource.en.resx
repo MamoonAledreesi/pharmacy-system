@@ -1860,4 +1860,214 @@
   <data name="Receivables.OpeningBalanceAlreadySet" xml:space="preserve">
     <value>This customer already has an opening balance.</value>
   </data>
+  <data name="Nav.SalesInvoices" xml:space="preserve">
+    <value>Sales invoices</value>
+  </data>
+  <data name="Settings.Sales" xml:space="preserve">
+    <value>Sales</value>
+  </data>
+  <data name="Settings.MaxDiscountPercent" xml:space="preserve">
+    <value>Highest discount without approval (%)</value>
+  </data>
+  <data name="Settings.MaxDiscountPercentHint" xml:space="preserve">
+    <value>A seller without the high-discount permission needs a supervisor for a larger invoice discount.</value>
+  </data>
+  <data name="Settings.InvalidMaxDiscountPercent" xml:space="preserve">
+    <value>The discount limit must be between 0 and 100, with at most two decimals.</value>
+  </data>
+  <data name="Sales.New" xml:space="preserve">
+    <value>New sale</value>
+  </data>
+  <data name="Sales.Invoice" xml:space="preserve">
+    <value>Sales invoice</value>
+  </data>
+  <data name="Sales.Search" xml:space="preserve">
+    <value>Search by invoice number or customer</value>
+  </data>
+  <data name="Sales.NoResults" xml:space="preserve">
+    <value>No sales invoices found.</value>
+  </data>
+  <data name="Sales.Customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Sales.UnitPrice" xml:space="preserve">
+    <value>Price per unit</value>
+  </data>
+  <data name="Sales.AddLine" xml:space="preserve">
+    <value>Add item</value>
+  </data>
+  <data name="Sales.NoLinesYet" xml:space="preserve">
+    <value>No items yet.</value>
+  </data>
+  <data name="Sales.LineSubtotal" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="Sales.DiscountShare" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="Sales.LineNet" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="Sales.Subtotal" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="Sales.Discount" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="Sales.DiscountAmount" xml:space="preserve">
+    <value>Discount amount</value>
+  </data>
+  <data name="Sales.DiscountPercent" xml:space="preserve">
+    <value>Discount percent</value>
+  </data>
+  <data name="Sales.ByAmount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="Sales.DiscountNeedsApprovalNote" xml:space="preserve">
+    <value>A discount above {0}% needs a supervisor.</value>
+  </data>
+  <data name="Sales.CreditNeedsCustomer" xml:space="preserve">
+    <value>Choose a named customer (not the default cash customer) to sell on credit.</value>
+  </data>
+  <data name="Sales.Post" xml:space="preserve">
+    <value>Post sale</value>
+  </data>
+  <data name="Sales.Posted" xml:space="preserve">
+    <value>The sale was posted.</value>
+  </data>
+  <data name="Sales.OutOfStock" xml:space="preserve">
+    <value>Not enough stock (sellable: {0})</value>
+  </data>
+  <data name="Sales.NearExpiryBatch" xml:space="preserve">
+    <value>From a batch near expiry</value>
+  </data>
+  <data name="Sales.BelowCostChip" xml:space="preserve">
+    <value>Below cost</value>
+  </data>
+  <data name="Sales.Batches" xml:space="preserve">
+    <value>Batches</value>
+  </data>
+  <data name="Sales.Cost" xml:space="preserve">
+    <value>Cost</value>
+  </data>
+  <data name="Sales.PrintA4" xml:space="preserve">
+    <value>Print A4</value>
+  </data>
+  <data name="Sales.PrintReceipt" xml:space="preserve">
+    <value>Print receipt</value>
+  </data>
+  <data name="Sales.Print" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="Sales.ThankYou" xml:space="preserve">
+    <value>Thank you. Wishing you good health.</value>
+  </data>
+  <data name="Sales.ApprovalTitle" xml:space="preserve">
+    <value>Approval needed</value>
+  </data>
+  <data name="Sales.BelowCostWarning" xml:space="preserve">
+    <value>Some items sell below their cost. Write the reason.</value>
+  </data>
+  <data name="Sales.BelowCostReason" xml:space="preserve">
+    <value>Reason for selling below cost</value>
+  </data>
+  <data name="Sales.BelowCostApprovedBy" xml:space="preserve">
+    <value>Below-cost sale approved by</value>
+  </data>
+  <data name="Sales.DiscountApprovedBy" xml:space="preserve">
+    <value>High discount approved by</value>
+  </data>
+  <data name="Sales.SupervisorHint" xml:space="preserve">
+    <value>A supervisor must enter their own user name and password to approve.</value>
+  </data>
+  <data name="Sales.SupervisorHintDiscount" xml:space="preserve">
+    <value>The discount is above {0}%. A supervisor must enter their own user name and password to approve.</value>
+  </data>
+  <data name="Sales.SupervisorUserName" xml:space="preserve">
+    <value>Supervisor user name</value>
+  </data>
+  <data name="Sales.SupervisorPassword" xml:space="preserve">
+    <value>Supervisor password</value>
+  </data>
+  <data name="Sales.ConfirmApproval" xml:space="preserve">
+    <value>Approve and continue</value>
+  </data>
+  <data name="CashMovementTypes.SalePayment" xml:space="preserve">
+    <value>Sale payment</value>
+  </data>
+  <data name="PermissionModules.Sales" xml:space="preserve">
+    <value>Sales</value>
+  </data>
+  <data name="Permissions.Sales.View" xml:space="preserve">
+    <value>View sales invoices</value>
+  </data>
+  <data name="Permissions.Sales.Create" xml:space="preserve">
+    <value>Create sales</value>
+  </data>
+  <data name="Permissions.Sales.ViewCost" xml:space="preserve">
+    <value>View costs on sales</value>
+  </data>
+  <data name="Permissions.Sales.GrantHighDiscount" xml:space="preserve">
+    <value>Give discounts above the limit</value>
+  </data>
+  <data name="Permissions.Sales.SellBelowCost" xml:space="preserve">
+    <value>Sell below cost</value>
+  </data>
+  <data name="AuditActions.Sales.SaleCreated" xml:space="preserve">
+    <value>Sale posted</value>
+  </data>
+  <data name="AuditActions.Sales.BelowCost" xml:space="preserve">
+    <value>Sale below cost</value>
+  </data>
+  <data name="AuditActions.Sales.HighDiscount" xml:space="preserve">
+    <value>Discount above the limit</value>
+  </data>
+  <data name="Sales.NoLines" xml:space="preserve">
+    <value>Add at least one item.</value>
+  </data>
+  <data name="Sales.TooManyLines" xml:space="preserve">
+    <value>A sale cannot have more than {0} items.</value>
+  </data>
+  <data name="Sales.InvalidPrice" xml:space="preserve">
+    <value>The price must be greater than zero, with at most four decimals.</value>
+  </data>
+  <data name="Sales.TotalTooLarge" xml:space="preserve">
+    <value>The total cannot exceed {0:N2}.</value>
+  </data>
+  <data name="Sales.InvalidDiscount" xml:space="preserve">
+    <value>The discount is not valid.</value>
+  </data>
+  <data name="Sales.DiscountTooLarge" xml:space="preserve">
+    <value>The discount must be less than the subtotal.</value>
+  </data>
+  <data name="Sales.InvalidPaidAmount" xml:space="preserve">
+    <value>The cash paid must be between zero and the invoice total.</value>
+  </data>
+  <data name="Sales.FieldTooLong" xml:space="preserve">
+    <value>One of the fields is too long.</value>
+  </data>
+  <data name="Sales.UnknownCustomer" xml:space="preserve">
+    <value>Choose a customer.</value>
+  </data>
+  <data name="Sales.InactiveCustomer" xml:space="preserve">
+    <value>This customer is inactive.</value>
+  </data>
+  <data name="Sales.CreditNeedsRegisteredCustomer" xml:space="preserve">
+    <value>Credit sales need a named customer, not the default cash customer.</value>
+  </data>
+  <data name="Sales.BelowCostNeedsApproval" xml:space="preserve">
+    <value>Selling below cost needs a supervisor.</value>
+  </data>
+  <data name="Sales.HighDiscountNeedsApproval" xml:space="preserve">
+    <value>A discount above {0}% needs a supervisor.</value>
+  </data>
+  <data name="Sales.BelowCostReasonRequired" xml:space="preserve">
+    <value>Write the reason for selling below cost.</value>
+  </data>
+  <data name="Sales.SupervisorNotAccepted" xml:space="preserve">
+    <value>The supervisor could not be confirmed: wrong user name or password, or no permission for this approval.</value>
+  </data>
+  <data name="Sales.UnknownInvoice" xml:space="preserve">
+    <value>The invoice was not found.</value>
+  </data>
 </root>
