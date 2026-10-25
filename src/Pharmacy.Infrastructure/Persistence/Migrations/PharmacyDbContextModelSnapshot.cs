@@ -411,6 +411,27 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Sales.SellBelowCost",
                             RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 53,
+                            ClaimType = "permission",
+                            ClaimValue = "Sales.Return",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 54,
+                            ClaimType = "permission",
+                            ClaimValue = "Sales.Return",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 55,
+                            ClaimType = "permission",
+                            ClaimValue = "Sales.LateReturn",
+                            RoleId = 2
                         });
                 });
 
@@ -2008,6 +2029,170 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Pharmacy.Domain.Sales.SalesReturn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("CashRefund")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("DebtReduction")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsLate")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
+
+                    b.HasIndex("OperationId")
+                        .IsUnique();
+
+                    b.ToTable("SalesReturns", "sales", t =>
+                        {
+                            t.HasCheckConstraint("CK_SalesReturns_Amounts", "[Total] > 0 AND [DebtReduction] >= 0 AND [CashRefund] >= 0 AND [DebtReduction] + [CashRefund] = [Total]");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Sales.SalesReturnAllocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BaseQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InvoiceAllocationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Quarantined")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ReturnLineId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
+
+                    b.HasIndex("InvoiceAllocationId");
+
+                    b.HasIndex("ReturnLineId");
+
+                    b.ToTable("SalesReturnAllocations", "sales", t =>
+                        {
+                            t.HasCheckConstraint("CK_SalesReturnAllocations_Amounts", "[BaseQuantity] > 0 AND [UnitCost] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Sales.SalesReturnLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BaseQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InvoiceLineId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReturnId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitFactor")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Value")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceLineId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductUnitId");
+
+                    b.HasIndex("ReturnId");
+
+                    b.ToTable("SalesReturnLines", "sales", t =>
+                        {
+                            t.HasCheckConstraint("CK_SalesReturnLines_Quantities", "[Quantity] > 0 AND [BaseQuantity] > 0 AND [UnitFactor] > 0");
+
+                            t.HasCheckConstraint("CK_SalesReturnLines_Value", "[Value] >= 0");
+                        });
+                });
+
             modelBuilder.Entity("Pharmacy.Domain.Settings.PharmacySettings", b =>
                 {
                     b.Property<int>("Id")
@@ -2047,6 +2232,11 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<int>("ReturnWindowDays")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(14);
+
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -2066,6 +2256,8 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
 
                             t.HasCheckConstraint("CK_PharmacySettings_NearExpiryDays", "[NearExpiryDays] BETWEEN 1 AND 3650");
 
+                            t.HasCheckConstraint("CK_PharmacySettings_ReturnWindowDays", "[ReturnWindowDays] BETWEEN 0 AND 365");
+
                             t.HasCheckConstraint("CK_PharmacySettings_SingleRow", "[Id] = 1");
                         });
 
@@ -2078,6 +2270,7 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             NameEnglish = "Pharmacy",
                             NearExpiryDays = 90,
                             PrimaryColor = "MedicalGreen",
+                            ReturnWindowDays = 14,
                             ThemeMode = "Light"
                         });
                 });
@@ -2485,6 +2678,69 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Pharmacy.Domain.Sales.SalesReturn", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Receivables.Customer", null)
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Sales.SalesInvoice", null)
+                        .WithMany()
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Sales.SalesReturnAllocation", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Inventory.Batch", null)
+                        .WithMany()
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Sales.SalesLineAllocation", null)
+                        .WithMany()
+                        .HasForeignKey("InvoiceAllocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Sales.SalesReturnLine", null)
+                        .WithMany("Allocations")
+                        .HasForeignKey("ReturnLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Sales.SalesReturnLine", b =>
+                {
+                    b.HasOne("Pharmacy.Domain.Sales.SalesInvoiceLine", null)
+                        .WithMany()
+                        .HasForeignKey("InvoiceLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Catalog.ProductUnit", null)
+                        .WithMany()
+                        .HasForeignKey("ProductUnitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Domain.Sales.SalesReturn", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("ReturnId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Pharmacy.Domain.Catalog.Product", b =>
                 {
                     b.Navigation("Units");
@@ -2501,6 +2757,16 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                 });
 
             modelBuilder.Entity("Pharmacy.Domain.Sales.SalesInvoiceLine", b =>
+                {
+                    b.Navigation("Allocations");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Sales.SalesReturn", b =>
+                {
+                    b.Navigation("Lines");
+                });
+
+            modelBuilder.Entity("Pharmacy.Domain.Sales.SalesReturnLine", b =>
                 {
                     b.Navigation("Allocations");
                 });

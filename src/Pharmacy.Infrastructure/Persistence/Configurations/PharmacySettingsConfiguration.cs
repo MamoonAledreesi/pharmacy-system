@@ -15,6 +15,7 @@ internal sealed class PharmacySettingsConfiguration : IEntityTypeConfiguration<P
                 table.HasCheckConstraint("CK_PharmacySettings_SingleRow", $"[Id] = {PharmacySettings.SingletonId}");
                 table.HasCheckConstraint("CK_PharmacySettings_NearExpiryDays", "[NearExpiryDays] BETWEEN 1 AND 3650");
                 table.HasCheckConstraint("CK_PharmacySettings_MaxDiscountPercent", "[MaxDiscountPercent] BETWEEN 0 AND 100");
+                table.HasCheckConstraint("CK_PharmacySettings_ReturnWindowDays", "[ReturnWindowDays] BETWEEN 0 AND 365");
             });
 
         builder.HasKey(s => s.Id);
@@ -31,6 +32,7 @@ internal sealed class PharmacySettingsConfiguration : IEntityTypeConfiguration<P
 
         builder.Property(s => s.NearExpiryDays).HasDefaultValue(PharmacySettings.DefaultNearExpiryDays);
         builder.Property(s => s.MaxDiscountPercent).HasPrecision(5, 2).HasDefaultValue(PharmacySettings.DefaultMaxDiscountPercent);
+        builder.Property(s => s.ReturnWindowDays).HasDefaultValue(PharmacySettings.DefaultReturnWindowDays);
         builder.Property(s => s.RowVersion).IsRowVersion();
 
         var defaults = PharmacySettings.Defaults;
@@ -43,6 +45,7 @@ internal sealed class PharmacySettingsConfiguration : IEntityTypeConfiguration<P
             defaults.PrimaryColor,
             defaults.NearExpiryDays,
             defaults.MaxDiscountPercent,
+            defaults.ReturnWindowDays,
         });
     }
 }

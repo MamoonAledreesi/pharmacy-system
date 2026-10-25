@@ -84,6 +84,8 @@
                 <MudText Typo="Typo.h6" GutterBottom="true">@L["Settings.Sales"]</MudText>
                 <MudNumericField T="decimal" @bind-Value="_form.MaxDiscountPercent" Label="@L["Settings.MaxDiscountPercent"]"
                                  Min="0" Max="100" Format="0.##" HelperText="@L["Settings.MaxDiscountPercentHint"]" />
+                <MudNumericField T="int" @bind-Value="_form.ReturnWindowDays" Label="@L["Settings.ReturnWindowDays"]" Class="mt-3"
+                                 Min="0" Max="PharmacySettings.MaxReturnWindowDays" HelperText="@L["Settings.ReturnWindowDaysHint"]" />
             </MudPaper>
         </MudItem>
     </MudGrid>
@@ -167,6 +169,7 @@
         public ThemeColor PrimaryColor { get; set; }
         public int NearExpiryDays { get; set; }
         public decimal MaxDiscountPercent { get; set; }
+        public int ReturnWindowDays { get; set; }
 
         public static SettingsForm From(PharmacySettingsData data) => new()
         {
@@ -178,9 +181,10 @@
             PrimaryColor = data.PrimaryColor,
             NearExpiryDays = data.NearExpiryDays,
             MaxDiscountPercent = data.MaxDiscountPercent,
+            ReturnWindowDays = data.ReturnWindowDays,
         };
 
         public PharmacySettingsData ToData() =>
-            new(NameArabic, NameEnglish, Phone, Address, ThemeMode, PrimaryColor, NearExpiryDays, MaxDiscountPercent);
+            new(NameArabic, NameEnglish, Phone, Address, ThemeMode, PrimaryColor, NearExpiryDays, MaxDiscountPercent, ReturnWindowDays);
     }
 }

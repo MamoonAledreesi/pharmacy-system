@@ -140,6 +140,9 @@ internal sealed class IdentityTableConfiguration :
         (4, Permissions.SalesViewCost),
         (2, Permissions.SalesGrantHighDiscount),
         (2, Permissions.SalesSellBelowCost),
+        (2, Permissions.SalesReturn),
+        (3, Permissions.SalesReturn),
+        (2, Permissions.SalesLateReturn),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

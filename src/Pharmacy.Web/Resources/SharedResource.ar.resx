@@ -2070,4 +2070,136 @@
   <data name="Sales.UnknownInvoice" xml:space="preserve">
     <value>لم يتم العثور على الفاتورة.</value>
   </data>
+  <data name="Nav.SalesReturns" xml:space="preserve">
+    <value>مرتجعات البيع</value>
+  </data>
+  <data name="Settings.ReturnWindowDays" xml:space="preserve">
+    <value>مدة الإرجاع (أيام)</value>
+  </data>
+  <data name="Settings.ReturnWindowDaysHint" xml:space="preserve">
+    <value>يمكن إرجاع البضاعة المباعة خلال هذه المدة. بعدها لا يرجعها إلا من يملك صلاحية الإرجاع المتأخر.</value>
+  </data>
+  <data name="Settings.InvalidReturnWindowDays" xml:space="preserve">
+    <value>يجب أن تكون مدة الإرجاع بين 0 و{0} يوماً.</value>
+  </data>
+  <data name="Sales.ReturnTitle" xml:space="preserve">
+    <value>مرتجع بيع</value>
+  </data>
+  <data name="Sales.ReturnGoods" xml:space="preserve">
+    <value>إرجاع بضاعة</value>
+  </data>
+  <data name="Sales.InvoiceReturns" xml:space="preserve">
+    <value>مرتجعات هذه الفاتورة</value>
+  </data>
+  <data name="Sales.ReturnLateWarning" xml:space="preserve">
+    <value>عمر هذه الفاتورة {0} يوماً وقد تجاوزت مدة الإرجاع ({1} يوماً). يمكنك الإرجاع المتأخر ويلزم ذكر السبب.</value>
+  </data>
+  <data name="Sales.ReturnWindowPassedNote" xml:space="preserve">
+    <value>انتهت مدة الإرجاع ({0} يوماً). إرجاع هذه الفاتورة يحتاج صلاحية الإرجاع المتأخر.</value>
+  </data>
+  <data name="Sales.Sold" xml:space="preserve">
+    <value>المباع</value>
+  </data>
+  <data name="Sales.AlreadyReturned" xml:space="preserve">
+    <value>المُرجَع سابقاً (وحدات أساسية)</value>
+  </data>
+  <data name="Sales.CanReturn" xml:space="preserve">
+    <value>المتاح للإرجاع (وحدات أساسية)</value>
+  </data>
+  <data name="Sales.ReturnQuantity" xml:space="preserve">
+    <value>كمية الإرجاع</value>
+  </data>
+  <data name="Sales.BackOnShelf" xml:space="preserve">
+    <value>صالح للبيع مجدداً</value>
+  </data>
+  <data name="Sales.StatusSellable" xml:space="preserve">
+    <value>يعود للرف</value>
+  </data>
+  <data name="Sales.StatusQuarantine" xml:space="preserve">
+    <value>يذهب للحجر</value>
+  </data>
+  <data name="Sales.ReturnReason" xml:space="preserve">
+    <value>السبب (اختياري)</value>
+  </data>
+  <data name="Sales.ReturnReasonRequired" xml:space="preserve">
+    <value>السبب (مطلوب)</value>
+  </data>
+  <data name="Sales.ReviewReturn" xml:space="preserve">
+    <value>مراجعة وإرجاع</value>
+  </data>
+  <data name="Sales.ReturnConfirmTitle" xml:space="preserve">
+    <value>تأكيد المرتجع</value>
+  </data>
+  <data name="Sales.ReturnConfirmText" xml:space="preserve">
+    <value>قيمة المرتجع {0}. يُخصم {1} من دين العميل ويُرد {2} نقداً من الدرج.</value>
+  </data>
+  <data name="Sales.ReturnConfirmYes" xml:space="preserve">
+    <value>تأكيد الإرجاع</value>
+  </data>
+  <data name="Sales.ReturnPosted" xml:space="preserve">
+    <value>تم ترحيل المرتجع.</value>
+  </data>
+  <data name="Sales.ReturnSearch" xml:space="preserve">
+    <value>بحث برقم المرتجع أو الفاتورة أو العميل</value>
+  </data>
+  <data name="Sales.LateChip" xml:space="preserve">
+    <value>إرجاع متأخر</value>
+  </data>
+  <data name="Sales.DebtReduction" xml:space="preserve">
+    <value>من الدين</value>
+  </data>
+  <data name="Sales.CashRefund" xml:space="preserve">
+    <value>نقد مُسترد</value>
+  </data>
+  <data name="Sales.ReturnValue" xml:space="preserve">
+    <value>القيمة</value>
+  </data>
+  <data name="Sales.NoReturns" xml:space="preserve">
+    <value>لا توجد مرتجعات.</value>
+  </data>
+  <data name="StockMovementTypes.SaleReturn" xml:space="preserve">
+    <value>مرتجع بيع (صالح)</value>
+  </data>
+  <data name="StockMovementTypes.SaleReturnQuarantined" xml:space="preserve">
+    <value>مرتجع بيع (حجر)</value>
+  </data>
+  <data name="CashMovementTypes.SaleRefund" xml:space="preserve">
+    <value>رد نقدي لمرتجع</value>
+  </data>
+  <data name="CustomerEntryTypes.SaleReturn" xml:space="preserve">
+    <value>مرتجع بيع</value>
+  </data>
+  <data name="Permissions.Sales.Return" xml:space="preserve">
+    <value>إرجاع البضاعة المباعة</value>
+  </data>
+  <data name="Permissions.Sales.LateReturn" xml:space="preserve">
+    <value>الإرجاع بعد انتهاء مدة الإرجاع</value>
+  </data>
+  <data name="AuditActions.Sales.Returned" xml:space="preserve">
+    <value>ترحيل مرتجع بيع</value>
+  </data>
+  <data name="AuditActions.Sales.LateReturn" xml:space="preserve">
+    <value>مرتجع بيع متأخر</value>
+  </data>
+  <data name="Sales.ReturnNoLines" xml:space="preserve">
+    <value>أدخل كمية لصنف واحد على الأقل.</value>
+  </data>
+  <data name="Sales.UnknownInvoiceLine" xml:space="preserve">
+    <value>الصنف غير موجود في هذه الفاتورة.</value>
+  </data>
+  <data name="Sales.DuplicateReturnLine" xml:space="preserve">
+    <value>صنف مكرر في المرتجع.</value>
+  </data>
+  <data name="Sales.InvalidReturnAmount" xml:space="preserve">
+    <value>قيمة المرتجع غير صالحة.</value>
+  </data>
+  <data name="Sales.ReturnQuantityExceeds" xml:space="preserve">
+    <value>أكثر من المتاح للإرجاع: المتبقي {0} (وحدات أساسية).</value>
+  </data>
+  <data name="Sales.ReturnWindowPassed" xml:space="preserve">
+    <value>انتهت مدة الإرجاع ({0} يوماً) والإرجاع يحتاج صلاحية الإرجاع المتأخر.</value>
+  </data>
+  <data name="Sales.LateReturnReasonRequired" xml:space="preserve">
+    <value>اكتب سبب الإرجاع المتأخر.</value>
+  </data>
 </root>

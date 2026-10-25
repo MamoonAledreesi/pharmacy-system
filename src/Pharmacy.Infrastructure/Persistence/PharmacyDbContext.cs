@@ -63,6 +63,8 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
 
     public DbSet<SalesInvoice> SalesInvoices => Set<SalesInvoice>();
 
+    public DbSet<SalesReturn> SalesReturns => Set<SalesReturn>();
+
     public Task<TResult> ExecuteInTransactionAsync<TResult>(Func<Task<TResult>> work, CancellationToken cancellationToken = default)
         where TResult : Result =>
         this.InTransactionAsync(work, cancellationToken);
@@ -105,6 +107,12 @@ public sealed class PharmacyDbContext(DbContextOptions<PharmacyDbContext> option
             .FromSqlInterpolated($"SELECT * FROM receivables.Customers WITH (UPDLOCK, ROWLOCK) WHERE Id = {customerId}")
             .ToListAsync(cancellationToken))
         .SingleOrDefault();
+
+    // UPDLOCK keeps the invoice row locked until the transaction ends, so two returns of one invoice run one after another.
+    public async Task<bool> LockSalesInvoiceAsync(int invoiceId, CancellationToken cancellationToken = default) =>
+        (await Database
+            .SqlQuery<int>($"SELECT Id AS Value FROM sales.SalesInvoices WITH (UPDLOCK, ROWLOCK) WHERE Id = {invoiceId}")
+            .ToListAsync(cancellationToken)).Count > 0;
 
     // The sequence row is locked until the transaction ends, so two invoices never get the same number, and a
     // rolled-back invoice gives its number back (numbers have no gaps).

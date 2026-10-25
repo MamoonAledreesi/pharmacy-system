@@ -1,0 +1,93 @@
+@page "/sales/returns/{ReturnId:int}"
+@attribute [Authorize(Policy = Permissions.SalesView)]
+@inject ServiceRunner Services
+
+<PageTitle>@L["Sales.ReturnTitle"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="sales/returns" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@L["Sales.ReturnTitle"] <span dir="ltr">@_return?.Number</span></MudText>
+    @if (_return is { IsLate: true })
+    {
+        <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Sales.LateChip"]</MudChip>
+    }
+</div>
+
+@if (_notFound)
+{
+    <MudAlert Severity="Severity.Warning">@L["Errors.NotFound"]</MudAlert>
+    return;
+}
+
+@if (_return is not { } salesReturn)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="6">
+            <MudSimpleTable Dense="true" Elevation="0">
+                <tbody>
+                    <tr><td>@L["Audit.Time"]</td><td>@LocalizerExtensions.LocalTime(salesReturn.CreatedAtUtc)</td></tr>
+                    <tr><td>@L["Sales.Invoice"]</td><td><MudLink Href="@($"sales/{salesReturn.InvoiceId}")"><span dir="ltr">@salesReturn.InvoiceNumber</span></MudLink></td></tr>
+                    <tr><td>@L["Sales.Customer"]</td><td>@salesReturn.CustomerName</td></tr>
+                    <tr><td>@L["Sales.ReturnReason"]</td><td>@salesReturn.Reason</td></tr>
+                    <tr><td>@L["Purchases.EnteredBy"]</td><td dir="ltr">@salesReturn.UserName</td></tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudSimpleTable Dense="true" Elevation="0">
+                <tbody>
+                    <tr><td><b>@L["Purchases.Total"]</b></td><td dir="ltr"><b>@MoneyFormat.Format(salesReturn.Total)</b></td></tr>
+                    <tr><td>@L["Sales.DebtReduction"]</td><td dir="ltr">@MoneyFormat.Format(salesReturn.DebtReduction)</td></tr>
+                    <tr><td>@L["Sales.CashRefund"]</td><td dir="ltr">@MoneyFormat.Format(salesReturn.CashRefund)</td></tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudTable Items="salesReturn.Lines" T="ReturnLineDetail" Dense="true" Hover="true" Elevation="1">
+    <HeaderContent>
+        <MudTh>@L["Inventory.Product"]</MudTh>
+        <MudTh>@L["Products.Unit"]</MudTh>
+        <MudTh>@L["Inventory.Quantity"]</MudTh>
+        <MudTh>@L["Sales.ReturnValue"]</MudTh>
+        <MudTh>@L["Sales.BackOnShelf"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Inventory.Product"]">@context.Product.For(SupportedCultures.IsArabicUi) @context.Strength</MudTd>
+        <MudTd DataLabel="@L["Products.Unit"]">@context.Unit.For(SupportedCultures.IsArabicUi)</MudTd>
+        <MudTd DataLabel="@L["Inventory.Quantity"]">@context.Quantity</MudTd>
+        <MudTd DataLabel="@L["Sales.ReturnValue"]"><span dir="ltr">@MoneyFormat.Format(context.Value)</span></MudTd>
+        <MudTd DataLabel="@L["Sales.BackOnShelf"]">
+            @if (context.AnySellable)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Success">@L["Sales.StatusSellable"]</MudChip>
+            }
+            @if (context.AnyQuarantined)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Sales.StatusQuarantine"]</MudChip>
+            }
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private ReturnDetail? _return;
+    private bool _notFound;
+
+    [Parameter]
+    public int ReturnId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Services.For<SalesReturnQueryService>().RunAsync(s => s.GetAsync(ReturnId));
+        _notFound = result.IsFailure;
+        _return = result.IsSuccess ? result.Value : null;
+    }
+}

@@ -2070,4 +2070,136 @@
   <data name="Sales.UnknownInvoice" xml:space="preserve">
     <value>The invoice was not found.</value>
   </data>
+  <data name="Nav.SalesReturns" xml:space="preserve">
+    <value>Sales returns</value>
+  </data>
+  <data name="Settings.ReturnWindowDays" xml:space="preserve">
+    <value>Return period (days)</value>
+  </data>
+  <data name="Settings.ReturnWindowDaysHint" xml:space="preserve">
+    <value>Sold goods can be returned within this period. After it, only users with the late-return permission can return them.</value>
+  </data>
+  <data name="Settings.InvalidReturnWindowDays" xml:space="preserve">
+    <value>The return period must be between 0 and {0} days.</value>
+  </data>
+  <data name="Sales.ReturnTitle" xml:space="preserve">
+    <value>Sales return</value>
+  </data>
+  <data name="Sales.ReturnGoods" xml:space="preserve">
+    <value>Return goods</value>
+  </data>
+  <data name="Sales.InvoiceReturns" xml:space="preserve">
+    <value>Returns of this invoice</value>
+  </data>
+  <data name="Sales.ReturnLateWarning" xml:space="preserve">
+    <value>This invoice is {0} days old, past the {1}-day return period. You may return it late; a reason is required.</value>
+  </data>
+  <data name="Sales.ReturnWindowPassedNote" xml:space="preserve">
+    <value>The {0}-day return period is over. Returning this invoice needs the late-return permission.</value>
+  </data>
+  <data name="Sales.Sold" xml:space="preserve">
+    <value>Sold</value>
+  </data>
+  <data name="Sales.AlreadyReturned" xml:space="preserve">
+    <value>Already returned (base units)</value>
+  </data>
+  <data name="Sales.CanReturn" xml:space="preserve">
+    <value>Can still return (base units)</value>
+  </data>
+  <data name="Sales.ReturnQuantity" xml:space="preserve">
+    <value>Quantity to return</value>
+  </data>
+  <data name="Sales.BackOnShelf" xml:space="preserve">
+    <value>Fit to sell again</value>
+  </data>
+  <data name="Sales.StatusSellable" xml:space="preserve">
+    <value>Back on the shelf</value>
+  </data>
+  <data name="Sales.StatusQuarantine" xml:space="preserve">
+    <value>Goes to quarantine</value>
+  </data>
+  <data name="Sales.ReturnReason" xml:space="preserve">
+    <value>Reason (optional)</value>
+  </data>
+  <data name="Sales.ReturnReasonRequired" xml:space="preserve">
+    <value>Reason (required)</value>
+  </data>
+  <data name="Sales.ReviewReturn" xml:space="preserve">
+    <value>Review and return</value>
+  </data>
+  <data name="Sales.ReturnConfirmTitle" xml:space="preserve">
+    <value>Confirm the return</value>
+  </data>
+  <data name="Sales.ReturnConfirmText" xml:space="preserve">
+    <value>The return is worth {0}. {1} comes off what the customer owes and {2} is paid back in cash from the drawer.</value>
+  </data>
+  <data name="Sales.ReturnConfirmYes" xml:space="preserve">
+    <value>Confirm return</value>
+  </data>
+  <data name="Sales.ReturnPosted" xml:space="preserve">
+    <value>The return was posted.</value>
+  </data>
+  <data name="Sales.ReturnSearch" xml:space="preserve">
+    <value>Search by return number, invoice, or customer</value>
+  </data>
+  <data name="Sales.LateChip" xml:space="preserve">
+    <value>Late return</value>
+  </data>
+  <data name="Sales.DebtReduction" xml:space="preserve">
+    <value>Off the debt</value>
+  </data>
+  <data name="Sales.CashRefund" xml:space="preserve">
+    <value>Cash refund</value>
+  </data>
+  <data name="Sales.ReturnValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="Sales.NoReturns" xml:space="preserve">
+    <value>No returns found.</value>
+  </data>
+  <data name="StockMovementTypes.SaleReturn" xml:space="preserve">
+    <value>Sales return (sellable)</value>
+  </data>
+  <data name="StockMovementTypes.SaleReturnQuarantined" xml:space="preserve">
+    <value>Sales return (quarantine)</value>
+  </data>
+  <data name="CashMovementTypes.SaleRefund" xml:space="preserve">
+    <value>Sale refund</value>
+  </data>
+  <data name="CustomerEntryTypes.SaleReturn" xml:space="preserve">
+    <value>Sales return</value>
+  </data>
+  <data name="Permissions.Sales.Return" xml:space="preserve">
+    <value>Return sold goods</value>
+  </data>
+  <data name="Permissions.Sales.LateReturn" xml:space="preserve">
+    <value>Return goods after the return period</value>
+  </data>
+  <data name="AuditActions.Sales.Returned" xml:space="preserve">
+    <value>Sales return posted</value>
+  </data>
+  <data name="AuditActions.Sales.LateReturn" xml:space="preserve">
+    <value>Late sales return</value>
+  </data>
+  <data name="Sales.ReturnNoLines" xml:space="preserve">
+    <value>Enter a quantity for at least one item.</value>
+  </data>
+  <data name="Sales.UnknownInvoiceLine" xml:space="preserve">
+    <value>The item is not on this invoice.</value>
+  </data>
+  <data name="Sales.DuplicateReturnLine" xml:space="preserve">
+    <value>An item appears twice in the return.</value>
+  </data>
+  <data name="Sales.InvalidReturnAmount" xml:space="preserve">
+    <value>The return amount is not valid.</value>
+  </data>
+  <data name="Sales.ReturnQuantityExceeds" xml:space="preserve">
+    <value>More than can be returned: only {0} (base units) are left to return.</value>
+  </data>
+  <data name="Sales.ReturnWindowPassed" xml:space="preserve">
+    <value>The {0}-day return period is over; returning needs the late-return permission.</value>
+  </data>
+  <data name="Sales.LateReturnReasonRequired" xml:space="preserve">
+    <value>Write the reason for the late return.</value>
+  </data>
 </root>

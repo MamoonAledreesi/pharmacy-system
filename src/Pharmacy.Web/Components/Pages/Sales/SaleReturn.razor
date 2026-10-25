@@ -1,0 +1,176 @@
+@page "/sales/{InvoiceId:int}/return"
+@attribute [Authorize(Policy = Permissions.SalesReturn)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>@L["Sales.ReturnTitle"] - @L["App.Name"]</PageTitle>
+
+<div class="d-flex align-center mb-4 gap-2">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="@($"sales/{InvoiceId}")" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@L["Sales.ReturnTitle"] <span dir="ltr">@_invoice?.Number</span></MudText>
+</div>
+
+@if (_notFound)
+{
+    <MudAlert Severity="Severity.Warning">@L["Errors.NotFound"]</MudAlert>
+    return;
+}
+
+@if (_invoice is not { } invoice)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    return;
+}
+
+@if (_error is not null)
+{
+    <MudAlert Severity="Severity.Error" Class="mb-3">@_error</MudAlert>
+}
+
+@if (invoice.IsLate)
+{
+    <MudAlert Severity="@(invoice.CanReturnLate ? Severity.Warning : Severity.Error)" Class="mb-3">
+        @(invoice.CanReturnLate
+            ? L["Sales.ReturnLateWarning", invoice.DaysSinceSale, invoice.WindowDays]
+            : L["Sales.ReturnWindowPassedNote", invoice.WindowDays])
+    </MudAlert>
+}
+
+<MudPaper Class="pa-3 mb-3" Elevation="1">
+    <MudText Typo="Typo.body2">@L["Sales.Customer"]: <b>@invoice.CustomerName</b></MudText>
+    <MudText Typo="Typo.body2">@L["Purchases.Total"]: <b dir="ltr">@MoneyFormat.Format(invoice.Total)</b> · @L["Purchases.OnCredit"]: <b dir="ltr">@MoneyFormat.Format(invoice.OnCredit)</b></MudText>
+</MudPaper>
+
+<MudTable Items="_rows" T="ReturnRow" Dense="true" Hover="true" Elevation="1" Class="mb-3">
+    <HeaderContent>
+        <MudTh>@L["Inventory.Product"]</MudTh>
+        <MudTh>@L["Sales.Sold"]</MudTh>
+        <MudTh>@L["Sales.AlreadyReturned"]</MudTh>
+        <MudTh>@L["Sales.CanReturn"]</MudTh>
+        <MudTh>@L["Sales.ReturnQuantity"]</MudTh>
+        <MudTh>@L["Products.Unit"]</MudTh>
+        <MudTh>@L["Sales.BackOnShelf"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Inventory.Product"]">@context.Line.Product.For(SupportedCultures.IsArabicUi) @context.Line.Strength</MudTd>
+        <MudTd DataLabel="@L["Sales.Sold"]">@context.Line.SoldQuantity @context.Line.SoldUnit.For(SupportedCultures.IsArabicUi)</MudTd>
+        <MudTd DataLabel="@L["Sales.AlreadyReturned"]">@context.Line.ReturnedBaseQuantity</MudTd>
+        <MudTd DataLabel="@L["Sales.CanReturn"]">@context.Line.RemainingBaseQuantity</MudTd>
+        <MudTd DataLabel="@L["Sales.ReturnQuantity"]">
+            <MudNumericField T="int?" @bind-Value="context.Quantity" Min="0" Disabled="@(context.Line.RemainingBaseQuantity == 0)" Style="max-width: 6rem" />
+        </MudTd>
+        <MudTd DataLabel="@L["Products.Unit"]">
+            <MudSelect T="int" @bind-Value="context.UnitId" Disabled="@(context.Line.RemainingBaseQuantity == 0)">
+                @foreach (var unit in context.Line.Units)
+                {
+                    <MudSelectItem T="int" Value="unit.Id">@unit.Unit.For(SupportedCultures.IsArabicUi)</MudSelectItem>
+                }
+            </MudSelect>
+        </MudTd>
+        <MudTd DataLabel="@L["Sales.BackOnShelf"]">
+            <MudSwitch T="bool" @bind-Value="context.Sellable" Color="Color.Primary" Disabled="@(context.Line.RemainingBaseQuantity == 0)"
+                       aria-label="@L["Sales.BackOnShelf"]" />
+            <MudText Typo="Typo.caption">@(context.Sellable ? L["Sales.StatusSellable"] : L["Sales.StatusQuarantine"])</MudText>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+<MudTextField @bind-Value="_reason" Label="@(invoice.IsLate ? L["Sales.ReturnReasonRequired"] : L["Sales.ReturnReason"])"
+              MaxLength="SalesReturn.ReasonMaxLength" Lines="2" Class="mb-3" />
+
+<div class="d-flex justify-end gap-2">
+    <MudButton Href="@($"sales/{InvoiceId}")">@L["Common.Cancel"]</MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_saving || !_rows.Any(r => r.Quantity is > 0) || (invoice.IsLate && !invoice.CanReturnLate))"
+               OnClick="ReviewAsync">
+        @L["Sales.ReviewReturn"]
+    </MudButton>
+</div>
+
+@code {
+    // One id per opened form: a double click or a retry posts the return only once.
+    private readonly Guid _operationId = Guid.NewGuid();
+    private readonly List<ReturnRow> _rows = [];
+    private ReturnableInvoice? _invoice;
+    private string? _reason;
+    private string? _error;
+    private bool _notFound;
+    private bool _saving;
+
+    [Parameter]
+    public int InvoiceId { get; set; }
+
+    private sealed class ReturnRow(ReturnableLine line, int unitId)
+    {
+        public ReturnableLine Line { get; } = line;
+
+        public int? Quantity { get; set; }
+
+        public int UnitId { get; set; } = unitId;
+
+        /// <summary>Damaged or expired goods are the usual reason for a return, so quarantine is the default.</summary>
+        public bool Sellable { get; set; }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Services.For<SalesReturnQueryService>().RunAsync(s => s.GetReturnableAsync(InvoiceId));
+        _notFound = result.IsFailure;
+        _invoice = result.IsSuccess ? result.Value : null;
+        _rows.Clear();
+        if (_invoice is not null)
+        {
+            _rows.AddRange(_invoice.Lines.Select(line => new ReturnRow(line, line.Units.FirstOrDefault(u => u.IsBase)?.Id ?? line.Units[0].Id)));
+        }
+    }
+
+    private SalesReturnRequest BuildRequest() => new(
+        _operationId,
+        InvoiceId,
+        [.. _rows.Where(r => r.Quantity is > 0).Select(r => new ReturnLineRequest(r.Line.InvoiceLineId, r.UnitId, r.Quantity!.Value, r.Sellable))],
+        _reason);
+
+    // Shows what the return will do (debt reduction and cash refund) and asks for confirmation before posting.
+    private async Task ReviewAsync()
+    {
+        _error = null;
+        _saving = true;
+        try
+        {
+            var request = BuildRequest();
+            var preview = await Services.For<SalesReturnService>().RunAsync(s => s.PreviewAsync(request));
+            if (preview.IsFailure)
+            {
+                _error = L.Message(preview.Error!);
+                return;
+            }
+
+            var summary = preview.Value;
+            var confirmed = await DialogService.ShowMessageBoxAsync(
+                L["Sales.ReturnConfirmTitle"],
+                L["Sales.ReturnConfirmText", MoneyFormat.Format(summary.Total), MoneyFormat.Format(summary.DebtReduction), MoneyFormat.Format(summary.CashRefund)].Value,
+                yesText: L["Sales.ReturnConfirmYes"],
+                cancelText: L["Common.Cancel"]);
+            if (confirmed != true)
+            {
+                return;
+            }
+
+            var result = await Services.For<SalesReturnService>().RunAsync(s => s.CreateAsync(request));
+            if (result.IsFailure)
+            {
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            Snackbar.Add(L["Sales.ReturnPosted"], Severity.Success);
+            Navigation.NavigateTo($"sales/returns/{result.Value}");
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

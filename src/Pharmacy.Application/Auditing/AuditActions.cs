@@ -55,6 +55,8 @@ public static class AuditActions
     public const string SaleCreated = "Sales.SaleCreated";
     public const string SaleBelowCost = "Sales.BelowCost";
     public const string SaleHighDiscount = "Sales.HighDiscount";
+    public const string SaleReturned = "Sales.Returned";
+    public const string SaleLateReturn = "Sales.LateReturn";
 
     public static IReadOnlyList<string> All { get; } =
     [
@@ -66,6 +68,6 @@ public static class AuditActions
         CashShiftOpened, CashShiftClosed, CashShiftForceClosed, CashManualMovement,
         SupplierCreated, SupplierUpdated, PurchaseCreated, SupplierPaid, SupplierPaymentReversed, SupplierOpeningBalance,
         CustomerCreated, CustomerUpdated, DebtCollected, CollectionReversed, CustomerOpeningBalance,
-        SaleCreated, SaleBelowCost, SaleHighDiscount,
+        SaleCreated, SaleBelowCost, SaleHighDiscount, SaleReturned, SaleLateReturn,
     ];
 }

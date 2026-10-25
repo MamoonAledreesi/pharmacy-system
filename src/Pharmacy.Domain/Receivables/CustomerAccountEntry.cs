@@ -13,6 +13,9 @@ public enum CustomerEntryType
 
     /// <summary>A collection that was entered by mistake and taken back.</summary>
     CollectionReversal = 3,
+
+    /// <summary>Goods returned by the customer, taken off what they owe.</summary>
+    SaleReturn = 4,
 }
 
 /// <summary>Who did it, when, and why; supplied by the caller for every customer account entry.</summary>

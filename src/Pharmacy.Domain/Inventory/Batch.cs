@@ -109,6 +109,14 @@ public sealed class Batch
         return Apply(type, quantity, availableDelta: -quantity, quarantineDelta: 0, context);
     }
 
+    /// <summary>
+    /// Takes goods back from a customer: onto the shelf, or into quarantine when they are damaged or expired.
+    /// </summary>
+    public Result<StockMovement> ReturnFromCustomer(int quantity, bool toQuarantine, MovementContext context) =>
+        toQuarantine
+            ? Apply(StockMovementType.SaleReturnQuarantined, quantity, availableDelta: 0, quarantineDelta: quantity, context)
+            : Apply(StockMovementType.SaleReturn, quantity, availableDelta: quantity, quarantineDelta: 0, context);
+
     /// <summary>Sets sellable stock aside so it can no longer be sold.</summary>
     public Result<StockMovement> Quarantine(int quantity, MovementContext context) =>
         Apply(StockMovementType.QuarantineIn, quantity, availableDelta: -quantity, quarantineDelta: quantity, context);

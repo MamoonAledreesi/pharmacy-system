@@ -56,6 +56,8 @@ public interface IPharmacyDbContext
 
     DbSet<SalesInvoice> SalesInvoices { get; }
 
+    DbSet<SalesReturn> SalesReturns { get; }
+
     DbSet<TEntity> Set<TEntity>()
         where TEntity : class;
 
@@ -93,6 +95,12 @@ public interface IPharmacyDbContext
 
     /// <summary>Loads a customer and locks it until the surrounding transaction ends, so its balance changes one at a time (tracked for update).</summary>
     Task<Customer?> LoadCustomerForUpdateAsync(int customerId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Locks a sales invoice until the surrounding transaction ends, so two returns of the same invoice are applied one
+    /// after another and cannot both give back the same goods. Returns false when the invoice does not exist.
+    /// </summary>
+    Task<bool> LockSalesInvoiceAsync(int invoiceId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Takes the next number of a document kind for a year, locking its sequence until the surrounding transaction

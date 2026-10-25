@@ -29,4 +29,10 @@ public enum StockMovementType
 
     /// <summary>Quarantined stock destroyed or written off.</summary>
     WriteOffQuarantined = 8,
+
+    /// <summary>Goods a customer returned that go back on the shelf and can be sold again.</summary>
+    SaleReturn = 9,
+
+    /// <summary>Goods a customer returned that are damaged or expired; they are set aside in quarantine.</summary>
+    SaleReturnQuarantined = 10,
 }

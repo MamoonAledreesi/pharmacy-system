@@ -1,0 +1,101 @@
+@page "/sales/returns"
+@attribute [Authorize(Policy = Permissions.SalesView)]
+@inject ServiceRunner Services
+@inject NavigationManager Navigation
+
+<PageTitle>@L["Nav.SalesReturns"] - @L["App.Name"]</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">@L["Nav.SalesReturns"]</MudText>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="6">
+            <MudTextField T="string" Value="_searchText" ValueChanged="OnSearchChangedAsync" Immediate="true" DebounceInterval="300"
+                          Label="@L["Sales.ReturnSearch"]" Clearable="true"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" autofocus />
+        </MudItem>
+        <MudItem xs="6" md="3">
+            <MudDatePicker Date="_from" DateChanged="OnFromChangedAsync" Label="@L["Purchases.From"]" Clearable="true" />
+        </MudItem>
+        <MudItem xs="6" md="3">
+            <MudDatePicker Date="_to" DateChanged="OnToChangedAsync" Label="@L["Purchases.To"]" Clearable="true" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudTable @ref="_table" T="ReturnListItem" ServerData="LoadAsync" Dense="true" Hover="true" Elevation="1" RowsPerPage="25"
+          OnRowClick="args => Open(args.Item!)" RowClass="cursor-pointer">
+    <HeaderContent>
+        <MudTh>@L["Purchases.Number"]</MudTh>
+        <MudTh>@L["Audit.Time"]</MudTh>
+        <MudTh>@L["Sales.Invoice"]</MudTh>
+        <MudTh>@L["Sales.Customer"]</MudTh>
+        <MudTh>@L["Purchases.Total"]</MudTh>
+        <MudTh>@L["Sales.DebtReduction"]</MudTh>
+        <MudTh>@L["Sales.CashRefund"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="@L["Purchases.Number"]">
+            <span dir="ltr">@context.Number</span>
+            @if (context.IsLate)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Sales.LateChip"]</MudChip>
+            }
+        </MudTd>
+        <MudTd DataLabel="@L["Audit.Time"]">@LocalizerExtensions.LocalTime(context.CreatedAtUtc)</MudTd>
+        <MudTd DataLabel="@L["Sales.Invoice"]"><span dir="ltr">@context.InvoiceNumber</span></MudTd>
+        <MudTd DataLabel="@L["Sales.Customer"]">@context.CustomerName</MudTd>
+        <MudTd DataLabel="@L["Purchases.Total"]"><span dir="ltr">@MoneyFormat.Format(context.Total)</span></MudTd>
+        <MudTd DataLabel="@L["Sales.DebtReduction"]"><span dir="ltr">@MoneyFormat.Format(context.DebtReduction)</span></MudTd>
+        <MudTd DataLabel="@L["Sales.CashRefund"]"><span dir="ltr">@MoneyFormat.Format(context.CashRefund)</span></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>@L["Sales.NoReturns"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="[25, 50, 100]" RowsPerPageString="@L["Pager.RowsPerPage"]" InfoFormat="@L["Pager.InfoFormat"]" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<ReturnListItem>? _table;
+    private string? _searchText;
+    private DateTime? _from;
+    private DateTime? _to;
+
+    private Task<TableData<ReturnListItem>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
+        TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);
+
+    private async Task<TableData<ReturnListItem>> LoadPageAsync(TableState state, CancellationToken cancellationToken)
+    {
+        var query = new ReturnQuery(
+            _searchText, null, _from is { } from ? DateOnly.FromDateTime(from) : null, _to is { } to ? DateOnly.FromDateTime(to) : null,
+            state.Page, state.PageSize);
+        var result = await Services.For<SalesReturnQueryService>().RunAsync(s => s.SearchAsync(query, cancellationToken));
+        return result.IsSuccess
+            ? new TableData<ReturnListItem> { Items = result.Value.Items, TotalItems = result.Value.TotalCount }
+            : new TableData<ReturnListItem> { Items = [], TotalItems = 0 };
+    }
+
+    private Task OnSearchChangedAsync(string? text)
+    {
+        _searchText = text;
+        return ReloadAsync();
+    }
+
+    private Task OnFromChangedAsync(DateTime? date)
+    {
+        _from = date;
+        return ReloadAsync();
+    }
+
+    private Task OnToChangedAsync(DateTime? date)
+    {
+        _to = date;
+        return ReloadAsync();
+    }
+
+    private Task ReloadAsync() => _table?.ReloadServerData() ?? Task.CompletedTask;
+
+    private void Open(ReturnListItem item) => Navigation.NavigateTo($"sales/returns/{item.Id}");
+}

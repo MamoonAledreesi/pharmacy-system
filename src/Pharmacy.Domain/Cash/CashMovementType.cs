@@ -29,6 +29,9 @@ public enum CashMovementType
 
     /// <summary>Cash received for a sales invoice.</summary>
     SalePayment = 7,
+
+    /// <summary>Cash handed back to a customer for goods they returned.</summary>
+    SaleRefund = 8,
 }
 
 public static class CashMovementTypes
@@ -37,5 +40,5 @@ public static class CashMovementTypes
     public static IReadOnlySet<CashMovementType> Receipts { get; } = new HashSet<CashMovementType> { CashMovementType.ManualIn, CashMovementType.SupplierPaymentReversal, CashMovementType.DebtCollection, CashMovementType.SalePayment };
 
     /// <summary>Types that take cash out of the drawer.</summary>
-    public static IReadOnlySet<CashMovementType> Payments { get; } = new HashSet<CashMovementType> { CashMovementType.ManualOut, CashMovementType.PurchasePayment, CashMovementType.SupplierPayment, CashMovementType.DebtCollectionReversal };
+    public static IReadOnlySet<CashMovementType> Payments { get; } = new HashSet<CashMovementType> { CashMovementType.ManualOut, CashMovementType.PurchasePayment, CashMovementType.SupplierPayment, CashMovementType.DebtCollectionReversal, CashMovementType.SaleRefund };
 }

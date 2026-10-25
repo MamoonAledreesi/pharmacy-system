@@ -25,7 +25,7 @@ public abstract class SalesTestBase : PurchasingTestBase
         Permissions.CatalogView, Permissions.InventoryView, Permissions.SalesView, Permissions.SalesCreate,
         Permissions.CustomersView, Permissions.CustomersManage, Permissions.ReceivablesSetOpeningBalance,
         Permissions.CashView, Permissions.CashOpenShift, Permissions.SettingsManage, Permissions.InventoryOpeningStock,
-        Permissions.CatalogManage, Permissions.InventoryViewCost,
+        Permissions.CatalogManage, Permissions.InventoryViewCost, Permissions.CashManualMovement, Permissions.ReceivablesCollect,
     ];
 
     protected static readonly string[] Manager = [.. Seller, Permissions.SalesGrantHighDiscount, Permissions.SalesSellBelowCost, Permissions.SalesViewCost];

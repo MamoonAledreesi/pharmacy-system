@@ -41,6 +41,8 @@ public static class Permissions
     public const string SalesViewCost = "Sales.ViewCost";
     public const string SalesGrantHighDiscount = "Sales.GrantHighDiscount";
     public const string SalesSellBelowCost = "Sales.SellBelowCost";
+    public const string SalesReturn = "Sales.Return";
+    public const string SalesLateReturn = "Sales.LateReturn";
 
     public static IReadOnlyList<string> All { get; } =
         [
@@ -50,7 +52,7 @@ public static class Permissions
             SuppliersView, SuppliersManage, PurchasingView, PurchasingCreate,
             PayablesPay, PayablesReverse, PayablesSetOpeningBalance,
             CustomersView, CustomersManage, ReceivablesCollect, ReceivablesReverse, ReceivablesSetOpeningBalance,
-            SalesView, SalesCreate, SalesViewCost, SalesGrantHighDiscount, SalesSellBelowCost,
+            SalesView, SalesCreate, SalesViewCost, SalesGrantHighDiscount, SalesSellBelowCost, SalesReturn, SalesLateReturn,
             UsersManage, SettingsManage, AuditLogView,
         ];
 

@@ -14,6 +14,11 @@
         <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Print" Href="@($"sales/{_invoice.Id}/print?size=a4")" Target="_blank">
             @L["Sales.PrintA4"]
         </MudButton>
+        <AuthorizeView Policy="@Permissions.SalesReturn">
+            <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.AssignmentReturn" Href="@($"sales/{_invoice.Id}/return")">
+                @L["Sales.ReturnGoods"]
+            </MudButton>
+        </AuthorizeView>
         <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Receipt" Href="@($"sales/{_invoice.Id}/print?size=receipt")" Target="_blank">
             @L["Sales.PrintReceipt"]
         </MudButton>
@@ -118,8 +123,31 @@
     </RowTemplate>
 </MudTable>
 
+
+@if (_returns.Count > 0)
+{
+    <MudText Typo="Typo.h6" Class="mt-5" GutterBottom="true">@L["Sales.InvoiceReturns"]</MudText>
+    <MudTable Items="_returns" T="ReturnListItem" Dense="true" Hover="true" Elevation="1">
+        <HeaderContent>
+            <MudTh>@L["Purchases.Number"]</MudTh>
+            <MudTh>@L["Audit.Time"]</MudTh>
+            <MudTh>@L["Purchases.Total"]</MudTh>
+            <MudTh>@L["Sales.DebtReduction"]</MudTh>
+            <MudTh>@L["Sales.CashRefund"]</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="@L["Purchases.Number"]"><MudLink Href="@($"sales/returns/{context.Id}")"><span dir="ltr">@context.Number</span></MudLink></MudTd>
+            <MudTd DataLabel="@L["Audit.Time"]">@LocalizerExtensions.LocalTime(context.CreatedAtUtc)</MudTd>
+            <MudTd DataLabel="@L["Purchases.Total"]"><span dir="ltr">@MoneyFormat.Format(context.Total)</span></MudTd>
+            <MudTd DataLabel="@L["Sales.DebtReduction"]"><span dir="ltr">@MoneyFormat.Format(context.DebtReduction)</span></MudTd>
+            <MudTd DataLabel="@L["Sales.CashRefund"]"><span dir="ltr">@MoneyFormat.Format(context.CashRefund)</span></MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
 @code {
     private SaleDetail? _invoice;
+    private IReadOnlyList<ReturnListItem> _returns = [];
     private bool _notFound;
 
     [Parameter]
@@ -130,5 +158,7 @@
         var result = await Services.For<SalesQueryService>().RunAsync(s => s.GetAsync(InvoiceId));
         _notFound = result.IsFailure;
         _invoice = result.IsSuccess ? result.Value : null;
+        var returns = await Services.For<SalesReturnQueryService>().RunAsync(s => s.SearchAsync(new ReturnQuery(null, InvoiceId, null, null, 0, SalesReturnQueryService.MaxPageSize)));
+        _returns = returns.IsSuccess ? returns.Value.Items : [];
     }
 }

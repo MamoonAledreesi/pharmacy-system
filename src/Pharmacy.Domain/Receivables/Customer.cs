@@ -110,7 +110,7 @@ public sealed class Customer
     /// <summary>The customer paid: the balance goes down, and never below zero.</summary>
     public Result<CustomerAccountEntry> Credit(CustomerEntryType type, decimal amount, CustomerAccountContext context)
     {
-        if (type != CustomerEntryType.Collection)
+        if (type is not (CustomerEntryType.Collection or CustomerEntryType.SaleReturn))
         {
             throw new ArgumentOutOfRangeException(nameof(type), type, "Not an entry that decreases the balance.");
         }

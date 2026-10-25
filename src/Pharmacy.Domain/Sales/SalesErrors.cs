@@ -31,4 +31,17 @@ public static class SalesErrors
     public const string SupervisorNotAccepted = "Sales.SupervisorNotAccepted";
 
     public const string UnknownInvoice = "Sales.UnknownInvoice";
+
+    public const string ReturnNoLines = "Sales.ReturnNoLines";
+    public const string UnknownInvoiceLine = "Sales.UnknownInvoiceLine";
+    public const string DuplicateReturnLine = "Sales.DuplicateReturnLine";
+    public const string InvalidReturnAmount = "Sales.InvalidReturnAmount";
+
+    /// <summary>More was asked back than is left to return. Argument 0 is the quantity still returnable (base units).</summary>
+    public const string ReturnQuantityExceeds = "Sales.ReturnQuantityExceeds";
+
+    /// <summary>The return period is over and the user may not return late. Argument 0 is the period in days.</summary>
+    public const string ReturnWindowPassed = "Sales.ReturnWindowPassed";
+
+    public const string LateReturnReasonRequired = "Sales.LateReturnReasonRequired";
 }
