@@ -199,3 +199,712 @@ h1:focus {
     align-items: center;
     gap: 0.5rem;
 }
+
+/* ===== Design system: shared look of every page (uses the MudBlazor palette, so it follows color and dark mode) ===== */
+
+.mud-main-content {
+    background: var(--mud-palette-background);
+}
+
+.mud-appbar {
+    background: linear-gradient(90deg, var(--mud-palette-primary) 0%, var(--mud-palette-primary-darken) 100%) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Side menu */
+.mud-drawer {
+    border-inline-end: 1px solid var(--mud-palette-lines-default);
+}
+
+.mud-nav-link {
+    margin: 2px 10px;
+    border-radius: 10px;
+    padding-block: 9px;
+    font-weight: 500;
+}
+
+.mud-nav-link:hover:not(.mud-nav-link-disabled) {
+    background: color-mix(in srgb, var(--mud-palette-primary) 8%, transparent);
+}
+
+.mud-nav-link.active:not(.mud-nav-link-disabled) {
+    background: color-mix(in srgb, var(--mud-palette-primary) 14%, transparent);
+    color: var(--mud-palette-primary);
+    font-weight: 700;
+}
+
+.mud-nav-link.active:not(.mud-nav-link-disabled) .mud-icon-root {
+    color: var(--mud-palette-primary);
+}
+
+.mud-nav-group > .mud-nav-link {
+    font-weight: 600;
+}
+
+/* Page header: title with an accent bar, actions on the other side */
+.page-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+}
+
+.page-header .mud-typography-h4 {
+    position: relative;
+    padding-inline-start: 0.9rem;
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.page-header .mud-typography-h4::before {
+    content: "";
+    position: absolute;
+    inset-block: 14% 14%;
+    inset-inline-start: 0;
+    width: 4px;
+    border-radius: 4px;
+    background: var(--mud-palette-primary);
+}
+
+/* Cards, filter bars and tables share one surface style */
+.mud-paper.mud-elevation-1 {
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+}
+
+.mud-table {
+    overflow: hidden;
+}
+
+.mud-table-head .mud-table-cell {
+    background: color-mix(in srgb, var(--mud-palette-primary) 8%, var(--mud-palette-surface));
+    font-weight: 700;
+    color: var(--mud-palette-text-primary);
+    border-bottom: 2px solid color-mix(in srgb, var(--mud-palette-primary) 25%, transparent);
+    white-space: nowrap;
+}
+
+.mud-table-hover .mud-table-body .mud-table-row:hover {
+    background: color-mix(in srgb, var(--mud-palette-primary) 6%, transparent);
+}
+
+.mud-table-cell {
+    padding-block: 10px;
+}
+
+.mud-table-pagination {
+    border-top: 1px solid var(--mud-palette-lines-default);
+}
+
+.mud-simple-table table thead th {
+    background: color-mix(in srgb, var(--mud-palette-primary) 8%, var(--mud-palette-surface));
+    font-weight: 700;
+}
+
+.mud-simple-table table tfoot td {
+    background: color-mix(in srgb, var(--mud-palette-primary) 5%, var(--mud-palette-surface));
+}
+
+/* Dialogs: one tidy column of fields */
+.mud-dialog {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.mud-dialog .mud-dialog-title {
+    padding: 1rem 1.5rem;
+    background: color-mix(in srgb, var(--mud-palette-primary) 8%, var(--mud-palette-surface));
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+    font-weight: 700;
+}
+
+.mud-dialog .mud-dialog-content {
+    padding: 1.5rem 1.5rem 0.75rem;
+}
+
+.mud-dialog .mud-dialog-content .mud-input-control {
+    margin-bottom: 0.6rem;
+}
+
+.mud-dialog .mud-dialog-actions {
+    padding: 0.85rem 1.5rem;
+    gap: 0.5rem;
+    border-top: 1px solid var(--mud-palette-lines-default);
+    background: color-mix(in srgb, var(--mud-palette-primary) 3%, var(--mud-palette-surface));
+}
+
+/* Form pages: sections as stacked cards */
+.form-section {
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+    border-radius: 14px;
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+}
+
+.form-section > .mud-typography-h6,
+.form-section > .mud-typography-subtitle1 {
+    margin-bottom: 0.9rem;
+    font-weight: 700;
+}
+
+.form-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* Small figures used on details pages */
+.stat-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    border-inline-start: 4px solid var(--mud-palette-primary);
+}
+
+.stat-tile .stat-label {
+    font-size: 0.8rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.stat-tile .stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2.5rem 1rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.mud-chip {
+    font-weight: 600;
+}
+
+/* Sign-in and setup pages */
+.account-page {
+    background:
+        radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--mud-palette-primary) 25%, transparent), transparent 45%),
+        radial-gradient(circle at 85% 80%, color-mix(in srgb, var(--mud-palette-primary) 18%, transparent), transparent 40%),
+        var(--mud-palette-background-gray);
+}
+
+.account-card {
+    max-width: 28rem;
+    padding: 2.25rem 2.25rem 1.75rem;
+    border-radius: 20px;
+    border: 1px solid var(--mud-palette-lines-default);
+    box-shadow: 0 20px 45px rgba(16, 24, 40, 0.18);
+}
+
+.account-brand-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.account-input {
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+}
+
+.account-button {
+    padding: 0.8rem;
+    font-weight: 700;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--mud-palette-primary) 35%, transparent);
+}
+
+.mud-dialog .mud-dialog-content {
+    max-height: 68vh;
+    overflow-y: auto;
+}
+
+/* Add and edit forms: sections stacked in one comfortable column */
+.form-page {
+    max-width: 860px;
+}
+
+/* ===== Reports ===== */
+.tone-primary { --tone: var(--mud-palette-primary); }
+.tone-secondary { --tone: var(--mud-palette-secondary); }
+.tone-success { --tone: var(--mud-palette-success); }
+.tone-info { --tone: var(--mud-palette-info); }
+.tone-warning { --tone: var(--mud-palette-warning); }
+.tone-danger { --tone: var(--mud-palette-error); }
+
+.report-icon {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    color: var(--tone, var(--mud-palette-primary));
+    background: color-mix(in srgb, var(--tone, var(--mud-palette-primary)) 14%, transparent);
+}
+
+.reports-search {
+    max-width: 280px;
+}
+
+.report-group {
+    margin-bottom: 1.75rem;
+}
+
+.report-group-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+}
+
+.report-group-title h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.report-group-count {
+    padding: 0.05rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--tone);
+    background: color-mix(in srgb, var(--tone) 14%, transparent);
+}
+
+.report-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.9rem;
+}
+
+.report-card {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.1rem;
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    border-inline-start: 4px solid var(--tone);
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(16, 24, 40, 0.12);
+}
+
+.report-card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.report-card-title {
+    font-weight: 700;
+}
+
+.report-card-text {
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--mud-palette-text-secondary);
+}
+
+.report-card-arrow {
+    color: var(--mud-palette-text-secondary);
+}
+
+.report-intro {
+    margin: -0.25rem 0 1rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.report-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.report-filters .report-field {
+    flex: 1 1 200px;
+    max-width: 260px;
+}
+
+.report-filters .report-field.wide {
+    max-width: 340px;
+}
+
+.report-filters .report-run {
+    min-width: 160px;
+    height: 44px;
+    margin-bottom: 4px;
+}
+
+.report-result {
+    overflow: hidden;
+}
+
+.report-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+}
+
+.report-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.report-generated {
+    font-size: 0.82rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.report-table-wrap {
+    overflow: auto;
+    max-height: 68vh;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.report-table th,
+.report-table td {
+    padding: 0.65rem 1rem;
+    text-align: start;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+}
+
+.report-table .num {
+    text-align: end;
+}
+
+.report-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--mud-palette-primary) 10%, var(--mud-palette-surface));
+    border-bottom: 2px solid color-mix(in srgb, var(--mud-palette-primary) 30%, transparent);
+}
+
+.report-table tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--mud-palette-primary) 3%, transparent);
+}
+
+.report-table tbody tr:hover {
+    background: color-mix(in srgb, var(--mud-palette-primary) 8%, transparent);
+}
+
+.report-table tbody tr.row-strong td {
+    font-weight: 700;
+    background: color-mix(in srgb, var(--mud-palette-primary) 9%, transparent);
+}
+
+.report-table tfoot td {
+    position: sticky;
+    bottom: 0;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--mud-palette-primary) 12%, var(--mud-palette-surface));
+    border-top: 2px solid color-mix(in srgb, var(--mud-palette-primary) 35%, transparent);
+    border-bottom: none;
+}
+
+.report-table .neg {
+    color: var(--mud-palette-error);
+}
+
+/* ===== Printing reports ===== */
+.print-only {
+    display: none;
+}
+
+@media print {
+    .mud-appbar,
+    .mud-drawer,
+    .mud-snackbar-provider,
+    .page-header,
+    .report-intro,
+    .report-filters,
+    .report-toolbar,
+    #blazor-error-ui {
+        display: none !important;
+    }
+
+    html,
+    body {
+        background: #fff !important;
+    }
+
+    .mud-main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+    }
+
+    .mud-container {
+        max-width: none !important;
+        padding: 0 !important;
+    }
+
+    .report-result {
+        border: none !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    .print-only {
+        display: block;
+        padding-bottom: 8px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #222;
+        color: #111;
+    }
+
+    .print-pharmacy {
+        font-size: 12px;
+        color: #444;
+    }
+
+    .print-title {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .print-filters,
+    .print-generated {
+        font-size: 11px;
+        color: #444;
+    }
+
+    .report-table-wrap {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .report-table {
+        font-size: 11px;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 4px 6px;
+        border: 1px solid #aaa;
+        color: #111;
+    }
+
+    .report-table th {
+        position: static;
+        background: #e6eaee !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .report-table tbody tr:nth-child(even) {
+        background: transparent;
+    }
+
+    .report-table tbody tr.row-strong td,
+    .report-table tfoot td {
+        position: static;
+        background: #eef1f4 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .report-table thead {
+        display: table-header-group;
+    }
+
+    .report-table tfoot {
+        display: table-footer-group;
+    }
+
+    .report-table tr {
+        break-inside: avoid;
+    }
+
+    .report-table .neg {
+        color: #b00020;
+    }
+}
+
+/* Tables with few columns stay compact instead of stretching across the whole card */
+.report-table.compact {
+    width: auto;
+    min-width: min(100%, 560px);
+    margin: 0.5rem 1rem 1rem;
+}
+
+.report-table.compact th:first-child,
+.report-table.compact td:first-child {
+    min-width: 240px;
+}
+
+/* ===== Settings ===== */
+.settings-page {
+    max-width: 860px;
+    padding-bottom: 5rem;
+}
+
+.section-head {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+}
+
+.section-head h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.section-head p {
+    margin: 0.1rem 0 0;
+    font-size: 0.85rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.section-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    color: var(--tone);
+    background: color-mix(in srgb, var(--tone) 14%, transparent);
+}
+
+.choice-label {
+    margin: 0.5rem 0 0.6rem;
+    font-weight: 600;
+}
+
+.choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 1rem 0.75rem;
+    border: 2px solid var(--mud-palette-lines-default);
+    border-radius: 12px;
+    color: var(--mud-palette-text-primary);
+    background: var(--mud-palette-surface);
+    font: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.choice:hover {
+    border-color: color-mix(in srgb, var(--mud-palette-primary) 50%, transparent);
+}
+
+.choice.selected {
+    border-color: var(--mud-palette-primary);
+    background: color-mix(in srgb, var(--mud-palette-primary) 10%, var(--mud-palette-surface));
+    color: var(--mud-palette-primary);
+    font-weight: 700;
+}
+
+.color-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.color-choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 96px;
+    padding: 0.75rem 0.5rem;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    color: var(--mud-palette-text-primary);
+    background: transparent;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.color-choice:hover {
+    background: color-mix(in srgb, var(--mud-palette-primary) 6%, transparent);
+}
+
+.color-choice.selected {
+    border-color: var(--mud-palette-primary);
+    font-weight: 700;
+}
+
+.color-choice .swatch {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.save-bar {
+    position: sticky;
+    bottom: 0.75rem;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: 14px;
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    box-shadow: 0 8px 24px rgba(16, 24, 40, 0.18);
+}
+
+.save-bar span {
+    font-size: 0.9rem;
+    color: var(--mud-palette-text-secondary);
+}

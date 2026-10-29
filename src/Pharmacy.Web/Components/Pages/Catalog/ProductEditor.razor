@@ -8,7 +8,7 @@
 
 <PageTitle>@Title - @L["App.Name"]</PageTitle>
 
-<div class="d-flex align-center mb-4 gap-2">
+<div class="page-header">
     <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
                    Href="catalog/products" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
     <MudText Typo="Typo.h4">@Title</MudText>
@@ -35,28 +35,28 @@
     <MudAlert Severity="Severity.Error" Class="mb-3" ShowCloseIcon="true" CloseIconClicked="() => _error = null">@_error</MudAlert>
 }
 
-<MudForm @ref="_form" ReadOnly="!_canManage">
+<MudForm @ref="_form" ReadOnly="!_canManage" Class="form-page">
     <MudGrid>
-        <MudItem xs="12" lg="7">
+        <MudItem xs="12">
             <MudPaper Class="pa-4" Elevation="1">
                 <MudText Typo="Typo.h6" GutterBottom="true">@L["Products.Details"]</MudText>
                 <MudGrid Spacing="2">
-                    <MudItem xs="12" sm="6">
+                    <MudItem xs="12">
                         <MudTextField @bind-Value="_details.TradeNameArabic" Label="@L["Products.TradeNameArabic"]" MaxLength="Product.TradeNameMaxLength" />
                     </MudItem>
-                    <MudItem xs="12" sm="6">
+                    <MudItem xs="12">
                         <MudTextField @bind-Value="_details.TradeNameEnglish" Label="@L["Products.TradeNameEnglish"]" MaxLength="Product.TradeNameMaxLength" Style="direction: ltr" />
                     </MudItem>
                     <MudItem xs="12">
                         <MudText Typo="Typo.caption">@L["Products.TradeNameHint"]</MudText>
                     </MudItem>
-                    <MudItem xs="12" sm="8">
+                    <MudItem xs="12">
                         <MudTextField @bind-Value="_details.ScientificName" Label="@L["Products.ScientificName"]" MaxLength="Product.ScientificNameMaxLength" Style="direction: ltr" />
                     </MudItem>
-                    <MudItem xs="12" sm="4">
+                    <MudItem xs="12">
                         <MudTextField @bind-Value="_details.Strength" Label="@L["Products.Strength"]" Placeholder="500 mg" MaxLength="Product.StrengthMaxLength" Style="direction: ltr" />
                     </MudItem>
-                    <MudItem xs="12" sm="6">
+                    <MudItem xs="12">
                         <MudSelect T="int?" @bind-Value="_details.CategoryId" Label="@L["Products.Category"]" Required="true" RequiredError="@L[CatalogErrors.CategoryRequired]">
                             @foreach (var category in _categories)
                             {
@@ -64,7 +64,7 @@
                             }
                         </MudSelect>
                     </MudItem>
-                    <MudItem xs="12" sm="6">
+                    <MudItem xs="12">
                         <MudSelect T="int?" @bind-Value="_details.DosageFormId" Label="@L["Products.DosageForm"]" Clearable="true">
                             @foreach (var form in _dosageForms)
                             {
@@ -75,14 +75,14 @@
                     <MudItem xs="12">
                         <MudTextField @bind-Value="_details.Manufacturer" Label="@L["Products.Manufacturer"]" MaxLength="Product.ManufacturerMaxLength" />
                     </MudItem>
-                    <MudItem xs="12" sm="4" Class="d-flex align-center">
+                    <MudItem xs="12" Class="d-flex align-center">
                         <MudSwitch @bind-Value="_details.TracksExpiry" Color="Color.Primary" Label="@L["Products.TracksExpiry"]" />
                     </MudItem>
-                    <MudItem xs="12" sm="4">
+                    <MudItem xs="12">
                         <MudNumericField T="int?" @bind-Value="_details.MinimumStock" Label="@L["Products.MinimumStock"]" Min="0"
                                          HelperText="@L["Products.InBaseUnits", BaseUnitName]" />
                     </MudItem>
-                    <MudItem xs="12" sm="4">
+                    <MudItem xs="12">
                         <MudNumericField T="int?" @bind-Value="_details.NearExpiryDays" Label="@L["Products.NearExpiryDays"]" Min="1" Max="Product.MaxNearExpiryDays"
                                          HelperText="@L["Products.NearExpiryDaysHint"]" />
                     </MudItem>
@@ -93,7 +93,7 @@
             </MudPaper>
         </MudItem>
 
-        <MudItem xs="12" lg="5">
+        <MudItem xs="12">
             <MudPaper Class="pa-4" Elevation="1">
                 <MudText Typo="Typo.h6">@L["Products.Units"]</MudText>
                 <MudText Typo="Typo.caption" Class="d-block mb-3">@L["Products.UnitsIntro"]</MudText>

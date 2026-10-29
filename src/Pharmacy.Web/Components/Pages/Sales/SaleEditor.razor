@@ -8,7 +8,7 @@
 
 <PageTitle>@L["Sales.New"] - @L["App.Name"]</PageTitle>
 
-<div class="d-flex align-center mb-4 gap-2">
+<div class="page-header">
     <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
                    Href="sales" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
     <MudText Typo="Typo.h4">@L["Sales.New"]</MudText>
@@ -20,7 +20,7 @@
 }
 
 <MudGrid Spacing="3">
-    <MudItem xs="12" md="8">
+    <MudItem xs="12">
         <MudPaper Class="pa-3 mb-3" Elevation="1">
             <MudGrid Spacing="2" Class="align-end">
                 <MudItem xs="12" md="5">
@@ -101,7 +101,7 @@
         </MudTable>
     </MudItem>
 
-    <MudItem xs="12" md="4">
+    <MudItem xs="12">
         <MudPaper Class="pa-3 mb-3" Elevation="1">
             <MudAutocomplete T="CustomerListItem" Label="@L["Sales.Customer"]" Value="_customer" ValueChanged="OnCustomerChanged"
                              SearchFunc="SearchCustomersAsync" ToStringFunc="CustomerText" MinCharacters="0" DebounceInterval="250"

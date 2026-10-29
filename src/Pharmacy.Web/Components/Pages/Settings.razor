@@ -5,7 +5,9 @@
 
 <PageTitle>@L["Settings.Title"] - @L["App.Name"]</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true">@L["Settings.Title"]</MudText>
+<div class="page-header">
+    <MudText Typo="Typo.h4">@L["Settings.Title"]</MudText>
+</div>
 
 @if (_form is null)
 {
@@ -13,91 +15,131 @@
     return;
 }
 
-<MudForm @ref="_mudForm" Model="_form">
-    <MudGrid>
-        <MudItem xs="12" md="6">
-            <MudPaper Class="pa-4" Elevation="1">
-                <MudText Typo="Typo.h6" GutterBottom="true">@L["Settings.PharmacyInfo"]</MudText>
+<MudForm @ref="_mudForm" Model="_form" Class="settings-page">
+    <section class="form-section">
+        <div class="section-head">
+            <span class="section-icon tone-primary"><MudIcon Icon="@Icons.Material.Filled.LocalPharmacy" /></span>
+            <div>
+                <h2>@L["Settings.PharmacyInfo"]</h2>
+                <p>@L["Settings.PharmacyInfoHint"]</p>
+            </div>
+        </div>
 
-                <MudTextField @bind-Value="_form.NameArabic"
-                              Label="@L["Settings.NameArabic"]"
-                              Required="true"
-                              RequiredError="@L[SettingsErrors.NameArabicRequired]"
-                              MaxLength="PharmacySettings.NameMaxLength"
-                              Counter="PharmacySettings.NameMaxLength" />
+        <div class="form-stack">
+            <MudTextField @bind-Value="_form.NameArabic"
+                          Label="@L["Settings.NameArabic"]"
+                          Required="true"
+                          RequiredError="@L[SettingsErrors.NameArabicRequired]"
+                          MaxLength="PharmacySettings.NameMaxLength"
+                          Counter="PharmacySettings.NameMaxLength" />
 
-                <MudTextField @bind-Value="_form.NameEnglish"
-                              Label="@L["Settings.NameEnglish"]"
-                              Required="true"
-                              RequiredError="@L[SettingsErrors.NameEnglishRequired]"
-                              MaxLength="PharmacySettings.NameMaxLength"
-                              Counter="PharmacySettings.NameMaxLength" />
+            <MudTextField @bind-Value="_form.NameEnglish"
+                          Label="@L["Settings.NameEnglish"]"
+                          Required="true"
+                          RequiredError="@L[SettingsErrors.NameEnglishRequired]"
+                          MaxLength="PharmacySettings.NameMaxLength"
+                          Counter="PharmacySettings.NameMaxLength"
+                          Style="direction: ltr" />
 
-                <MudTextField @bind-Value="_form.Phone"
-                              Label="@L["Settings.Phone"]"
-                              InputType="InputType.Telephone"
-                              MaxLength="PharmacySettings.PhoneMaxLength" />
+            <MudTextField @bind-Value="_form.Phone"
+                          Label="@L["Settings.Phone"]"
+                          InputType="InputType.Telephone"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Phone"
+                          MaxLength="PharmacySettings.PhoneMaxLength"
+                          Style="direction: ltr" />
 
-                <MudTextField @bind-Value="_form.Address"
-                              Label="@L["Settings.Address"]"
-                              Lines="3"
-                              MaxLength="PharmacySettings.AddressMaxLength"
-                              Counter="PharmacySettings.AddressMaxLength" />
-            </MudPaper>
-        </MudItem>
+            <MudTextField @bind-Value="_form.Address"
+                          Label="@L["Settings.Address"]"
+                          Lines="3"
+                          MaxLength="PharmacySettings.AddressMaxLength"
+                          Counter="PharmacySettings.AddressMaxLength" />
+        </div>
+    </section>
 
-        <MudItem xs="12" md="6">
-            <MudPaper Class="pa-4" Elevation="1">
-                <MudText Typo="Typo.h6" GutterBottom="true">@L["Settings.Appearance"]</MudText>
+    <section class="form-section">
+        <div class="section-head">
+            <span class="section-icon tone-secondary"><MudIcon Icon="@Icons.Material.Filled.Palette" /></span>
+            <div>
+                <h2>@L["Settings.Appearance"]</h2>
+                <p>@L["Settings.AppearanceHint"]</p>
+            </div>
+        </div>
 
-                <MudText Typo="Typo.subtitle2">@L["Settings.ThemeMode"]</MudText>
-                <MudRadioGroup T="ThemeMode" @bind-Value="_form.ThemeMode">
-                    @foreach (var mode in Enum.GetValues<ThemeMode>())
-                    {
-                        <MudRadio T="ThemeMode" Value="mode" Color="Color.Primary" AriaLabel="@L[$"Settings.ThemeMode.{mode}"]">@L[$"Settings.ThemeMode.{mode}"]</MudRadio>
-                    }
-                </MudRadioGroup>
+        <div class="choice-label">@L["Settings.ThemeMode"]</div>
+        <div class="choice-grid">
+            @foreach (var mode in Enum.GetValues<ThemeMode>())
+            {
+                <button type="button" class="choice @(_form.ThemeMode == mode ? "selected" : string.Empty)" @onclick="() => _form.ThemeMode = mode"
+                        aria-pressed="@(_form.ThemeMode == mode)">
+                    <MudIcon Icon="@ModeIcon(mode)" />
+                    <span>@L[$"Settings.ThemeMode.{mode}"]</span>
+                </button>
+            }
+        </div>
 
-                <MudText Typo="Typo.subtitle2" Class="mt-4">@L["Settings.PrimaryColor"]</MudText>
-                <MudRadioGroup T="ThemeColor" @bind-Value="_form.PrimaryColor">
-                    @foreach (var color in Enum.GetValues<ThemeColor>())
-                    {
-                        <MudRadio T="ThemeColor" Value="color" Color="Color.Primary" AriaLabel="@L[$"Settings.Color.{color}"]">
-                            <span class="color-swatch" style="background-color: @PharmacyTheme.SwatchFor(color)"></span>
-                            @L[$"Settings.Color.{color}"]
-                        </MudRadio>
-                    }
-                </MudRadioGroup>
-            </MudPaper>
-        </MudItem>
+        <div class="choice-label">@L["Settings.PrimaryColor"]</div>
+        <div class="color-grid">
+            @foreach (var color in Enum.GetValues<ThemeColor>())
+            {
+                <button type="button" class="color-choice @(_form.PrimaryColor == color ? "selected" : string.Empty)" @onclick="() => _form.PrimaryColor = color"
+                        aria-pressed="@(_form.PrimaryColor == color)" title="@L[$"Settings.Color.{color}"]">
+                    <span class="swatch" style="background-color: @PharmacyTheme.SwatchFor(color)">
+                        @if (_form.PrimaryColor == color)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" />
+                        }
+                    </span>
+                    <span>@L[$"Settings.Color.{color}"]</span>
+                </button>
+            }
+        </div>
+    </section>
 
-        <MudItem xs="12" md="6">
-            <MudPaper Class="pa-4" Elevation="1">
-                <MudText Typo="Typo.h6" GutterBottom="true">@L["Settings.Inventory"]</MudText>
-                <MudNumericField T="int" @bind-Value="_form.NearExpiryDays" Label="@L["Settings.NearExpiryDays"]"
-                                 Min="1" Max="PharmacySettings.MaxNearExpiryDays" HelperText="@L["Settings.NearExpiryDaysHint"]" />
-            </MudPaper>
-        </MudItem>
+    <section class="form-section">
+        <div class="section-head">
+            <span class="section-icon tone-success"><MudIcon Icon="@Icons.Material.Filled.Inventory2" /></span>
+            <div>
+                <h2>@L["Settings.Inventory"]</h2>
+                <p>@L["Settings.InventoryHint"]</p>
+            </div>
+        </div>
 
-        <MudItem xs="12" md="6">
-            <MudPaper Class="pa-4" Elevation="1">
-                <MudText Typo="Typo.h6" GutterBottom="true">@L["Settings.Sales"]</MudText>
-                <MudNumericField T="decimal" @bind-Value="_form.MaxDiscountPercent" Label="@L["Settings.MaxDiscountPercent"]"
-                                 Min="0" Max="100" Format="0.##" HelperText="@L["Settings.MaxDiscountPercentHint"]" />
-                <MudNumericField T="int" @bind-Value="_form.ReturnWindowDays" Label="@L["Settings.ReturnWindowDays"]" Class="mt-3"
-                                 Min="0" Max="PharmacySettings.MaxReturnWindowDays" HelperText="@L["Settings.ReturnWindowDaysHint"]" />
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
+        <div class="form-stack">
+            <MudNumericField T="int" @bind-Value="_form.NearExpiryDays" Label="@L["Settings.NearExpiryDays"]"
+                             Min="1" Max="PharmacySettings.MaxNearExpiryDays" HelperText="@L["Settings.NearExpiryDaysHint"]"
+                             Adornment="Adornment.End" AdornmentText="@L["Settings.DaysUnit"]" />
+        </div>
+    </section>
 
-    <MudButton Class="mt-4 align-self-start"
-               Variant="Variant.Filled"
-               Color="Color.Primary"
-               StartIcon="@Icons.Material.Filled.Save"
-               Disabled="_saving"
-               OnClick="SaveAsync">
-        @L["Settings.Save"]
-    </MudButton>
+    <section class="form-section">
+        <div class="section-head">
+            <span class="section-icon tone-warning"><MudIcon Icon="@Icons.Material.Filled.PointOfSale" /></span>
+            <div>
+                <h2>@L["Settings.Sales"]</h2>
+                <p>@L["Settings.SalesHint"]</p>
+            </div>
+        </div>
+
+        <div class="form-stack">
+            <MudNumericField T="decimal" @bind-Value="_form.MaxDiscountPercent" Label="@L["Settings.MaxDiscountPercent"]"
+                             Min="0" Max="100" Format="0.##" HelperText="@L["Settings.MaxDiscountPercentHint"]"
+                             Adornment="Adornment.End" AdornmentText="%" />
+            <MudNumericField T="int" @bind-Value="_form.ReturnWindowDays" Label="@L["Settings.ReturnWindowDays"]"
+                             Min="0" Max="PharmacySettings.MaxReturnWindowDays" HelperText="@L["Settings.ReturnWindowDaysHint"]"
+                             Adornment="Adornment.End" AdornmentText="@L["Settings.DaysUnit"]" />
+        </div>
+    </section>
+
+    <div class="save-bar">
+        <span>@L["Settings.SaveHint"]</span>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Disabled="_saving"
+                   OnClick="SaveAsync">
+            @L["Settings.Save"]
+        </MudButton>
+    </div>
 </MudForm>
 
 @code {
@@ -105,6 +147,13 @@
     private SettingsForm? _form;
     private byte[] _rowVersion = [];
     private bool _saving;
+
+    private static string ModeIcon(ThemeMode mode) => mode switch
+    {
+        ThemeMode.Light => Icons.Material.Filled.LightMode,
+        ThemeMode.Dark => Icons.Material.Filled.DarkMode,
+        _ => Icons.Material.Filled.SettingsBrightness,
+    };
 
     protected override async Task OnInitializedAsync()
     {

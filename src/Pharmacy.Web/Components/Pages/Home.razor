@@ -1,7 +1,193 @@
 ﻿@page "/"
+@using Pharmacy.Application.Dashboard
+@inject ServiceRunner Services
+@inject PharmacySettingsState SettingsState
 
 <PageTitle>@L["Home.Title"] - @L["App.Name"]</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true">@L["Home.Welcome"]</MudText>
-<MudText Typo="Typo.body1" Class="mb-2">@L["Home.FoundationNotice"]</MudText>
-<MudText Typo="Typo.body2" Color="Color.Secondary">@L["Home.Today", DateTime.Now.ToString("D", CultureInfo.CurrentCulture)]</MudText>
+<section class="hero">
+    <div class="hero-text">
+        <div class="hero-pharmacy">@PharmacyName</div>
+        <h1>@L["Home.Welcome"]@(string.IsNullOrEmpty(_userName) ? string.Empty : $"، {_userName}")</h1>
+        <div class="hero-date">@L["Home.Today", DateTime.Now.ToString("D", CultureInfo.CurrentCulture)]</div>
+    </div>
+    <div class="hero-actions">
+        <AuthorizeView Policy="@Permissions.SalesCreate">
+            <MudButton Variant="Variant.Filled" Class="hero-primary" StartIcon="@Icons.Material.Filled.PointOfSale" Href="sales/new">@L["Sales.New"]</MudButton>
+        </AuthorizeView>
+        <AuthorizeView Policy="@Permissions.CashView">
+            <MudButton Variant="Variant.Outlined" Class="hero-secondary" StartIcon="@Icons.Material.Filled.AccountBalanceWallet" Href="cash">@L["Nav.CashRegister"]</MudButton>
+        </AuthorizeView>
+        <AuthorizeView Policy="@Permissions.InventoryView">
+            <MudButton Variant="Variant.Outlined" Class="hero-secondary" StartIcon="@Icons.Material.Filled.Inventory" Href="inventory">@L["Nav.Inventory"]</MudButton>
+        </AuthorizeView>
+        <AuthorizeView Policy="@Permissions.ReportsView">
+            <MudButton Variant="Variant.Outlined" Class="hero-secondary" StartIcon="@Icons.Material.Filled.Assessment" Href="reports">@L["Nav.Reports"]</MudButton>
+        </AuthorizeView>
+        <MudTooltip Text="@L["Dashboard.Refresh"]">
+            <MudIconButton Icon="@Icons.Material.Filled.Refresh" Class="hero-refresh" OnClick="LoadAsync" Disabled="_loading" aria-label="@L["Dashboard.Refresh"]" data-test="refresh" />
+        </MudTooltip>
+    </div>
+</section>
+
+@if (_data is not { } data)
+{
+    <MudProgressLinear Indeterminate="true" />
+    return;
+}
+
+@if (data.NoOpenShift)
+{
+    <div class="notice" data-test="alert-no-shift">
+        <MudIcon Icon="@Icons.Material.Filled.LockClock" />
+        <span>@L["Dashboard.NoOpenShift"]</span>
+        <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Warning" Href="cash">@L["Dashboard.OpenCashRegister"]</MudButton>
+    </div>
+}
+
+@if (HasStockAlerts(data))
+{
+    <h2 class="section-title">@L["Dashboard.Alerts"]</h2>
+    <div class="alert-grid">
+        @AlertCard(data.Expired, "HasExpired", "Dashboard.Expired", "danger", Icons.Material.Filled.EventBusy)
+        @AlertCard(data.NearExpiry, "NearExpiry", "Dashboard.NearExpiry", "warning", Icons.Material.Filled.Schedule)
+        @AlertCard(data.LowStock, "LowStock", "Dashboard.LowStock", "info", Icons.Material.Filled.TrendingDown)
+    </div>
+}
+
+<h2 class="section-title">@L["Dashboard.Figures"]</h2>
+<div class="kpi-grid">
+    @if (data.SalesToday is { } salesToday)
+    {
+        @Kpi("Dashboard.SalesToday", MoneyFormat.Format(salesToday.NetSales), Count("Dashboard.InvoicesCount", salesToday.Invoices), Icons.Material.Filled.PointOfSale, "primary")
+    }
+    @if (data.SalesMonth is { } salesMonth)
+    {
+        @Kpi("Dashboard.SalesMonth", MoneyFormat.Format(salesMonth.NetSales), Count("Dashboard.InvoicesCount", salesMonth.Invoices), Icons.Material.Filled.CalendarMonth, "primary")
+    }
+    @if (data.GrossProfitToday is { } grossToday)
+    {
+        @Kpi("Dashboard.GrossProfitToday", MoneyFormat.Format(grossToday), null, Icons.Material.Filled.TrendingUp, "success", grossToday)
+    }
+    @if (data.GrossProfitMonth is { } grossMonth)
+    {
+        @Kpi("Dashboard.GrossProfitMonth", MoneyFormat.Format(grossMonth), null, Icons.Material.Filled.Savings, "success", grossMonth)
+    }
+    @if (data.PurchasesToday is { } purchasesToday)
+    {
+        @Kpi("Dashboard.PurchasesToday", MoneyFormat.Format(purchasesToday), null, Icons.Material.Filled.LocalShipping, "info")
+    }
+    @if (data.PurchasesMonth is { } purchasesMonth)
+    {
+        @Kpi("Dashboard.PurchasesMonth", MoneyFormat.Format(purchasesMonth), null, Icons.Material.Filled.Inventory2, "info")
+    }
+    @if (data.ExpensesMonth is { } expenses)
+    {
+        @Kpi("Dashboard.ExpensesMonth", MoneyFormat.Format(expenses), null, Icons.Material.Filled.Receipt, "warning")
+    }
+    @if (data.StockValue is { } stockValue)
+    {
+        @Kpi("Dashboard.StockValue", MoneyFormat.Format(stockValue), null, Icons.Material.Filled.Medication, "secondary")
+    }
+    @if (data.CustomerDebts is { } customerDebts)
+    {
+        @Kpi("Dashboard.CustomerDebts", MoneyFormat.Format(customerDebts), null, Icons.Material.Filled.People, "danger")
+    }
+    @if (data.SupplierDebts is { } supplierDebts)
+    {
+        @Kpi("Dashboard.SupplierDebts", MoneyFormat.Format(supplierDebts), null, Icons.Material.Filled.Business, "danger")
+    }
+    @if (data.Shifts is { } shifts)
+    {
+        @Kpi("Dashboard.OpenShifts", MoneyFormat.Format(shifts.Cash), Count("Dashboard.ShiftsCount", shifts.OpenShifts), Icons.Material.Filled.AccountBalanceWallet, "secondary")
+    }
+</div>
+
+@if (data.LastDays is { } days)
+{
+    var max = Math.Max(days.Max(d => d.NetSales), 1m);
+    <h2 class="section-title">@L["Dashboard.LastDays"]</h2>
+    <div class="chart-card" data-test="chart">
+        <div class="chart">
+            @foreach (var day in days)
+            {
+                var height = day.NetSales <= 0 ? 2 : Math.Max((int)(day.NetSales / max * 100), 4);
+                <div class="bar-column @(day.Day == days[^1].Day ? "today" : string.Empty)" title="@day.Day.ToString("d", CultureInfo.CurrentCulture): @MoneyFormat.Format(day.NetSales)">
+                    <span class="bar-value" dir="ltr">@(day.NetSales == 0 ? "-" : day.NetSales.ToString("N0", CultureInfo.CurrentCulture))</span>
+                    <div class="bar-track"><div class="bar" style="height:@(height)%"></div></div>
+                    <span class="bar-label">@day.Day.ToString("ddd", CultureInfo.CurrentCulture)<small dir="ltr">@day.Day.ToString("dd/MM", CultureInfo.InvariantCulture)</small></span>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private DashboardData? _data;
+    private bool _loading;
+    private string? _userName;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    private string PharmacyName => (SettingsState.Current ?? PharmacySettings.Defaults).DisplayName(CultureInfo.CurrentUICulture);
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userName = (await AuthenticationState).User.Identity?.Name;
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        try
+        {
+            _data = await Services.For<DashboardService>().RunAsync(s => s.GetAsync());
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private static bool HasStockAlerts(DashboardData data) =>
+        data.Expired is { Count: > 0 } || data.NearExpiry is { Count: > 0 } || data.LowStock is { Count: > 0 };
+
+    private string Count(string key, int count) => string.Format(CultureInfo.CurrentCulture, L[key].Value, count);
+
+    private RenderFragment Kpi(string titleKey, string value, string? note, string icon, string tone, decimal? sign = null) => @<div class="kpi tone-@tone" data-test="@titleKey">
+        <div class="kpi-icon"><MudIcon Icon="@icon" /></div>
+        <div class="kpi-body">
+            <div class="kpi-label">@L[titleKey]</div>
+            <div class="kpi-value @(sign < 0 ? "negative" : string.Empty)" dir="ltr">@value</div>
+            @if (note is not null)
+            {
+                <div class="kpi-note">@note</div>
+            }
+        </div>
+    </div>;
+
+    private RenderFragment AlertCard(StockAlert? alert, string filter, string titleKey, string tone, string icon) => @<text>
+        @if (alert is { Count: > 0 })
+        {
+            <div class="alert-card tone-@tone" data-test="@titleKey">
+                <div class="alert-head">
+                    <div class="kpi-icon"><MudIcon Icon="@icon" /></div>
+                    <div class="alert-title">@L[titleKey]</div>
+                    <span class="alert-count" dir="ltr">@alert.Count</span>
+                </div>
+                <ul>
+                    @foreach (var item in alert.Items)
+                    {
+                        <li>
+                            <MudLink Href="@($"inventory/{item.ProductId}")" Color="Color.Inherit">@item.DisplayName(SupportedCultures.IsArabicUi)</MudLink>
+                            <span class="qty" dir="ltr">@(filter == "HasExpired" ? item.Expired : filter == "NearExpiry" ? item.NearExpiry : item.Sellable)</span>
+                        </li>
+                    }
+                </ul>
+                <MudLink Href="@($"inventory?filter={filter}")" Class="alert-more">@L["Dashboard.ShowAll"]</MudLink>
+            </div>
+        }
+    </text>;
+}

@@ -21,17 +21,23 @@
         @if (_product is not null)
         {
             <MudGrid Spacing="2" Class="mt-1">
-                <MudItem xs="7">
+                <MudItem xs="12">
                     <MudNumericField T="int?" @bind-Value="_quantity" Label="@L["Inventory.Quantity"]" Min="1" />
                 </MudItem>
-                <MudItem xs="5">
+                <MudItem xs="12">
                     <MudSelect T="int" @bind-Value="_unitId" Label="@L["Products.Unit"]">
                         @foreach (var unit in _product.Units)
                         {
-                            <MudSelectItem T="int" Value="unit.Id">@unit.Unit.For(SupportedCultures.IsArabicUi)</MudSelectItem>
+                            <MudSelectItem T="int" Value="unit.Id">@UnitText(unit)</MudSelectItem>
                         }
                     </MudSelect>
                 </MudItem>
+                @if (BaseSummary is { } summary)
+                {
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Info" Dense="true" Icon="@Icons.Material.Filled.Calculate" data-test="quantity-summary">@summary</MudAlert>
+                    </MudItem>
+                }
                 <MudItem xs="12">
                     <MudNumericField T="decimal?" @bind-Value="_cost" Label="@L["Inventory.CostPerChosenUnit", SelectedUnit?.Unit.For(SupportedCultures.IsArabicUi) ?? string.Empty]"
                                      Min="0" Format="0.####" HelperText="@CostHint" />
@@ -84,6 +90,18 @@
     private string? _error;
 
     private ProductUnitSummary? SelectedUnit => _product?.Units.FirstOrDefault(u => u.Id == _unitId);
+
+    private ProductUnitSummary? BaseUnit => _product?.Units.FirstOrDefault(u => u.IsBase);
+
+    // A pack shows what it holds: "Box (3 Strip)".
+    private string UnitText(ProductUnitSummary unit) => unit.IsBase || BaseUnit is not { } baseUnit
+        ? unit.Unit.For(SupportedCultures.IsArabicUi)
+        : L["Purchases.UnitWithContent", unit.Unit.For(SupportedCultures.IsArabicUi), unit.Factor, baseUnit.Unit.For(SupportedCultures.IsArabicUi)].Value;
+
+    // How many of the smallest unit the line brings in, for example "10 Box = 30 Strip".
+    private string? BaseSummary => SelectedUnit is { IsBase: false } unit && BaseUnit is { } baseUnit && _quantity is > 0 and var quantity
+        ? L["Purchases.QuantitySummary", quantity, unit.Unit.For(SupportedCultures.IsArabicUi), quantity * unit.Factor, baseUnit.Unit.For(SupportedCultures.IsArabicUi)].Value
+        : null;
 
     private string? CostHint
     {
@@ -205,7 +223,8 @@
             request,
             $"{_product.DisplayName(SupportedCultures.IsArabicUi)} {_product.Strength}".Trim(),
             unit.Unit.For(SupportedCultures.IsArabicUi),
-            PurchaseInvoice.LineTotal(quantity, cost));
+            PurchaseInvoice.LineTotal(quantity, cost),
+            $"{quantity * unit.Factor} {BaseUnit?.Unit.For(SupportedCultures.IsArabicUi)}".Trim());
         MudDialog.Close(DialogResult.Ok(line));
     }
 }

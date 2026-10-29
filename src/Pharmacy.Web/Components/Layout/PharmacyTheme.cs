@@ -39,7 +39,13 @@ public static class PharmacyTheme
             {
                 Primary = light,
                 AppbarBackground = light,
+                Background = "#F4F6F9",
+                BackgroundGray = "#F4F6F9",
+                Surface = "#FFFFFF",
+                DrawerBackground = "#FFFFFF",
+                LinesDefault = "#E3E8EF",
             },
+            LayoutProperties = new LayoutProperties { DefaultBorderRadius = "10px", DrawerWidthLeft = "260px", DrawerWidthRight = "260px" },
             PaletteDark = new PaletteDark
             {
                 Primary = dark,
@@ -47,6 +53,7 @@ public static class PharmacyTheme
             Typography = new Typography
             {
                 Default = new DefaultTypography { FontFamily = _fontFamily },
+                Button = new ButtonTypography { FontFamily = _fontFamily, FontWeight = "600", TextTransform = "none" },
             },
         };
     }

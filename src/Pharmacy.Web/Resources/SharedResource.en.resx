@@ -2829,4 +2829,127 @@
   <data name="Reports.Col.Item" xml:space="preserve">
     <value>Item</value>
   </data>
+  <data name="Dashboard.Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Dashboard.Alerts" xml:space="preserve">
+    <value>Alerts</value>
+  </data>
+  <data name="Dashboard.NoOpenShift" xml:space="preserve">
+    <value>No cash shift is open, so cash sales and payments cannot be recorded.</value>
+  </data>
+  <data name="Dashboard.OpenCashRegister" xml:space="preserve">
+    <value>Open the cash register</value>
+  </data>
+  <data name="Dashboard.Expired" xml:space="preserve">
+    <value>Products with expired stock</value>
+  </data>
+  <data name="Dashboard.NearExpiry" xml:space="preserve">
+    <value>Products about to expire</value>
+  </data>
+  <data name="Dashboard.LowStock" xml:space="preserve">
+    <value>Products low in stock</value>
+  </data>
+  <data name="Dashboard.ShowAll" xml:space="preserve">
+    <value>Show all</value>
+  </data>
+  <data name="Dashboard.Figures" xml:space="preserve">
+    <value>Figures</value>
+  </data>
+  <data name="Dashboard.SalesToday" xml:space="preserve">
+    <value>Net sales today</value>
+  </data>
+  <data name="Dashboard.SalesMonth" xml:space="preserve">
+    <value>Net sales this month</value>
+  </data>
+  <data name="Dashboard.InvoicesCount" xml:space="preserve">
+    <value>{0} invoices</value>
+  </data>
+  <data name="Dashboard.PurchasesToday" xml:space="preserve">
+    <value>Purchases today</value>
+  </data>
+  <data name="Dashboard.PurchasesMonth" xml:space="preserve">
+    <value>Purchases this month</value>
+  </data>
+  <data name="Dashboard.GrossProfitToday" xml:space="preserve">
+    <value>Gross profit today</value>
+  </data>
+  <data name="Dashboard.GrossProfitMonth" xml:space="preserve">
+    <value>Gross profit this month</value>
+  </data>
+  <data name="Dashboard.ExpensesMonth" xml:space="preserve">
+    <value>Expenses this month</value>
+  </data>
+  <data name="Dashboard.StockValue" xml:space="preserve">
+    <value>Stock value at cost</value>
+  </data>
+  <data name="Dashboard.CustomerDebts" xml:space="preserve">
+    <value>Owed by customers</value>
+  </data>
+  <data name="Dashboard.SupplierDebts" xml:space="preserve">
+    <value>Owed to suppliers</value>
+  </data>
+  <data name="Dashboard.OpenShifts" xml:space="preserve">
+    <value>Cash in open shifts</value>
+  </data>
+  <data name="Dashboard.ShiftsCount" xml:space="preserve">
+    <value>{0} open shifts</value>
+  </data>
+  <data name="Dashboard.Shortcuts" xml:space="preserve">
+    <value>Shortcuts</value>
+  </data>
+  <data name="Dashboard.LastDays" xml:space="preserve">
+    <value>Net sales, last 7 days</value>
+  </data>
+  <data name="Reports.Search" xml:space="preserve">
+    <value>Search reports</value>
+  </data>
+  <data name="Reports.RowsCount" xml:space="preserve">
+    <value>{0} rows</value>
+  </data>
+  <data name="Print.BackToInvoice" xml:space="preserve">
+    <value>Back to the invoice</value>
+  </data>
+  <data name="Print.SizeA4" xml:space="preserve">
+    <value>A4</value>
+  </data>
+  <data name="Print.SizeReceipt" xml:space="preserve">
+    <value>Receipt 80 mm</value>
+  </data>
+  <data name="Print.RowNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Print.SignCashier" xml:space="preserve">
+    <value>Cashier signature</value>
+  </data>
+  <data name="Print.SignCustomer" xml:space="preserve">
+    <value>Customer signature</value>
+  </data>
+  <data name="Purchases.BaseQuantity" xml:space="preserve">
+    <value>Total received</value>
+  </data>
+  <data name="Purchases.UnitWithContent" xml:space="preserve">
+    <value>{0} ({1} {2})</value>
+  </data>
+  <data name="Purchases.QuantitySummary" xml:space="preserve">
+    <value>{0} {1} = {2} {3}</value>
+  </data>
+  <data name="Settings.PharmacyInfoHint" xml:space="preserve">
+    <value>The name and contact details printed on invoices and reports.</value>
+  </data>
+  <data name="Settings.AppearanceHint" xml:space="preserve">
+    <value>Choose the display mode and the main color of the system.</value>
+  </data>
+  <data name="Settings.InventoryHint" xml:space="preserve">
+    <value>How soon a batch is treated as near expiry.</value>
+  </data>
+  <data name="Settings.SalesHint" xml:space="preserve">
+    <value>Limits that apply when selling and taking goods back.</value>
+  </data>
+  <data name="Settings.DaysUnit" xml:space="preserve">
+    <value>days</value>
+  </data>
+  <data name="Settings.SaveHint" xml:space="preserve">
+    <value>Changes apply to every device once saved.</value>
+  </data>
 </root>

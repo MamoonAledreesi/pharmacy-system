@@ -16,10 +16,10 @@
             <MudItem xs="12">
                 <MudTextField @bind-Value="_name" Label="@L["Customers.Name"]" MaxLength="Customer.NameMaxLength" Required="true" autofocus />
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudTextField T="string" Value="_phone" ValueChanged="OnPhoneChanged" Label="@L["Customers.Phone"]" MaxLength="Customer.PhoneMaxLength" Style="direction: ltr" />
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudTextField @bind-Value="_address" Label="@L["Customers.Address"]" MaxLength="Customer.AddressMaxLength" />
             </MudItem>
             <MudItem xs="12">

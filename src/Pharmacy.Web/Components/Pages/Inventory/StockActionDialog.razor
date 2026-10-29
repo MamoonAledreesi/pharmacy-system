@@ -17,11 +17,11 @@
         </MudText>
 
         <MudGrid Spacing="2">
-            <MudItem xs="7">
+            <MudItem xs="12">
                 <MudNumericField T="int?" @bind-Value="_quantity" Label="@L["Inventory.Quantity"]" Min="1" Required="true"
                                  RequiredError="@L[InventoryErrors.InvalidQuantity]" />
             </MudItem>
-            <MudItem xs="5">
+            <MudItem xs="12">
                 <MudSelect T="int" @bind-Value="_unitId" Label="@L["Products.Unit"]">
                     @foreach (var unit in Units)
                     {

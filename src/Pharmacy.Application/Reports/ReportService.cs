@@ -18,7 +18,7 @@ public static class ReportErrors
 /// both export formats share one result. Needs Reports.View; reports that show cost or profit also need
 /// Reports.ViewCostAndProfit, and exporting needs Reports.Export.
 /// </summary>
-public sealed partial class ReportService(IPharmacyDbContext db, ICurrentUser currentUser, TimeProvider clock)
+public sealed partial class ReportService(IPharmacyDbContext db, ICurrentUser currentUser, TimeProvider clock, ProfitCalculator profit)
 {
     /// <summary>A report with more rows than this is refused; the user is asked to narrow the period.</summary>
     public const int MaxRows = 50_000;

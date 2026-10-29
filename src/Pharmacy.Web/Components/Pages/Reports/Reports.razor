@@ -4,34 +4,64 @@
 
 <PageTitle>@L["Nav.Reports"] - @L["App.Name"]</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-4">@L["Nav.Reports"]</MudText>
+<div class="page-header">
+    <MudText Typo="Typo.h4">@L["Nav.Reports"]</MudText>
+    <MudSpacer />
+    <MudTextField T="string" @bind-Value="_search" Immediate="true" Placeholder="@L["Reports.Search"]" Clearable="true" Variant="Variant.Outlined"
+                  Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="reports-search" />
+</div>
 
-@foreach (var group in _groups)
+@foreach (var group in Visible)
 {
-    <MudText Typo="Typo.h6" Class="mt-4 mb-2">@L[$"Reports.Group.{group.Key}"]</MudText>
-    <MudGrid Spacing="2">
-        @foreach (var report in group)
-        {
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="1" Class="pa-3 h-100">
-                    <MudLink Href="@($"reports/{report.Key}")" Typo="Typo.subtitle1">@L[$"Reports.Title.{report.Key}"]</MudLink>
-                    <MudText Typo="Typo.body2" Color="Color.Secondary">@L[$"Reports.Description.{report.Key}"]</MudText>
-                </MudPaper>
-            </MudItem>
-        }
-    </MudGrid>
+    <section class="report-group @ReportStyle.ToneOf(group.Key)">
+        <div class="report-group-title">
+            <span class="report-icon"><MudIcon Icon="@ReportStyle.IconOf(group.Key)" /></span>
+            <h2>@L[$"Reports.Group.{group.Key}"]</h2>
+            <span class="report-group-count" dir="ltr">@group.Count()</span>
+        </div>
+        <div class="report-card-grid">
+            @foreach (var report in group)
+            {
+                <a class="report-card" href="@($"reports/{report.Key}")" data-test="@($"report-{report.Key}")">
+                    <span class="report-icon"><MudIcon Icon="@ReportStyle.IconOf(report.Key)" /></span>
+                    <span class="report-card-body">
+                        <span class="report-card-title">@L[$"Reports.Title.{report.Key}"]</span>
+                        <span class="report-card-text">@L[$"Reports.Description.{report.Key}"]</span>
+                    </span>
+                    <MudIcon Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ChevronLeft : Icons.Material.Filled.ChevronRight)" Class="report-card-arrow" />
+                </a>
+            }
+        </div>
+    </section>
+}
+
+@if (!Visible.Any())
+{
+    <div class="empty-state">
+        <MudIcon Icon="@Icons.Material.Filled.SearchOff" Size="Size.Large" />
+        <span>@L["Reports.NoData"]</span>
+    </div>
 }
 
 @code {
-    private IReadOnlyList<IGrouping<ReportGroup, ReportDefinition>> _groups = [];
+    private IReadOnlyList<ReportDefinition> _available = [];
+    private string? _search;
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    // The reports this user may open, filtered by the search box (on the translated title and description).
+    private IEnumerable<IGrouping<ReportGroup, ReportDefinition>> Visible =>
+        _available
+            .Where(d => string.IsNullOrWhiteSpace(_search)
+                || L[$"Reports.Title.{d.Key}"].Value.Contains(_search.Trim(), StringComparison.CurrentCultureIgnoreCase)
+                || L[$"Reports.Description.{d.Key}"].Value.Contains(_search.Trim(), StringComparison.CurrentCultureIgnoreCase))
+            .GroupBy(d => d.Group);
 
     protected override async Task OnInitializedAsync()
     {
         var user = (await AuthenticationState).User;
         var canSeeCost = (await AuthorizationService.AuthorizeAsync(user, Permissions.ReportsViewCostAndProfit)).Succeeded;
-        _groups = [.. ReportDefinitions.All.Where(d => canSeeCost || !d.NeedsCostAndProfit).GroupBy(d => d.Group)];
+        _available = [.. ReportDefinitions.All.Where(d => canSeeCost || !d.NeedsCostAndProfit)];
     }
 }

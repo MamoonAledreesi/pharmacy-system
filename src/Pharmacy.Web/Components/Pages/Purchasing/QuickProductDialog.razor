@@ -9,16 +9,16 @@
         }
 
         <MudGrid Spacing="2">
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudTextField @bind-Value="_nameArabic" Label="@L["Products.TradeNameArabic"]" MaxLength="100" autofocus />
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudTextField @bind-Value="_nameEnglish" Label="@L["Products.TradeNameEnglish"]" MaxLength="100" Style="direction: ltr" />
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudTextField @bind-Value="_strength" Label="@L["Products.Strength"]" MaxLength="50" Style="direction: ltr" />
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudSelect T="int?" @bind-Value="_categoryId" Label="@L["Products.Category"]" Required="true">
                     @foreach (var category in _categories)
                     {
@@ -26,7 +26,7 @@
                     }
                 </MudSelect>
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudSelect T="int?" @bind-Value="_baseUnitId" Label="@L["Purchases.QuickBaseUnit"]" Required="true">
                     @foreach (var unit in _units)
                     {
@@ -34,10 +34,10 @@
                     }
                 </MudSelect>
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudNumericField T="decimal?" @bind-Value="_price" Label="@L["Purchases.QuickPrice"]" Min="0" Format="0.00" />
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudSelect T="int?" @bind-Value="_largerUnitId" Label="@L["Purchases.QuickLargerUnit"]" Clearable="true">
                     @foreach (var unit in _units.Where(u => u.Id != _baseUnitId))
                     {
@@ -45,7 +45,7 @@
                     }
                 </MudSelect>
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 @if (_largerUnitId is not null)
                 {
                     <MudNumericField T="int?" @bind-Value="_factor" Label="@L["Purchases.QuickFactor"]" Min="2" HelperText="@L["Purchases.QuickFactorHint"]" />

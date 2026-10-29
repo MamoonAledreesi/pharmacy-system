@@ -3,27 +3,18 @@
 @inject ServiceRunner Services
 @inject ReportDocumentBuilder Builder
 @inject TimeProvider Clock
+@inject IJSRuntime JS
 
 <PageTitle>@Title - @L["App.Name"]</PageTitle>
 
-<div class="d-flex align-center mb-4 gap-2">
+<div class="page-header">
     <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
                    Href="reports" aria-label="@L["Reports.BackToList"]" title="@L["Reports.BackToList"]" />
-    <MudText Typo="Typo.h4">@Title</MudText>
-    <MudSpacer />
-    @if (_document is not null)
+    @if (_definition is not null)
     {
-        <AuthorizeView Policy="@Permissions.ReportsExport">
-            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.TableChart" Href="@ExportUrl(ReportEndpoints.ExcelFormat)"
-                       download="true" data-test="export-excel">
-                @L["Reports.ExportExcel"]
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PictureAsPdf" Href="@ExportUrl(ReportEndpoints.PdfFormat)"
-                       download="true" data-test="export-pdf">
-                @L["Reports.ExportPdf"]
-            </MudButton>
-        </AuthorizeView>
+        <span class="report-icon @ReportStyle.ToneOf(_definition.Group)"><MudIcon Icon="@ReportStyle.IconOf(_reportKey)" /></span>
     }
+    <MudText Typo="Typo.h4">@Title</MudText>
 </div>
 
 @if (_definition is null)
@@ -32,55 +23,48 @@
     return;
 }
 
-<MudPaper Class="pa-4 mb-4" Elevation="1">
-    <MudGrid Spacing="2" Class="align-end">
-        @if (Has(ReportFilters.Period))
-        {
-            <MudItem xs="6" md="3">
-                <MudDatePicker @bind-Date="_from" Label="@L["Purchases.From"]" />
-            </MudItem>
-            <MudItem xs="6" md="3">
-                <MudDatePicker @bind-Date="_to" Label="@L["Purchases.To"]" />
-            </MudItem>
-        }
-        @if (Has(ReportFilters.Customer))
-        {
-            <MudItem xs="12" md="4">
-                <MudAutocomplete T="CustomerListItem" Label="@L["Sales.Customer"]" @bind-Value="_customer" SearchFunc="SearchCustomersAsync"
-                                 ToStringFunc="@(c => c?.Name ?? string.Empty)" MinCharacters="0" DebounceInterval="250" CoerceText="false" />
-            </MudItem>
-        }
-        @if (Has(ReportFilters.Supplier))
-        {
-            <MudItem xs="12" md="4">
-                <MudAutocomplete T="SupplierListItem" Label="@L["Purchases.Supplier"]" @bind-Value="_supplier" SearchFunc="SearchSuppliersAsync"
-                                 ToStringFunc="@(s => s?.Name ?? string.Empty)" MinCharacters="0" DebounceInterval="250" CoerceText="false" />
-            </MudItem>
-        }
-        @if (Has(ReportFilters.ExpenseCategory))
-        {
-            <MudItem xs="12" md="3">
-                <MudSelect T="int?" @bind-Value="_categoryId" Label="@L["Expenses.Category"]" Clearable="true">
-                    @foreach (var category in _categories)
-                    {
-                        <MudSelectItem T="int?" Value="category.Id">@category.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
-                    }
-                </MudSelect>
-            </MudItem>
-        }
-        @if (Has(ReportFilters.Text))
-        {
-            <MudItem xs="12" md="4">
-                <MudTextField T="string" @bind-Value="_text" Label="@L["Reports.Filter.Text"]" Clearable="true" Immediate="false" />
-            </MudItem>
-        }
-        <MudItem xs="12" md="2">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="RunAsync" Disabled="_running" data-test="run-report">
-                @L["Reports.Run"]
-            </MudButton>
-        </MudItem>
-    </MudGrid>
+<p class="report-intro">@L[$"Reports.Description.{_reportKey}"]</p>
+
+<MudPaper Class="report-filters" Elevation="1">
+    @if (Has(ReportFilters.Period))
+    {
+        <MudDatePicker @bind-Date="_from" Label="@L["Purchases.From"]" Class="report-field" />
+        <MudDatePicker @bind-Date="_to" Label="@L["Purchases.To"]" Class="report-field" />
+    }
+    @if (Has(ReportFilters.Customer))
+    {
+        <MudAutocomplete T="CustomerListItem" Label="@L["Sales.Customer"]" @bind-Value="_customer" SearchFunc="SearchCustomersAsync" Class="report-field wide"
+                         ToStringFunc="@(c => c?.Name ?? string.Empty)" MinCharacters="0" DebounceInterval="250" CoerceText="false" />
+    }
+    @if (Has(ReportFilters.Supplier))
+    {
+        <MudAutocomplete T="SupplierListItem" Label="@L["Purchases.Supplier"]" @bind-Value="_supplier" SearchFunc="SearchSuppliersAsync" Class="report-field wide"
+                         ToStringFunc="@(s => s?.Name ?? string.Empty)" MinCharacters="0" DebounceInterval="250" CoerceText="false" />
+    }
+    @if (Has(ReportFilters.ExpenseCategory))
+    {
+        <MudSelect T="int?" @bind-Value="_categoryId" Label="@L["Expenses.Category"]" Clearable="true" Class="report-field">
+            @foreach (var category in _categories)
+            {
+                <MudSelectItem T="int?" Value="category.Id">@category.DisplayName(SupportedCultures.IsArabicUi)</MudSelectItem>
+            }
+        </MudSelect>
+    }
+    @if (Has(ReportFilters.Text))
+    {
+        <MudTextField T="string" @bind-Value="_text" Label="@L["Reports.Filter.Text"]" Clearable="true" Immediate="false" Class="report-field wide"
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+    }
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="RunAsync" Disabled="_running" StartIcon="@Icons.Material.Filled.PlayArrow"
+               Class="report-run" data-test="run-report">
+        @L["Reports.Run"]
+    </MudButton>
 </MudPaper>
+
+@if (_running)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-3" />
+}
 
 @if (_error is not null)
 {
@@ -89,54 +73,94 @@
 
 @if (_document is { } document)
 {
-    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-2">@document.GeneratedAt</MudText>
-
-    @if (document.Rows.Count == 0)
+    @if (document.Columns.Count > 6)
     {
-        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">@L["Reports.NoData"]</MudAlert>
+        <style>@@page { size: A4 landscape; margin: 10mm; }</style>
     }
-    else
-    {
-        <MudSimpleTable Dense="true" Hover="true" Elevation="1">
-            <thead>
-                <tr>
-                    @foreach (var column in document.Columns)
-                    {
-                        <th>@column.Header</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var row in document.Rows.Take(DisplayLimit))
-                {
-                    <tr>
-                        @for (var c = 0; c < document.Columns.Count; c++)
-                        {
-                            <td>@Cell(row[c], document.Columns[c].Kind)</td>
-                        }
-                    </tr>
-                }
-            </tbody>
-            @if (document.Totals is { } totals)
-            {
-                <tfoot>
-                    <tr>
-                        @for (var c = 0; c < document.Columns.Count; c++)
-                        {
-                            <td><b>@Cell(totals[c], document.Columns[c].Kind)</b></td>
-                        }
-                    </tr>
-                </tfoot>
-            }
-        </MudSimpleTable>
 
-        @if (document.Rows.Count > DisplayLimit)
+    <MudPaper Class="report-result" Elevation="1">
+        <div class="print-only report-print-head">
+            <div class="print-pharmacy">@document.PharmacyName</div>
+            <div class="print-title">@document.Title</div>
+            <div class="print-filters">@string.Join("   |   ", document.Filters.Select(f => $"{f.Label}: {f.Value}"))</div>
+            <div class="print-generated">@document.GeneratedAt</div>
+        </div>
+        <div class="report-toolbar">
+            <div class="report-meta">
+                <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.TableRows">
+                    @string.Format(CultureInfo.CurrentCulture, L["Reports.RowsCount"].Value, document.Rows.Count)
+                </MudChip>
+                <span class="report-generated">@document.GeneratedAt</span>
+            </div>
+            <MudSpacer />
+            <MudButton Variant="Variant.Outlined" Size="Size.Small" StartIcon="@Icons.Material.Filled.Print" OnClick="PrintAsync" data-test="print-report">
+                @L["Sales.Print"]
+            </MudButton>
+            <AuthorizeView Policy="@Permissions.ReportsExport">
+                <MudButton Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" StartIcon="@Icons.Material.Filled.TableChart"
+                           Href="@ExportUrl(ReportEndpoints.ExcelFormat)" download="true" data-test="export-excel">
+                    @L["Reports.ExportExcel"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" StartIcon="@Icons.Material.Filled.PictureAsPdf"
+                           Href="@ExportUrl(ReportEndpoints.PdfFormat)" download="true" data-test="export-pdf">
+                    @L["Reports.ExportPdf"]
+                </MudButton>
+            </AuthorizeView>
+        </div>
+
+        @if (document.Rows.Count == 0)
         {
-            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mt-2">
-                @string.Format(CultureInfo.CurrentCulture, L["Reports.DisplayLimit"].Value, DisplayLimit)
-            </MudAlert>
+            <div class="empty-state">
+                <MudIcon Icon="@Icons.Material.Filled.FolderOff" Size="Size.Large" />
+                <span>@L["Reports.NoData"]</span>
+            </div>
         }
-    }
+        else
+        {
+            <div class="report-table-wrap">
+                <table class="report-table @(document.Columns.Count <= 4 ? "compact" : string.Empty)">
+                    <thead>
+                        <tr>
+                            @foreach (var column in document.Columns)
+                            {
+                                <th class="@NumberClass(column.Kind)">@column.Header</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var r = 0; r < document.Rows.Count && r < DisplayLimit; r++)
+                        {
+                            var row = document.Rows[r];
+                            <tr class="@(IsStrongRow(r) ? "row-strong" : string.Empty)">
+                                @for (var c = 0; c < document.Columns.Count; c++)
+                                {
+                                    <td class="@NumberClass(document.Columns[c].Kind)">@Cell(row[c], document.Columns[c].Kind)</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                    @if (document.Totals is { } totals)
+                    {
+                        <tfoot>
+                            <tr>
+                                @for (var c = 0; c < document.Columns.Count; c++)
+                                {
+                                    <td class="@NumberClass(document.Columns[c].Kind)">@Cell(totals[c], document.Columns[c].Kind)</td>
+                                }
+                            </tr>
+                        </tfoot>
+                    }
+                </table>
+            </div>
+
+            @if (document.Rows.Count > DisplayLimit)
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="ma-3">
+                    @string.Format(CultureInfo.CurrentCulture, L["Reports.DisplayLimit"].Value, DisplayLimit)
+                </MudAlert>
+            }
+        }
+    </MudPaper>
 }
 
 @code {
@@ -201,6 +225,8 @@
         _supplier?.Id,
         _categoryId,
         _text);
+
+    private async Task PrintAsync() => await JS.InvokeVoidAsync("print");
 
     private async Task RunAsync()
     {
@@ -273,24 +299,31 @@
             return result.IsSuccess ? result.Value : Array.Empty<SupplierListItem>();
         }, cancellationToken);
 
+    private static string NumberClass(ReportColumnKind kind) =>
+        kind is ReportColumnKind.Integer or ReportColumnKind.Money or ReportColumnKind.Percent ? "num" : string.Empty;
+
+    // The profit statement stresses its subtotals: net sales, gross profit and operating profit.
+    private bool IsStrongRow(int index) => _reportKey == ReportKey.Profit && index is 2 or 4 or 8;
+
     private static RenderFragment Cell(object? value, ReportColumnKind kind) => value switch
     {
         null => builder => { },
         string text => builder => builder.AddContent(0, text),
         int number => Number(number.ToString("N0", CultureInfo.CurrentCulture)),
-        decimal amount when kind == ReportColumnKind.Percent => Number(amount.ToString("0.0", CultureInfo.CurrentCulture) + "%"),
-        decimal amount => Number(MoneyFormat.Format(amount)),
-        DateOnly day => Number(day.ToString("d", CultureInfo.CurrentCulture)),
-        DateTime moment => Number(moment.ToString("g", CultureInfo.CurrentCulture)),
+        decimal amount when kind == ReportColumnKind.Percent => Number((amount < 0 ? "-" : string.Empty) + Math.Abs(amount).ToString("0.0", CultureInfo.InvariantCulture) + "%", amount < 0),
+        decimal amount => Number(MoneyFormat.Format(amount), amount < 0),
+        DateOnly day => Number(day.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+        DateTime moment => Number(moment.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)),
         _ => builder => builder.AddContent(0, Convert.ToString(value, CultureInfo.CurrentCulture)),
     };
 
     // Numbers and dates stay left-to-right inside right-to-left text.
-    private static RenderFragment Number(string text) => builder =>
+    private static RenderFragment Number(string text, bool negative = false) => builder =>
     {
         builder.OpenElement(0, "span");
         builder.AddAttribute(1, "dir", "ltr");
-        builder.AddContent(2, text);
+        builder.AddAttribute(2, "class", negative ? "neg" : null);
+        builder.AddContent(3, text);
         builder.CloseElement();
     };
 }

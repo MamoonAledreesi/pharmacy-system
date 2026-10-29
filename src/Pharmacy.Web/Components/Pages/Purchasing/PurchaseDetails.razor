@@ -4,7 +4,7 @@
 
 <PageTitle>@L["Purchases.Invoice"] - @L["App.Name"]</PageTitle>
 
-<div class="d-flex align-center mb-4 gap-2">
+<div class="page-header">
     <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
                    Href="purchases" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
     <MudText Typo="Typo.h4">@L["Purchases.Invoice"] <span dir="ltr">@_invoice?.Number</span></MudText>
@@ -73,6 +73,7 @@
         <MudTh>@L["Inventory.Product"]</MudTh>
         <MudTh>@L["Products.Unit"]</MudTh>
         <MudTh>@L["Inventory.Quantity"]</MudTh>
+        <MudTh>@L["Purchases.BaseQuantity"]</MudTh>
         <MudTh>@L["Purchases.UnitCost"]</MudTh>
         <MudTh>@L["Inventory.BatchNumber"]</MudTh>
         <MudTh>@L["Inventory.ExpiryDate"]</MudTh>
@@ -82,6 +83,7 @@
         <MudTd DataLabel="@L["Inventory.Product"]">@context.Product.For(SupportedCultures.IsArabicUi) @context.Strength</MudTd>
         <MudTd DataLabel="@L["Products.Unit"]">@context.Unit.For(SupportedCultures.IsArabicUi)</MudTd>
         <MudTd DataLabel="@L["Inventory.Quantity"]">@context.Quantity</MudTd>
+        <MudTd DataLabel="@L["Purchases.BaseQuantity"]"><b dir="ltr">@context.BaseQuantity</b></MudTd>
         <MudTd DataLabel="@L["Purchases.UnitCost"]"><span dir="ltr">@context.CostPerUnit.ToString("0.00##", CultureInfo.CurrentCulture)</span></MudTd>
         <MudTd DataLabel="@L["Inventory.BatchNumber"]"><span dir="ltr">@context.BatchNumber</span></MudTd>
         <MudTd DataLabel="@L["Inventory.ExpiryDate"]">@(context.ExpiryDate?.ToString("d", CultureInfo.CurrentCulture))</MudTd>

@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Pharmacy.Application.Auditing;
 using Pharmacy.Application.Cash;
 using Pharmacy.Application.Catalog;
+using Pharmacy.Application.Dashboard;
 using Pharmacy.Application.Expenses;
 using Pharmacy.Application.Inventory;
 using Pharmacy.Application.Purchasing;
@@ -57,6 +58,8 @@ public static class DependencyInjection
         services.AddScoped<ExpenseCategoryService>();
         services.AddScoped<ExpenseQueryService>();
 
+        services.AddScoped<ProfitCalculator>();
+        services.AddScoped<DashboardService>();
         services.AddScoped<ReportService>();
 
         return services;

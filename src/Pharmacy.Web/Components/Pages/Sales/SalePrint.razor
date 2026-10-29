@@ -15,68 +15,91 @@
 @{
     var pharmacy = SettingsState.Current ?? PharmacySettings.Defaults;
     var arabic = SupportedCultures.IsArabicUi;
+    var number = 0;
 }
 
+<div class="print-bar no-print">
+    <a href="@($"sales/{invoice.Id}")">@L["Print.BackToInvoice"]</a>
+    <span class="sizes">
+        <a href="@($"sales/{invoice.Id}/print?size=a4")" class="@(Receipt ? string.Empty : "on")">@L["Print.SizeA4"]</a>
+        <a href="@($"sales/{invoice.Id}/print?size=receipt")" class="@(Receipt ? "on" : string.Empty)">@L["Print.SizeReceipt"]</a>
+    </span>
+    <button type="button" onclick="window.print()">@L["Sales.Print"]</button>
+</div>
+
 <article class="@(Receipt ? "invoice receipt" : "invoice a4")">
-    <header>
-        <h1>@pharmacy.NameArabic</h1>
-        <h2 dir="ltr">@pharmacy.NameEnglish</h2>
-        @if (!string.IsNullOrWhiteSpace(pharmacy.Phone))
-        {
-            <div dir="ltr">@pharmacy.Phone</div>
-        }
-        @if (!string.IsNullOrWhiteSpace(pharmacy.Address))
-        {
-            <div>@pharmacy.Address</div>
-        }
+    <header class="inv-head">
+        <div class="brand">
+            <h1>@pharmacy.NameArabic</h1>
+            <h2 dir="ltr">@pharmacy.NameEnglish</h2>
+            @if (!string.IsNullOrWhiteSpace(pharmacy.Phone))
+            {
+                <div dir="ltr">@pharmacy.Phone</div>
+            }
+            @if (!string.IsNullOrWhiteSpace(pharmacy.Address))
+            {
+                <div>@pharmacy.Address</div>
+            }
+        </div>
+        <div class="doc">
+            <div class="doc-title">@L["Sales.Invoice"]</div>
+            <div class="doc-number" dir="ltr">@invoice.Number</div>
+        </div>
     </header>
 
     <section class="meta">
-        <div>@L["Sales.Invoice"]: <b dir="ltr">@invoice.Number</b></div>
-        <div>@L["Audit.Time"]: @LocalizerExtensions.LocalTime(invoice.CreatedAtUtc)</div>
-        <div>@L["Sales.Customer"]: @invoice.CustomerName</div>
-        <div>@L["Purchases.EnteredBy"]: <span dir="ltr">@invoice.UserName</span></div>
+        <div><span>@L["Audit.Time"]</span><b>@LocalizerExtensions.LocalTime(invoice.CreatedAtUtc)</b></div>
+        <div><span>@L["Sales.Customer"]</span><b>@invoice.CustomerName</b></div>
+        <div><span>@L["Purchases.EnteredBy"]</span><b dir="ltr">@invoice.UserName</b></div>
     </section>
 
-    <table>
+    <table class="lines">
         <thead>
             <tr>
+                <th class="col-n">@L["Print.RowNumber"]</th>
                 <th>@L["Inventory.Product"]</th>
-                <th>@L["Inventory.Quantity"]</th>
-                <th>@L["Sales.UnitPrice"]</th>
-                <th>@L["Sales.LineNet"]</th>
+                <th class="col-unit">@L["Products.Unit"]</th>
+                <th class="num">@L["Inventory.Quantity"]</th>
+                <th class="num">@L["Sales.UnitPrice"]</th>
+                <th class="num">@L["Sales.LineNet"]</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var line in invoice.Lines)
             {
+                number++;
                 <tr>
-                    <td>@line.Product.For(arabic) @line.Strength <small>(@line.Unit.For(arabic))</small></td>
-                    <td dir="ltr">@line.Quantity</td>
-                    <td dir="ltr">@line.UnitPrice.ToString("0.00##", CultureInfo.CurrentCulture)</td>
-                    <td dir="ltr">@MoneyFormat.Format(line.LineSubtotal)</td>
+                    <td class="col-n" dir="ltr">@number</td>
+                    <td>@line.Product.For(arabic) @line.Strength</td>
+                    <td class="col-unit">@line.Unit.For(arabic)</td>
+                    <td class="num" dir="ltr">@line.Quantity</td>
+                    <td class="num" dir="ltr">@line.UnitPrice.ToString("0.00##", CultureInfo.CurrentCulture)</td>
+                    <td class="num" dir="ltr">@MoneyFormat.Format(line.LineSubtotal)</td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <section class="totals">
-        <div><span>@L["Sales.Subtotal"]</span><span dir="ltr">@MoneyFormat.Format(invoice.Subtotal)</span></div>
-        @if (invoice.DiscountAmount > 0)
-        {
-            <div><span>@L["Sales.Discount"] (@invoice.DiscountPercent.ToString("0.##", CultureInfo.CurrentCulture)%)</span><span dir="ltr">-@MoneyFormat.Format(invoice.DiscountAmount)</span></div>
-        }
-        <div class="grand"><span>@L["Purchases.Total"]</span><span dir="ltr">@MoneyFormat.Format(invoice.Total)</span></div>
-        <div><span>@L["Purchases.PaidCash"]</span><span dir="ltr">@MoneyFormat.Format(invoice.PaidCash)</span></div>
-        @if (invoice.OnCredit > 0)
-        {
-            <div><span>@L["Purchases.OnCredit"]</span><span dir="ltr">@MoneyFormat.Format(invoice.OnCredit)</span></div>
-        }
-    </section>
+    <div class="summary">
+        <div class="thanks">@L["Sales.ThankYou"]</div>
+        <section class="totals">
+            <div><span>@L["Sales.Subtotal"]</span><span dir="ltr">@MoneyFormat.Format(invoice.Subtotal)</span></div>
+            @if (invoice.DiscountAmount > 0)
+            {
+                <div><span>@L["Sales.Discount"] (@invoice.DiscountPercent.ToString("0.##", CultureInfo.CurrentCulture)%)</span><span dir="ltr">-@MoneyFormat.Format(invoice.DiscountAmount)</span></div>
+            }
+            <div class="grand"><span>@L["Purchases.Total"]</span><span dir="ltr">@MoneyFormat.Format(invoice.Total)</span></div>
+            <div><span>@L["Purchases.PaidCash"]</span><span dir="ltr">@MoneyFormat.Format(invoice.PaidCash)</span></div>
+            @if (invoice.OnCredit > 0)
+            {
+                <div><span>@L["Purchases.OnCredit"]</span><span dir="ltr">@MoneyFormat.Format(invoice.OnCredit)</span></div>
+            }
+        </section>
+    </div>
 
-    <footer>
-        <p>@L["Sales.ThankYou"]</p>
-        <button type="button" class="no-print" onclick="window.print()">@L["Sales.Print"]</button>
+    <footer class="signatures">
+        <div><span>@L["Print.SignCashier"]</span></div>
+        <div><span>@L["Print.SignCustomer"]</span></div>
     </footer>
 </article>
 

@@ -1,0 +1,291 @@
+/* The dashboard uses the MudBlazor palette variables, so it follows the chosen color and light/dark mode. */
+
+.hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 16px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-primary-darken) 100%);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--mud-palette-primary) 35%, transparent);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset-block-start: -60px;
+    inset-inline-end: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.10);
+    pointer-events: none;
+}
+
+.hero h1 {
+    margin: 0.15rem 0;
+    font-size: 1.9rem;
+    font-weight: 700;
+}
+
+.hero-pharmacy {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    letter-spacing: 0.02em;
+}
+
+.hero-date {
+    opacity: 0.9;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 1;
+}
+
+.hero ::deep .hero-primary {
+    background: #fff;
+    color: var(--mud-palette-primary-darken);
+    font-weight: 600;
+}
+
+.hero ::deep .hero-secondary {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.hero ::deep .hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.hero ::deep .hero-refresh {
+    color: #fff;
+}
+
+.section-title {
+    margin: 1.5rem 0 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--mud-palette-text-secondary);
+}
+
+.notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--mud-palette-warning) 14%, var(--mud-palette-surface));
+    border: 1px solid color-mix(in srgb, var(--mud-palette-warning) 45%, transparent);
+}
+
+.notice span {
+    flex: 1;
+}
+
+.tone-primary { --tone: var(--mud-palette-primary); }
+.tone-secondary { --tone: var(--mud-palette-secondary); }
+.tone-success { --tone: var(--mud-palette-success); }
+.tone-info { --tone: var(--mud-palette-info); }
+.tone-warning { --tone: var(--mud-palette-warning); }
+.tone-danger { --tone: var(--mud-palette-error); }
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1rem;
+}
+
+.kpi {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border-radius: 14px;
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    border-inline-start: 4px solid var(--tone);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kpi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10);
+}
+
+.kpi-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    color: var(--tone);
+    background: color-mix(in srgb, var(--tone) 14%, transparent);
+}
+
+.kpi-body {
+    min-width: 0;
+}
+
+.kpi-label {
+    font-size: 0.85rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.kpi-value {
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: start;
+}
+
+.kpi-value.negative {
+    color: var(--mud-palette-error);
+}
+
+.kpi-note {
+    font-size: 0.8rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.alert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.alert-card {
+    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--tone) 9%, var(--mud-palette-surface));
+    border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+}
+
+.alert-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.alert-title {
+    flex: 1;
+    font-weight: 600;
+}
+
+.alert-count {
+    min-width: 2rem;
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    text-align: center;
+    font-weight: 700;
+    color: #fff;
+    background: var(--tone);
+}
+
+.alert-card ul {
+    list-style: none;
+    margin: 0 0 0.5rem;
+    padding: 0;
+}
+
+.alert-card li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px dashed color-mix(in srgb, var(--tone) 25%, transparent);
+}
+
+.alert-card .qty {
+    font-weight: 600;
+    color: var(--tone);
+}
+
+.alert-card ::deep .alert-more {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.chart-card {
+    padding: 1.25rem 1.5rem;
+    border-radius: 14px;
+    background: var(--mud-palette-surface);
+    border: 1px solid var(--mud-palette-lines-default);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.chart {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+    height: 220px;
+}
+
+.bar-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.bar-value {
+    font-size: 0.8rem;
+    color: var(--mud-palette-text-secondary);
+}
+
+.bar-track {
+    flex: 1;
+    width: 100%;
+    max-width: 56px;
+    display: flex;
+    align-items: flex-end;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--mud-palette-primary) 7%, transparent);
+}
+
+.bar {
+    width: 100%;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--mud-palette-primary) 55%, transparent);
+    transition: height 0.4s ease;
+}
+
+.bar-column.today .bar {
+    background: linear-gradient(180deg, var(--mud-palette-primary), var(--mud-palette-primary-darken));
+}
+
+.bar-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.bar-label small {
+    font-weight: 400;
+    color: var(--mud-palette-text-secondary);
+}
+
+@media (max-width: 600px) {
+    .hero { padding: 1.25rem; }
+    .hero h1 { font-size: 1.5rem; }
+    .chart { height: 180px; gap: 0.4rem; }
+}

@@ -8,7 +8,7 @@
 
 <PageTitle>@L["Purchases.New"] - @L["App.Name"]</PageTitle>
 
-<div class="d-flex align-center mb-4 gap-2">
+<div class="page-header">
     <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
                    Href="purchases" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
     <MudText Typo="Typo.h4">@L["Purchases.New"]</MudText>
@@ -19,23 +19,23 @@
     <MudAlert Severity="Severity.Error" Class="mb-3">@_error</MudAlert>
 }
 
-<MudPaper Class="pa-4 mb-4" Elevation="1">
+<MudPaper Class="pa-4 mb-4 form-page" Elevation="1">
     <MudGrid Spacing="2">
-        <MudItem xs="12" sm="6" md="3">
+        <MudItem xs="12">
             <MudDatePicker Date="_date" DateChanged="date => _date = date" Label="@L["Purchases.InvoiceDate"]" MaxDate="Clock.GetLocalNow().DateTime.Date" />
         </MudItem>
-        <MudItem xs="12" sm="6" md="5">
+        <MudItem xs="12">
             <MudAutocomplete T="SupplierListItem" Label="@L["Purchases.Supplier"]" Value="_supplier" ValueChanged="OnSupplierChanged"
                              SearchFunc="SearchSuppliersAsync" ToStringFunc="SupplierText" MinCharacters="0" DebounceInterval="250"
                              CoerceText="false" Clearable="true" ShowProgressIndicator="true" />
         </MudItem>
-        <MudItem xs="12" sm="6" md="4">
+        <MudItem xs="12">
             <MudTextField @bind-Value="_supplierInvoiceNumber" Label="@L["Purchases.SupplierInvoiceNumber"]"
                           MaxLength="PurchaseInvoice.SupplierInvoiceNumberMaxLength" Style="direction: ltr" />
         </MudItem>
         @if (_supplier is null)
         {
-            <MudItem xs="12" sm="6" md="5">
+            <MudItem xs="12">
                 <MudTextField @bind-Value="_sellerName" Label="@L["Purchases.SellerName"]" HelperText="@L["Purchases.SellerNameHint"]"
                               MaxLength="PurchaseInvoice.SupplierNameMaxLength" />
             </MudItem>
@@ -59,6 +59,7 @@
         <MudTh>@L["Inventory.Product"]</MudTh>
         <MudTh>@L["Products.Unit"]</MudTh>
         <MudTh>@L["Inventory.Quantity"]</MudTh>
+        <MudTh>@L["Purchases.BaseQuantity"]</MudTh>
         <MudTh>@L["Purchases.UnitCost"]</MudTh>
         <MudTh>@L["Inventory.BatchNumber"]</MudTh>
         <MudTh>@L["Inventory.ExpiryDate"]</MudTh>
@@ -69,6 +70,7 @@
         <MudTd DataLabel="@L["Inventory.Product"]">@context.ProductText</MudTd>
         <MudTd DataLabel="@L["Products.Unit"]">@context.UnitText</MudTd>
         <MudTd DataLabel="@L["Inventory.Quantity"]">@context.Request.Quantity</MudTd>
+        <MudTd DataLabel="@L["Purchases.BaseQuantity"]"><b dir="ltr">@context.BaseText</b></MudTd>
         <MudTd DataLabel="@L["Purchases.UnitCost"]"><span dir="ltr">@context.Request.CostPerUnit.ToString("0.00##", CultureInfo.CurrentCulture)</span></MudTd>
         <MudTd DataLabel="@L["Inventory.BatchNumber"]"><span dir="ltr">@context.Request.BatchNumber</span></MudTd>
         <MudTd DataLabel="@L["Inventory.ExpiryDate"]">@(context.Request.ExpiryDate?.ToString("d", CultureInfo.CurrentCulture))</MudTd>
@@ -83,9 +85,9 @@
     </NoRecordsContent>
 </MudTable>
 
-<MudPaper Class="pa-4 mb-4" Elevation="1">
+<MudPaper Class="pa-4 mb-4 form-page" Elevation="1">
     <MudGrid Spacing="2">
-        <MudItem xs="12" md="6">
+        <MudItem xs="12">
             <MudText Typo="Typo.subtitle2">@L["Purchases.Payment"]</MudText>
             <MudRadioGroup T="PaymentMode" @bind-Value="_mode">
                 <MudRadio T="PaymentMode" Value="PaymentMode.Cash" Color="Color.Primary">@L["Purchases.PayCash"]</MudRadio>
@@ -101,7 +103,7 @@
                 <MudNumericField T="decimal?" @bind-Value="_mixedPaid" Label="@L["Purchases.PaidCash"]" Min="0" Max="Total" Format="0.00" Immediate="true" Class="mt-2" />
             }
         </MudItem>
-        <MudItem xs="12" md="6">
+        <MudItem xs="12">
             <MudSimpleTable Dense="true" Elevation="0">
                 <tbody>
                     <tr><td>@L["Purchases.Total"]</td><td dir="ltr"><b>@MoneyFormat.Format(Total)</b></td></tr>

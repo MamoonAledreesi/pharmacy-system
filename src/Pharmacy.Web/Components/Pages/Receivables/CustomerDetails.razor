@@ -7,7 +7,7 @@
 
 <PageTitle>@(_customer?.Name ?? L["Nav.Customers"]) - @L["App.Name"]</PageTitle>
 
-<div class="d-flex align-center mb-4 gap-2">
+<div class="page-header">
     <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
                    Href="customers" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
     <MudText Typo="Typo.h4">@(_customer?.Name ?? L["Nav.Customers"])</MudText>

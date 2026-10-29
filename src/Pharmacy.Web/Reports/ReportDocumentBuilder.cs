@@ -24,7 +24,7 @@ public sealed class ReportDocumentBuilder(IStringLocalizer<SharedResource> local
         return new ReportDocument(
             localizer[$"Reports.Title.{table.Key}"],
             pharmacy,
-            $"{localizer["Reports.GeneratedAt"]}: {clock.GetLocalNow().DateTime.ToString("g", culture)}",
+            $"{localizer["Reports.GeneratedAt"]}: ⁦{clock.GetLocalNow().DateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}⁩",
             arabic,
             [.. table.Filters.Select(f => new ReportDocumentFilter(localizer[f.LabelKey], FilterText(f.Value, culture, arabic)))],
             [.. table.Columns.Select(c => new ReportDocumentColumn(localizer[c.Key], c.Kind))],
@@ -43,7 +43,7 @@ public sealed class ReportDocumentBuilder(IStringLocalizer<SharedResource> local
 
     private string FilterText(object value, CultureInfo culture, bool arabic) => value switch
     {
-        DateOnly day => day.ToString("d", culture),
+        DateOnly day => day.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
         LocalizedText name => arabic ? name.Arabic : name.English,
         ReportText text => localizer[text.Key].Value,
         _ => Convert.ToString(value, culture) ?? string.Empty,

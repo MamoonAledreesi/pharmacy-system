@@ -9,7 +9,7 @@
         }
 
         <MudGrid Spacing="2">
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudSelect T="int?" @bind-Value="_categoryId" Label="@L["Expenses.Category"]" Required="true">
                     @foreach (var category in _categories)
                     {
@@ -17,7 +17,7 @@
                     }
                 </MudSelect>
             </MudItem>
-            <MudItem xs="12" sm="6">
+            <MudItem xs="12">
                 <MudDatePicker Date="_date" DateChanged="date => _date = date" Label="@L["Expenses.Date"]" MaxDate="Clock.GetLocalNow().DateTime.Date" />
             </MudItem>
             <MudItem xs="12">

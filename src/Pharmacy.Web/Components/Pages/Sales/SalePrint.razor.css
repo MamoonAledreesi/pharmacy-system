@@ -1,75 +1,304 @@
+.print-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    max-width: 210mm;
+    margin: 0 auto 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #eef2f6;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+.print-bar a {
+    color: #1a56a0;
+    text-decoration: none;
+}
+
+.print-bar .sizes {
+    display: inline-flex;
+    gap: 4px;
+    margin-inline-start: auto;
+}
+
+.print-bar .sizes a {
+    padding: 4px 12px;
+    border: 1px solid #b6c2d0;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.print-bar .sizes a.on {
+    color: #fff;
+    background: #1a56a0;
+    border-color: #1a56a0;
+}
+
+.print-bar button {
+    padding: 6px 22px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    background: #00796b;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .invoice {
     margin: 0 auto;
-    padding: 12px;
-    color: #000;
+    color: #111;
     background: #fff;
     font-family: "Segoe UI", Tahoma, Arial, sans-serif;
 }
 
+/* ---- A4: a framed document ---- */
 .invoice.a4 {
     max-width: 210mm;
+    min-height: 270mm;
+    padding: 14mm 14mm 10mm;
+    border: 1.5px solid #222;
+    border-radius: 4px;
     font-size: 14px;
 }
 
-.invoice.receipt {
-    width: 80mm;
-    font-size: 12px;
+.inv-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 10px;
+    border-bottom: 3px double #222;
 }
 
-header {
-    text-align: center;
-    border-bottom: 1px solid #000;
-    padding-bottom: 6px;
-    margin-bottom: 8px;
-}
-
-h1, h2 {
+.brand h1 {
     margin: 0;
-    font-size: 1.3em;
+    font-size: 1.6em;
 }
 
-h2 {
-    font-size: 1em;
+.brand h2 {
+    margin: 2px 0 6px;
+    font-size: 1.05em;
     font-weight: 500;
+    color: #444;
+}
+
+.brand div {
+    font-size: 0.9em;
+    color: #333;
+}
+
+.doc {
+    text-align: center;
+    min-width: 42mm;
+    padding: 8px 14px;
+    border: 1.5px solid #222;
+    border-radius: 6px;
+}
+
+.doc-title {
+    font-size: 1.15em;
+    font-weight: 700;
+}
+
+.doc-number {
+    margin-top: 2px;
+    font-size: 1.25em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 12px 0;
+    border: 1px solid #888;
+    border-radius: 6px;
 }
 
 .meta div {
-    margin: 2px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px;
 }
 
-table {
+.meta div + div {
+    border-inline-start: 1px solid #bbb;
+}
+
+.meta span {
+    font-size: 0.8em;
+    color: #555;
+}
+
+table.lines {
     width: 100%;
     border-collapse: collapse;
-    margin: 8px 0;
+    margin: 4px 0 12px;
 }
 
-th, td {
-    padding: 3px 4px;
-    border-bottom: 1px solid #999;
+table.lines th,
+table.lines td {
+    padding: 6px 8px;
+    border: 1px solid #999;
     text-align: start;
+}
+
+table.lines thead th {
+    background: #e9edf1;
+    font-weight: 700;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+table.lines .num {
+    text-align: end;
+    white-space: nowrap;
+}
+
+table.lines .col-n {
+    width: 10mm;
+    text-align: center;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.thanks {
+    flex: 1;
+    padding-top: 6px;
+    font-size: 0.9em;
+    color: #444;
+}
+
+.totals {
+    min-width: 72mm;
+    border: 1.5px solid #222;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 .totals div {
     display: flex;
     justify-content: space-between;
-    padding: 2px 0;
+    gap: 16px;
+    padding: 5px 12px;
+}
+
+.totals div + div {
+    border-top: 1px solid #ccc;
 }
 
 .totals .grand {
+    font-size: 1.15em;
     font-weight: 700;
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
-    margin: 4px 0;
+    background: #e9edf1;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
-footer {
+.signatures {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin-top: 28mm;
+}
+
+.signatures div {
+    flex: 1;
+    padding-top: 6px;
+    border-top: 1px solid #222;
     text-align: center;
-    margin-top: 10px;
+    font-size: 0.9em;
+    color: #444;
+}
+
+/* ---- 80 mm receipt: compact, no frame ---- */
+.invoice.receipt {
+    width: 80mm;
+    padding: 6px;
+    font-size: 12px;
+}
+
+.receipt .inv-head {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-bottom: 1px dashed #000;
+}
+
+.receipt .brand h1 {
+    font-size: 1.3em;
+}
+
+.receipt .doc {
+    min-width: 0;
+    border: none;
+    padding: 4px 0 0;
+}
+
+.receipt .meta {
+    display: block;
+    border: none;
+    border-bottom: 1px dashed #000;
+    border-radius: 0;
+}
+
+.receipt .meta div {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1px 0;
+}
+
+.receipt .meta div + div {
+    border: none;
+}
+
+.receipt table.lines th,
+.receipt table.lines td {
+    padding: 2px 3px;
+    border: none;
+    border-bottom: 1px dotted #777;
+}
+
+.receipt .col-n,
+.receipt .col-unit,
+.receipt .signatures {
+    display: none;
+}
+
+.receipt .summary {
+    display: block;
+}
+
+.receipt .totals {
+    min-width: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.receipt .totals div {
+    padding: 2px 0;
+}
+
+.receipt .thanks {
+    margin-top: 6px;
+    text-align: center;
 }
 
 @media print {
     .no-print {
-        display: none;
+        display: none !important;
+    }
+
+    .invoice.a4 {
+        min-height: 0;
     }
 
     @page {

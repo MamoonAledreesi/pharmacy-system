@@ -2829,4 +2829,127 @@
   <data name="Reports.Col.Item" xml:space="preserve">
     <value>البند</value>
   </data>
+  <data name="Dashboard.Refresh" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="Dashboard.Alerts" xml:space="preserve">
+    <value>التنبيهات</value>
+  </data>
+  <data name="Dashboard.NoOpenShift" xml:space="preserve">
+    <value>لا توجد وردية خزينة مفتوحة، لذا لا يمكن تسجيل المبيعات والمدفوعات النقدية.</value>
+  </data>
+  <data name="Dashboard.OpenCashRegister" xml:space="preserve">
+    <value>فتح الخزينة</value>
+  </data>
+  <data name="Dashboard.Expired" xml:space="preserve">
+    <value>منتجات فيها مخزون منتهي</value>
+  </data>
+  <data name="Dashboard.NearExpiry" xml:space="preserve">
+    <value>منتجات توشك على الانتهاء</value>
+  </data>
+  <data name="Dashboard.LowStock" xml:space="preserve">
+    <value>منتجات مخزونها منخفض</value>
+  </data>
+  <data name="Dashboard.ShowAll" xml:space="preserve">
+    <value>عرض الكل</value>
+  </data>
+  <data name="Dashboard.Figures" xml:space="preserve">
+    <value>المؤشرات</value>
+  </data>
+  <data name="Dashboard.SalesToday" xml:space="preserve">
+    <value>صافي مبيعات اليوم</value>
+  </data>
+  <data name="Dashboard.SalesMonth" xml:space="preserve">
+    <value>صافي مبيعات الشهر</value>
+  </data>
+  <data name="Dashboard.InvoicesCount" xml:space="preserve">
+    <value>{0} فاتورة</value>
+  </data>
+  <data name="Dashboard.PurchasesToday" xml:space="preserve">
+    <value>مشتريات اليوم</value>
+  </data>
+  <data name="Dashboard.PurchasesMonth" xml:space="preserve">
+    <value>مشتريات الشهر</value>
+  </data>
+  <data name="Dashboard.GrossProfitToday" xml:space="preserve">
+    <value>مجمل ربح اليوم</value>
+  </data>
+  <data name="Dashboard.GrossProfitMonth" xml:space="preserve">
+    <value>مجمل ربح الشهر</value>
+  </data>
+  <data name="Dashboard.ExpensesMonth" xml:space="preserve">
+    <value>مصروفات الشهر</value>
+  </data>
+  <data name="Dashboard.StockValue" xml:space="preserve">
+    <value>قيمة المخزون بالتكلفة</value>
+  </data>
+  <data name="Dashboard.CustomerDebts" xml:space="preserve">
+    <value>ديون العملاء</value>
+  </data>
+  <data name="Dashboard.SupplierDebts" xml:space="preserve">
+    <value>مستحقات الموردين</value>
+  </data>
+  <data name="Dashboard.OpenShifts" xml:space="preserve">
+    <value>النقد في الورديات المفتوحة</value>
+  </data>
+  <data name="Dashboard.ShiftsCount" xml:space="preserve">
+    <value>{0} وردية مفتوحة</value>
+  </data>
+  <data name="Dashboard.Shortcuts" xml:space="preserve">
+    <value>اختصارات</value>
+  </data>
+  <data name="Dashboard.LastDays" xml:space="preserve">
+    <value>صافي المبيعات في آخر 7 أيام</value>
+  </data>
+  <data name="Reports.Search" xml:space="preserve">
+    <value>بحث في التقارير</value>
+  </data>
+  <data name="Reports.RowsCount" xml:space="preserve">
+    <value>{0} صف</value>
+  </data>
+  <data name="Print.BackToInvoice" xml:space="preserve">
+    <value>العودة إلى الفاتورة</value>
+  </data>
+  <data name="Print.SizeA4" xml:space="preserve">
+    <value>A4</value>
+  </data>
+  <data name="Print.SizeReceipt" xml:space="preserve">
+    <value>إيصال 80 ملم</value>
+  </data>
+  <data name="Print.RowNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Print.SignCashier" xml:space="preserve">
+    <value>توقيع الكاشير</value>
+  </data>
+  <data name="Print.SignCustomer" xml:space="preserve">
+    <value>توقيع العميل</value>
+  </data>
+  <data name="Purchases.BaseQuantity" xml:space="preserve">
+    <value>إجمالي المستلم</value>
+  </data>
+  <data name="Purchases.UnitWithContent" xml:space="preserve">
+    <value>{0} ({1} {2})</value>
+  </data>
+  <data name="Purchases.QuantitySummary" xml:space="preserve">
+    <value>{0} {1} = {2} {3}</value>
+  </data>
+  <data name="Settings.PharmacyInfoHint" xml:space="preserve">
+    <value>الاسم وبيانات التواصل التي تُطبع على الفواتير والتقارير.</value>
+  </data>
+  <data name="Settings.AppearanceHint" xml:space="preserve">
+    <value>اختر وضع العرض واللون الرئيسي للنظام.</value>
+  </data>
+  <data name="Settings.InventoryHint" xml:space="preserve">
+    <value>المدة التي تُعدّ بعدها الدفعة قريبة الانتهاء.</value>
+  </data>
+  <data name="Settings.SalesHint" xml:space="preserve">
+    <value>حدود تُطبَّق عند البيع وإرجاع البضاعة.</value>
+  </data>
+  <data name="Settings.DaysUnit" xml:space="preserve">
+    <value>يوم</value>
+  </data>
+  <data name="Settings.SaveHint" xml:space="preserve">
+    <value>تُطبَّق التغييرات على كل الأجهزة بعد الحفظ.</value>
+  </data>
 </root>

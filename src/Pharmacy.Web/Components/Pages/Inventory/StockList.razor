@@ -7,7 +7,7 @@
 
 <PageTitle>@L["Nav.Inventory"] - @L["App.Name"]</PageTitle>
 
-<div class="d-flex align-center mb-4 gap-2">
+<div class="page-header">
     <MudText Typo="Typo.h4">@L["Nav.Inventory"]</MudText>
     <MudSpacer />
     <AuthorizeView Policy="@Permissions.InventoryOpeningStock">
@@ -107,6 +107,12 @@
     private MudTable<StockListItem>? _table;
     private string? _searchText;
     private StockFilter _filter;
+
+    // The dashboard alerts link here with ?filter=LowStock, NearExpiry or HasExpired.
+    [SupplyParameterFromQuery(Name = "filter")]
+    private string? InitialFilter { get; set; }
+
+    protected override void OnInitialized() => _filter = Enum.TryParse<StockFilter>(InitialFilter, out var filter) && Enum.IsDefined(filter) ? filter : StockFilter.All;
 
     private Task<TableData<StockListItem>> LoadAsync(TableState state, CancellationToken cancellationToken) =>
         TableDataLoader.LoadAsync(() => LoadPageAsync(state, cancellationToken), cancellationToken);

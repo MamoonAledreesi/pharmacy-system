@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Common;
-using Pharmacy.Domain.Inventory;
 
 namespace Pharmacy.Application.Reports;
 
@@ -100,50 +99,25 @@ public sealed partial class ReportService
             rows, 6);
     }
 
-    // The profit statement. Sales and returns count by their own dates, costs are the cost recorded when the goods
-    // were sold, and purchases, purchase returns and manual cash movements never touch profit.
     private async Task<Result<ReportTable>> ProfitAsync(ReportPeriod period, CancellationToken cancellationToken)
     {
-        var invoices = db.SalesInvoices.AsNoTracking().Where(i => i.CreatedAtUtc >= period.FromUtc && i.CreatedAtUtc < period.ToUtc);
-        var returns = db.SalesReturns.AsNoTracking().Where(r => r.CreatedAtUtc >= period.FromUtc && r.CreatedAtUtc < period.ToUtc);
-
-        var sales = await invoices.SumAsync(i => (decimal?)i.Total, cancellationToken) ?? 0m;
-        var salesCost = await invoices.SelectMany(i => i.Lines).SumAsync(l => (decimal?)l.CostTotal, cancellationToken) ?? 0m;
-        var returned = await returns.SumAsync(r => (decimal?)r.Total, cancellationToken) ?? 0m;
-        var returnedCost = await returns.SelectMany(r => r.Lines).SelectMany(l => l.Allocations).SumAsync(a => (decimal?)(a.BaseQuantity * a.UnitCost), cancellationToken) ?? 0m;
-        var expenses = await db.Expenses.AsNoTracking()
-            .Where(e => !e.IsReversed && e.ExpenseDate >= period.From && e.ExpenseDate <= period.To)
-            .SumAsync(e => (decimal?)e.Amount, cancellationToken) ?? 0m;
-
-        var stockEffects = await db.StockMovements.AsNoTracking()
-            .Where(m => m.OccurredAtUtc >= period.FromUtc && m.OccurredAtUtc < period.ToUtc && _writeOffAndAdjustmentTypes.Contains(m.Type))
-            .GroupBy(m => m.Type)
-            .Select(g => new { Type = g.Key, Value = g.Sum(m => (m.AvailableDelta + m.QuarantineDelta) * m.UnitCost) })
-            .ToDictionaryAsync(x => x.Type, x => x.Value, cancellationToken);
-        decimal ValueOf(StockMovementType type) => stockEffects.GetValueOrDefault(type);
-
-        var writeOffLoss = -(ValueOf(StockMovementType.WriteOff) + ValueOf(StockMovementType.WriteOffQuarantined));
-        var adjustmentShortfall = -(ValueOf(StockMovementType.AdjustmentDecrease) + ValueOf(StockMovementType.AdjustmentIncrease));
-
-        var netSales = sales - returned;
-        var costOfGoods = salesCost - returnedCost;
-        var grossProfit = netSales - costOfGoods;
-        var operatingProfit = grossProfit - expenses - writeOffLoss - adjustmentShortfall;
+        var figures = await profit.ComputeAsync(period.FromUtc, period.ToUtc, period.From, period.To, cancellationToken);
+        var netSales = figures.NetSales;
 
         decimal? Share(decimal amount) => netSales == 0 ? null : Math.Round(amount / netSales * 100m, 1);
         IReadOnlyList<object?> Line(string key, decimal amount) => new object?[] { new ReportText($"Reports.Profit.{key}"), amount, Share(amount) };
 
         List<IReadOnlyList<object?>> rows =
         [
-            Line("Sales", sales),
-            Line("SalesReturns", -returned),
+            Line("Sales", figures.Sales),
+            Line("SalesReturns", -figures.Returned),
             Line("NetSales", netSales),
-            Line("CostOfGoods", -costOfGoods),
-            Line("GrossProfit", grossProfit),
-            Line("Expenses", -expenses),
-            Line("WriteOffLosses", -writeOffLoss),
-            Line("AdjustmentShortfall", -adjustmentShortfall),
-            Line("OperatingProfit", operatingProfit),
+            Line("CostOfGoods", -figures.CostOfGoods),
+            Line("GrossProfit", figures.GrossProfit),
+            Line("Expenses", -figures.Expenses),
+            Line("WriteOffLosses", -figures.WriteOffLoss),
+            Line("AdjustmentShortfall", -figures.AdjustmentShortfall),
+            Line("OperatingProfit", figures.OperatingProfit),
         ];
 
         return Done(ReportKey.Profit, PeriodFilters(period),
