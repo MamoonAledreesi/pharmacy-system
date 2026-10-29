@@ -32,7 +32,8 @@ internal sealed class BatchConfiguration : IEntityTypeConfiguration<Batch>
         builder.HasIndex(b => new { b.ProductId, b.BatchNumber, b.ExpiryDate, b.UnitCost }).IsUnique().HasFilter(null);
 
         // First-expiring-first lookups and the near-expiry/expired reports.
-        builder.HasIndex(b => new { b.ProductId, b.ExpiryDate });
+        // Covering index: the stock list, alerts and dashboard total quantities and cost per product without touching the table rows.
+        builder.HasIndex(b => new { b.ProductId, b.ExpiryDate }).IncludeProperties(b => new { b.QuantityAvailable, b.QuantityQuarantined, b.UnitCost });
         builder.HasIndex(b => b.ExpiryDate);
     }
 }

@@ -516,6 +516,13 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                             ClaimType = "permission",
                             ClaimValue = "Reports.Export",
                             RoleId = 4
+                        },
+                        new
+                        {
+                            Id = 68,
+                            ClaimType = "permission",
+                            ClaimValue = "Reconciliation.Run",
+                            RoleId = 4
                         });
                 });
 
@@ -1480,6 +1487,8 @@ namespace Pharmacy.Infrastructure.Persistence.Migrations
                     b.HasIndex("ExpiryDate");
 
                     b.HasIndex("ProductId", "ExpiryDate");
+
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("ProductId", "ExpiryDate"), new[] { "QuantityAvailable", "QuantityQuarantined", "UnitCost" });
 
                     b.HasIndex("ProductId", "BatchNumber", "ExpiryDate", "UnitCost")
                         .IsUnique();

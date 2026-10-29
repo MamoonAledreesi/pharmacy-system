@@ -161,6 +161,9 @@ internal sealed class IdentityTableConfiguration :
         (5, Permissions.ReportsView),
         (4, Permissions.ReportsViewCostAndProfit),
         (4, Permissions.ReportsExport),
+
+        // Reconciliation (Task 13). Administrators hold every permission; the accountant may also check the books.
+        (4, Permissions.ReconciliationRun),
     ];
 
     public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder) => builder.ToTable("UserClaims", Schemas.Identity);

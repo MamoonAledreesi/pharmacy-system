@@ -1,0 +1,112 @@
+@page "/admin/reconciliation"
+@attribute [Authorize(Policy = Permissions.ReconciliationRun)]
+@using Pharmacy.Application.Reconciliation
+@inject ServiceRunner Services
+
+<PageTitle>@L["Reconciliation.Title"] - @L["App.Name"]</PageTitle>
+
+<div class="page-header">
+    <MudText Typo="Typo.h4">@L["Reconciliation.Title"]</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.FactCheck" OnClick="RunAsync" Disabled="_running" data-test="run-reconciliation">
+        @L["Reconciliation.Run"]
+    </MudButton>
+</div>
+
+<p class="report-intro">@L["Reconciliation.Intro"]</p>
+
+@if (_running)
+{
+    <MudProgressLinear Indeterminate="true" Class="mb-3" />
+}
+
+@if (_error is not null)
+{
+    <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-3">@_error</MudAlert>
+}
+
+@if (_report is { } report)
+{
+    <MudAlert Severity="@(report.Passed ? Severity.Success : Severity.Error)" Variant="Variant.Filled" Class="mb-4" data-test="reconciliation-result">
+        @(report.Passed ? L["Reconciliation.AllGood"] : L["Reconciliation.Problems"])
+        <span class="ms-2" dir="ltr">@LocalizerExtensions.LocalTime(report.RanAtUtc)</span>
+    </MudAlert>
+
+    @foreach (var check in report.Checks)
+    {
+        <section class="form-section" data-test="@check.Key">
+            <div class="section-head">
+                <span class="section-icon @(check.Passed ? "tone-success" : "tone-danger")">
+                    <MudIcon Icon="@(check.Passed ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Error)" />
+                </span>
+                <div>
+                    <h2>@L[check.Key]</h2>
+                    <p>
+                        @string.Format(CultureInfo.CurrentCulture, L["Reconciliation.Checked"].Value, check.Checked)
+                        @if (!check.Passed)
+                        {
+                            <b class="text-danger"> · @string.Format(CultureInfo.CurrentCulture, L["Reconciliation.Differences"].Value, check.DiscrepancyCount)</b>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            @if (!check.Passed)
+            {
+                <div class="report-table-wrap">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>@L["Reconciliation.Reference"]</th>
+                                <th class="num">@L["Reconciliation.Expected"]</th>
+                                <th class="num">@L["Reconciliation.Stored"]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in check.Discrepancies)
+                            {
+                                <tr>
+                                    <td>@item.Reference</td>
+                                    <td class="num"><span dir="ltr">@item.Expected.ToString("0.####", CultureInfo.InvariantCulture)</span></td>
+                                    <td class="num"><span dir="ltr" class="neg">@item.Actual.ToString("0.####", CultureInfo.InvariantCulture)</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @if (check.DiscrepancyCount > check.Discrepancies.Count)
+                {
+                    <MudText Typo="Typo.caption" Class="mt-2">@string.Format(CultureInfo.CurrentCulture, L["Reconciliation.MoreHidden"].Value, check.DiscrepancyCount - check.Discrepancies.Count)</MudText>
+                }
+            }
+        </section>
+    }
+}
+
+@code {
+    private ReconciliationReport? _report;
+    private string? _error;
+    private bool _running;
+
+    private async Task RunAsync()
+    {
+        _error = null;
+        _running = true;
+        try
+        {
+            var result = await Services.For<ReconciliationService>().RunAsync(s => s.RunAsync());
+            if (result.IsFailure)
+            {
+                _report = null;
+                _error = L.Message(result.Error!);
+                return;
+            }
+
+            _report = result.Value;
+        }
+        finally
+        {
+            _running = false;
+        }
+    }
+}

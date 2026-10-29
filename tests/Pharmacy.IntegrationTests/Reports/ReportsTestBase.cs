@@ -24,7 +24,7 @@ public abstract class ReportsTestBase : ReturnsTestBase
         Permissions.InventoryAdjust, Permissions.InventoryWriteOff,
         Permissions.ExpensesView, Permissions.ExpensesCreate, Permissions.ExpensesReverse,
         Permissions.SuppliersView, Permissions.SuppliersManage, Permissions.PurchasingView, Permissions.PurchasingCreate, Permissions.PurchasingReturn,
-        Permissions.SalesGrantHighDiscount, Permissions.SalesSellBelowCost, Permissions.SalesViewCost,
+        Permissions.SalesGrantHighDiscount, Permissions.SalesSellBelowCost, Permissions.SalesViewCost, Permissions.ReconciliationRun,
     ];
 
     protected override string[] InitialPermissions => ReportReader;

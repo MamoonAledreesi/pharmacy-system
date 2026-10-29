@@ -2952,4 +2952,67 @@
   <data name="Settings.SaveHint" xml:space="preserve">
     <value>تُطبَّق التغييرات على كل الأجهزة بعد الحفظ.</value>
   </data>
+  <data name="PermissionModules.Reconciliation" xml:space="preserve">
+    <value>المطابقة</value>
+  </data>
+  <data name="Permissions.Reconciliation.Run" xml:space="preserve">
+    <value>تشغيل مطابقة الحسابات</value>
+  </data>
+  <data name="Nav.Reconciliation" xml:space="preserve">
+    <value>فحص الحسابات</value>
+  </data>
+  <data name="Reconciliation.Title" xml:space="preserve">
+    <value>مطابقة الحسابات</value>
+  </data>
+  <data name="Reconciliation.Intro" xml:space="preserve">
+    <value>يقارن كل رصيد مخزَّن بالسجلات التي يجب أن يساويها: المخزون وورديات الخزينة وحسابات العملاء والموردين ومجاميع الفواتير. لا يغيّر أي شيء.</value>
+  </data>
+  <data name="Reconciliation.Run" xml:space="preserve">
+    <value>تشغيل الفحص</value>
+  </data>
+  <data name="Reconciliation.AllGood" xml:space="preserve">
+    <value>كل الأرصدة مطابقة.</value>
+  </data>
+  <data name="Reconciliation.Problems" xml:space="preserve">
+    <value>بعض الأرصدة لا تطابق سجلاتها. لا تتجاهل هذا: يعني أن بيانات تغيّرت خارج النظام.</value>
+  </data>
+  <data name="Reconciliation.Checked" xml:space="preserve">
+    <value>{0} سجل تم فحصه</value>
+  </data>
+  <data name="Reconciliation.Differences" xml:space="preserve">
+    <value>{0} فرق</value>
+  </data>
+  <data name="Reconciliation.Reference" xml:space="preserve">
+    <value>السجل</value>
+  </data>
+  <data name="Reconciliation.Expected" xml:space="preserve">
+    <value>حسب السجلات</value>
+  </data>
+  <data name="Reconciliation.Stored" xml:space="preserve">
+    <value>القيمة المخزَّنة</value>
+  </data>
+  <data name="Reconciliation.MoreHidden" xml:space="preserve">
+    <value>{0} أخرى غير معروضة.</value>
+  </data>
+  <data name="Reconciliation.Check.BatchAvailable" xml:space="preserve">
+    <value>المخزون المتاح لكل دفعة</value>
+  </data>
+  <data name="Reconciliation.Check.BatchQuarantined" xml:space="preserve">
+    <value>المخزون المحجور لكل دفعة</value>
+  </data>
+  <data name="Reconciliation.Check.CashShifts" xml:space="preserve">
+    <value>نقد كل وردية</value>
+  </data>
+  <data name="Reconciliation.Check.CustomerAccounts" xml:space="preserve">
+    <value>أرصدة العملاء</value>
+  </data>
+  <data name="Reconciliation.Check.SupplierAccounts" xml:space="preserve">
+    <value>أرصدة الموردين</value>
+  </data>
+  <data name="Reconciliation.Check.SalesInvoices" xml:space="preserve">
+    <value>مجاميع فواتير البيع</value>
+  </data>
+  <data name="Reconciliation.Check.PurchaseInvoices" xml:space="preserve">
+    <value>مجاميع فواتير الشراء</value>
+  </data>
 </root>

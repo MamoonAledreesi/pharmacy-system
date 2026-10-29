@@ -25,6 +25,9 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
+    // Lets the published app run as a Windows service (does nothing when started from a console).
+    builder.Host.UseWindowsService();
 
     builder.Services.AddSerilog((services, logger) => logger
         .ReadFrom.Configuration(builder.Configuration)
@@ -59,6 +62,8 @@ try
         options.Cookie.Name = "Pharmacy.Auth";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
+        // Over HTTPS in production the cookie is never sent on plain HTTP.
+        options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
         options.LoginPath = AccountEndpoints.LoginPath;
         options.AccessDeniedPath = AccountEndpoints.AccessDeniedPath;
         options.ExpireTimeSpan = TimeSpan.FromHours(12);
@@ -80,7 +85,8 @@ try
 
     var app = builder.Build();
 
-    if (app.Environment.IsDevelopment())
+    // Development always migrates; a production install sets Database:MigrateOnStartup so upgrades update the database on start.
+    if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
     {
         await app.Services.MigrateDatabaseAsync();
     }
@@ -90,6 +96,7 @@ try
         app.UseExceptionHandler("/Error", createScopeForErrors: true);
         app.UseHsts();
     }
+    app.UseSecurityHeaders();
     app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
     app.UseHttpsRedirection();
     app.UseSerilogRequestLogging();

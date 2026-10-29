@@ -62,6 +62,9 @@
     <AuthorizeView Policy="@Permissions.AuditLogView">
         <MudNavLink Href="admin/audit" Icon="@Icons.Material.Filled.History">@L["Nav.AuditLog"]</MudNavLink>
     </AuthorizeView>
+    <AuthorizeView Policy="@Permissions.ReconciliationRun">
+        <MudNavLink Href="admin/reconciliation" Icon="@Icons.Material.Filled.FactCheck">@L["Nav.Reconciliation"]</MudNavLink>
+    </AuthorizeView>
     <AuthorizeView Policy="@Permissions.SettingsManage">
         <MudNavLink Href="settings" Icon="@Icons.Material.Filled.Settings">@L["Nav.Settings"]</MudNavLink>
     </AuthorizeView>

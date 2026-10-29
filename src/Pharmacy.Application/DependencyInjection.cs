@@ -7,6 +7,7 @@ using Pharmacy.Application.Expenses;
 using Pharmacy.Application.Inventory;
 using Pharmacy.Application.Purchasing;
 using Pharmacy.Application.Receivables;
+using Pharmacy.Application.Reconciliation;
 using Pharmacy.Application.Reports;
 using Pharmacy.Application.Sales;
 using Pharmacy.Application.Settings;
@@ -60,6 +61,7 @@ public static class DependencyInjection
 
         services.AddScoped<ProfitCalculator>();
         services.AddScoped<DashboardService>();
+        services.AddScoped<ReconciliationService>();
         services.AddScoped<ReportService>();
 
         return services;

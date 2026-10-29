@@ -2952,4 +2952,67 @@
   <data name="Settings.SaveHint" xml:space="preserve">
     <value>Changes apply to every device once saved.</value>
   </data>
+  <data name="PermissionModules.Reconciliation" xml:space="preserve">
+    <value>Reconciliation</value>
+  </data>
+  <data name="Permissions.Reconciliation.Run" xml:space="preserve">
+    <value>Run the books reconciliation</value>
+  </data>
+  <data name="Nav.Reconciliation" xml:space="preserve">
+    <value>Books check</value>
+  </data>
+  <data name="Reconciliation.Title" xml:space="preserve">
+    <value>Books reconciliation</value>
+  </data>
+  <data name="Reconciliation.Intro" xml:space="preserve">
+    <value>Compares every stored balance with the records it should equal: stock, cash shifts, customer and supplier accounts and invoice totals. Nothing is changed.</value>
+  </data>
+  <data name="Reconciliation.Run" xml:space="preserve">
+    <value>Run the check</value>
+  </data>
+  <data name="Reconciliation.AllGood" xml:space="preserve">
+    <value>Everything adds up.</value>
+  </data>
+  <data name="Reconciliation.Problems" xml:space="preserve">
+    <value>Some balances do not match their records. Do not ignore this: it means data was changed outside the system.</value>
+  </data>
+  <data name="Reconciliation.Checked" xml:space="preserve">
+    <value>{0} records checked</value>
+  </data>
+  <data name="Reconciliation.Differences" xml:space="preserve">
+    <value>{0} differences</value>
+  </data>
+  <data name="Reconciliation.Reference" xml:space="preserve">
+    <value>Record</value>
+  </data>
+  <data name="Reconciliation.Expected" xml:space="preserve">
+    <value>According to the records</value>
+  </data>
+  <data name="Reconciliation.Stored" xml:space="preserve">
+    <value>Stored value</value>
+  </data>
+  <data name="Reconciliation.MoreHidden" xml:space="preserve">
+    <value>{0} more not shown.</value>
+  </data>
+  <data name="Reconciliation.Check.BatchAvailable" xml:space="preserve">
+    <value>Available stock of each batch</value>
+  </data>
+  <data name="Reconciliation.Check.BatchQuarantined" xml:space="preserve">
+    <value>Quarantined stock of each batch</value>
+  </data>
+  <data name="Reconciliation.Check.CashShifts" xml:space="preserve">
+    <value>Cash of each shift</value>
+  </data>
+  <data name="Reconciliation.Check.CustomerAccounts" xml:space="preserve">
+    <value>Customer balances</value>
+  </data>
+  <data name="Reconciliation.Check.SupplierAccounts" xml:space="preserve">
+    <value>Supplier balances</value>
+  </data>
+  <data name="Reconciliation.Check.SalesInvoices" xml:space="preserve">
+    <value>Sales invoice totals</value>
+  </data>
+  <data name="Reconciliation.Check.PurchaseInvoices" xml:space="preserve">
+    <value>Purchase invoice totals</value>
+  </data>
 </root>
