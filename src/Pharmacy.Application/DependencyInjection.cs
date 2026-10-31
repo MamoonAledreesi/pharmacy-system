@@ -4,6 +4,7 @@ using Pharmacy.Application.Cash;
 using Pharmacy.Application.Catalog;
 using Pharmacy.Application.Dashboard;
 using Pharmacy.Application.Expenses;
+using Pharmacy.Application.Import;
 using Pharmacy.Application.Inventory;
 using Pharmacy.Application.Purchasing;
 using Pharmacy.Application.Receivables;
@@ -62,6 +63,7 @@ public static class DependencyInjection
         services.AddScoped<ProfitCalculator>();
         services.AddScoped<DashboardService>();
         services.AddScoped<ReconciliationService>();
+        services.AddScoped<ProductImportService>();
         services.AddScoped<ReportService>();
 
         return services;

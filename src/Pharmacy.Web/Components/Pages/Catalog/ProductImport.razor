@@ -1,0 +1,280 @@
+@page "/catalog/import"
+@attribute [Authorize(Policy = Permissions.CatalogManage)]
+@using Pharmacy.Application.Import
+@using Pharmacy.Web.Import
+@inject ServiceRunner Services
+@inject IProductSheetReader Reader
+@inject IProductSheetWriter Writer
+@inject ImportSheets Sheets
+@inject IJSRuntime JS
+
+<PageTitle>@L["Import.Title"] - @L["App.Name"]</PageTitle>
+
+<div class="page-header">
+    <MudIconButton Icon="@(SupportedCultures.IsArabicUi ? Icons.Material.Filled.ArrowForward : Icons.Material.Filled.ArrowBack)"
+                   Href="catalog/products" aria-label="@L["Products.BackToList"]" title="@L["Products.BackToList"]" />
+    <MudText Typo="Typo.h4">@L["Import.Title"]</MudText>
+</div>
+
+<section class="form-section">
+    <div class="section-head">
+        <span class="section-icon tone-primary"><MudIcon Icon="@Icons.Material.Filled.UploadFile" /></span>
+        <div>
+            <h2>@L["Import.UploadTitle"]</h2>
+            <p>@L["Import.Intro"]</p>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3 align-center">
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Download" Href="@ImportSheets.TemplatePath" download="true" data-test="download-template">
+            @L["Import.DownloadTemplate"]
+        </MudButton>
+        <label class="file-button" data-test="choose-file">
+            <MudIcon Icon="@Icons.Material.Filled.UploadFile" Size="Size.Small" />
+            <span>@L["Import.ChooseFile"]</span>
+            <InputFile OnChange="OnFileChosenAsync" accept=".xlsx" disabled="@_busy" hidden />
+        </label>
+        @if (_fileName is not null)
+        {
+            <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.TableChart" Variant="Variant.Outlined">@_fileName</MudChip>
+        }
+    </div>
+
+    @if (_busy)
+    {
+        <MudProgressLinear Indeterminate="@(_progress is null)" Value="@(_progress is { Total: > 0 } p ? p.Done * 100.0 / p.Total : 0)" Class="mt-3" />
+        @if (_progress is { } running)
+        {
+            <MudText Typo="Typo.caption">@string.Format(CultureInfo.CurrentCulture, L["Import.Progress"].Value, running.Done, running.Total)</MudText>
+        }
+    }
+
+    @if (_error is not null)
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mt-3">@_error</MudAlert>
+    }
+</section>
+
+@if (_done is { } done)
+{
+    <section class="form-section" data-test="import-result">
+        <div class="section-head">
+            <span class="section-icon @(done.Rejected.Count == 0 ? "tone-success" : "tone-warning")">
+                <MudIcon Icon="@(done.Rejected.Count == 0 ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Warning)" />
+            </span>
+            <div>
+                <h2>@L["Import.Done"]</h2>
+                <p>@string.Format(CultureInfo.CurrentCulture, L["Import.DoneSummary"].Value, done.ProductsCreated, done.ProductsExisting, done.BatchesRecorded)</p>
+            </div>
+        </div>
+        @if (done.Rejected.Count > 0)
+        {
+            <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Class="mb-3">
+                @string.Format(CultureInfo.CurrentCulture, L["Import.RejectedCount"].Value, done.Rejected.Count)
+            </MudAlert>
+            <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Download" OnClick="DownloadRejectedAsync" data-test="download-rejected">
+                @L["Import.DownloadRejected"]
+            </MudButton>
+        }
+        <MudButton Variant="Variant.Text" Href="catalog/products" Class="ms-2">@L["Import.OpenProducts"]</MudButton>
+    </section>
+}
+else if (_preview is { } preview)
+{
+    <section class="form-section" data-test="import-preview">
+        <div class="section-head">
+            <span class="section-icon @(preview.ErrorCount == 0 ? "tone-success" : "tone-danger")">
+                <MudIcon Icon="@(preview.ErrorCount == 0 ? Icons.Material.Filled.FactCheck : Icons.Material.Filled.ErrorOutline)" />
+            </span>
+            <div>
+                <h2>@L["Import.PreviewTitle"]</h2>
+                <p>@string.Format(CultureInfo.CurrentCulture, L["Import.PreviewSummary"].Value, preview.NewProducts, preview.ExistingProducts, preview.Batches)</p>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <MudChip T="string" Color="Color.Success" Size="Size.Small">@string.Format(CultureInfo.CurrentCulture, L["Import.ReadyCount"].Value, preview.ReadyCount)</MudChip>
+            @if (preview.ErrorCount > 0)
+            {
+                <MudChip T="string" Color="Color.Error" Size="Size.Small">@string.Format(CultureInfo.CurrentCulture, L["Import.ErrorCount"].Value, preview.ErrorCount)</MudChip>
+            }
+        </div>
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th class="num">@L["Import.Row"]</th>
+                        <th>@L["Import.Product"]</th>
+                        <th>@L["Import.Status"]</th>
+                        <th>@L["Import.Details"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Shown(preview))
+                    {
+                        <tr>
+                            <td class="num" dir="ltr">@row.RowNumber</td>
+                            <td>@row.ProductName</td>
+                            <td>
+                                @switch (row.Status)
+                                {
+                                    case ImportRowStatus.Error:
+                                        <MudChip T="string" Color="Color.Error" Size="Size.Small">@L["Import.Status.Error"]</MudChip>
+                                        break;
+                                    case ImportRowStatus.Warning:
+                                        <MudChip T="string" Color="Color.Warning" Size="Size.Small">@L["Import.Status.Warning"]</MudChip>
+                                        break;
+                                    default:
+                                        <MudChip T="string" Color="Color.Success" Size="Size.Small">@L["Import.Status.Ready"]</MudChip>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @foreach (var error in row.Errors)
+                                {
+                                    <div class="text-error">@Sheets.Message(error)</div>
+                                }
+                                @foreach (var warning in row.Warnings)
+                                {
+                                    <div class="text-secondary">@Sheets.Message(warning)</div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (preview.Rows.Count > ShownLimit)
+        {
+            <MudText Typo="Typo.caption" Class="mt-2">@string.Format(CultureInfo.CurrentCulture, L["Import.ShownLimit"].Value, ShownLimit)</MudText>
+        }
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            @if (preview.ErrorCount == 0)
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlaylistAddCheck" OnClick="() => ImportAsync(false)" Disabled="_busy" data-test="import-all">
+                    @L["Import.ImportAll"]
+                </MudButton>
+            }
+            else if (preview.ReadyCount > 0)
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Warning" StartIcon="@Icons.Material.Filled.PlaylistAddCheck" OnClick="() => ImportAsync(true)" Disabled="_busy" data-test="import-valid">
+                    @string.Format(CultureInfo.CurrentCulture, L["Import.ImportValid"].Value, preview.ReadyCount)
+                </MudButton>
+            }
+            <MudButton Variant="Variant.Text" OnClick="Reset" Disabled="_busy">@L["Import.Cancel"]</MudButton>
+        </div>
+    </section>
+}
+
+@code {
+    private const int ShownLimit = 300;
+    private const long MaxFileBytes = 5 * 1024 * 1024;
+
+    private IReadOnlyList<ProductImportRow> _rows = [];
+    private ImportPreview? _preview;
+    private ImportResult? _done;
+    private string? _fileName;
+    private string? _error;
+    private bool _busy;
+    private (int Done, int Total)? _progress;
+
+    // One id per uploaded file: uploading the same file twice (a retry, a double click) never doubles the stock.
+    private Guid _fileKey = Guid.NewGuid();
+
+    // Rows with problems first, so they are what the user sees.
+    private static IEnumerable<ImportRowResult> Shown(ImportPreview preview) =>
+        preview.Rows.OrderByDescending(r => r.Status).ThenBy(r => r.RowNumber).Take(ShownLimit);
+
+    private async Task OnFileChosenAsync(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        Reset();
+        _busy = true;
+        _fileName = file.Name;
+        try
+        {
+            using var buffer = new MemoryStream();
+            await using (var stream = file.OpenReadStream(MaxFileBytes))
+            {
+                await stream.CopyToAsync(buffer);
+            }
+
+            buffer.Position = 0;
+            var sheet = Reader.Read(buffer);
+            if (sheet.FileError is { } fileError)
+            {
+                _error = Sheets.Message(fileError);
+                return;
+            }
+
+            _rows = sheet.Rows;
+            var preview = await Services.For<ProductImportService>().RunAsync(s => s.PreviewAsync(_rows));
+            if (preview.IsFailure)
+            {
+                _error = Sheets.Message(preview.Error!);
+                return;
+            }
+
+            _preview = preview.Value;
+        }
+        catch (IOException)
+        {
+            // The browser refused to hand over the file (usually larger than the limit).
+            _error = L["Import.FileTooBig"];
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task ImportAsync(bool skipInvalid)
+    {
+        _busy = true;
+        _error = null;
+        try
+        {
+            var progress = new Progress<(int Done, int Total)>(p => { _progress = p; _ = InvokeAsync(StateHasChanged); });
+            var result = await Services.For<ProductImportService>().RunAsync(s => s.ImportAsync(_rows, _fileKey, skipInvalid, progress));
+            if (result.IsFailure)
+            {
+                _error = Sheets.Message(result.Error!);
+                return;
+            }
+
+            _done = result.Value;
+            _preview = null;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task DownloadRejectedAsync()
+    {
+        if (_done is null)
+        {
+            return;
+        }
+
+        var bytes = Writer.Write(Sheets.Rejected(_rows, _done.Rejected));
+        using var stream = new MemoryStream(bytes);
+        using var reference = new DotNetStreamReference(stream);
+        await JS.InvokeVoidAsync("downloadFile", "products-rejected.xlsx", ImportSheets.ExcelContentType, reference);
+    }
+
+    private void Reset()
+    {
+        _progress = null;
+        _rows = [];
+        _preview = null;
+        _done = null;
+        _error = null;
+        _fileName = null;
+        _fileKey = Guid.NewGuid();
+    }
+}

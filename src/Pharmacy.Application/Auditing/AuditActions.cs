@@ -25,6 +25,7 @@ public static class AuditActions
     public const string ProductCreated = "Catalog.ProductCreated";
     public const string ProductUpdated = "Catalog.ProductUpdated";
     public const string ProductStatusChanged = "Catalog.ProductStatusChanged";
+    public const string ProductsImported = "Catalog.ProductsImported";
     public const string LookupCreated = "Catalog.LookupCreated";
     public const string LookupUpdated = "Catalog.LookupUpdated";
 
@@ -69,7 +70,7 @@ public static class AuditActions
         LoginSucceeded, LoginFailed, LockedOut, Logout, PasswordChanged, SetupCompleted,
         UserCreated, UserUpdated, UserPasswordReset, UserUnlocked,
         RoleCreated, RoleUpdated, RoleDeleted, SettingsUpdated,
-        ProductCreated, ProductUpdated, ProductStatusChanged, LookupCreated, LookupUpdated,
+        ProductCreated, ProductUpdated, ProductStatusChanged, ProductsImported, LookupCreated, LookupUpdated,
         StockOpening, StockAdjusted, StockQuarantined, StockReleased, StockWrittenOff,
         CashShiftOpened, CashShiftClosed, CashShiftForceClosed, CashManualMovement,
         SupplierCreated, SupplierUpdated, PurchaseCreated, PurchaseReturned, ExpenseRecorded, ExpenseReversed, ExpenseCategoryCreated, ExpenseCategoryUpdated, SupplierPaid, SupplierPaymentReversed, SupplierOpeningBalance,

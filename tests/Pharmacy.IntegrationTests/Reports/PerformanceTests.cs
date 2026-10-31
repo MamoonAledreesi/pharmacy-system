@@ -38,6 +38,34 @@ public sealed class PerformanceTests(ITestOutputHelper output) : ReportsTestBase
     }
 
     [Fact]
+    public async Task AnImportOfThreeThousandProducts_FinishesInReasonableTime()
+    {
+        if (!_enabled)
+        {
+            return;
+        }
+
+        var future = DateOnly.FromDateTime(DateTime.Now).AddDays(400);
+        var rows = Enumerable.Range(0, 3000).Select(i => new Pharmacy.Application.Import.ProductImportRow(
+            i + 2, $"دواء {i}", $"Drug {i}", null, $"{i} mg", null, "General medicines", null, "Strip", "Box", 4, 5m, $"B{i:D8}", null, null, true,
+            $"L{i}", future, 10 + i % 50, "Box", 20m, [])).ToArray();
+
+        var watch = Stopwatch.StartNew();
+        var preview = await Services.InScopeAsync(s => s.GetRequiredService<Pharmacy.Application.Import.ProductImportService>().PreviewAsync(rows));
+        var previewMs = watch.Elapsed.TotalMilliseconds;
+        watch.Restart();
+        var result = await Services.InScopeAsync(s => s.GetRequiredService<Pharmacy.Application.Import.ProductImportService>().ImportAsync(rows, Guid.NewGuid(), false));
+        var importMs = watch.Elapsed.TotalMilliseconds;
+
+        output.WriteLine($"Import preview of 3000 rows: {previewMs:F0} ms; import: {importMs:F0} ms");
+        File.WriteAllLines(Path.Combine(AppContext.BaseDirectory, "perf-import.txt"), [$"Import preview of 3000 rows: {previewMs:F0} ms", $"Import of 3000 products with a batch each: {importMs:F0} ms"]);
+        preview.Value.ErrorCount.ShouldBe(0);
+        result.Value.ProductsCreated.ShouldBe(3000);
+        previewMs.ShouldBeLessThan(10_000);
+        importMs.ShouldBeLessThan(240_000);
+    }
+
+    [Fact]
     public async Task TheMainOperations_StayFastOnARealisticVolume()
     {
         if (!_enabled)

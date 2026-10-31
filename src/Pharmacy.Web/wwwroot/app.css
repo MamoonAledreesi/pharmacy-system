@@ -908,3 +908,21 @@ h1:focus {
     font-size: 0.9rem;
     color: var(--mud-palette-text-secondary);
 }
+
+/* A file picker styled as a primary button (the real input is hidden inside the label) */
+.file-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--mud-default-borderradius);
+    color: var(--mud-palette-primary-text);
+    background: var(--mud-palette-primary);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--mud-elevation-2);
+}
+
+.file-button:hover {
+    background: var(--mud-palette-primary-darken);
+}

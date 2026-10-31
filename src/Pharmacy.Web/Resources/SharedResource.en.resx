@@ -3015,4 +3015,271 @@
   <data name="Reconciliation.Check.PurchaseInvoices" xml:space="preserve">
     <value>Purchase invoice totals</value>
   </data>
+  <data name="AuditActions.Catalog.ProductsImported" xml:space="preserve">
+    <value>Products imported from Excel</value>
+  </data>
+  <data name="Import.Button" xml:space="preserve">
+    <value>Import from Excel</value>
+  </data>
+  <data name="Import.Title" xml:space="preserve">
+    <value>Import products and opening stock</value>
+  </data>
+  <data name="Import.UploadTitle" xml:space="preserve">
+    <value>Upload the Excel file</value>
+  </data>
+  <data name="Import.Intro" xml:space="preserve">
+    <value>Download the template, fill one row per product (add more rows with the same product for more batches), then upload it. Nothing is saved until you have seen the check and confirmed.</value>
+  </data>
+  <data name="Import.DownloadTemplate" xml:space="preserve">
+    <value>Download the template</value>
+  </data>
+  <data name="Import.ChooseFile" xml:space="preserve">
+    <value>Choose the Excel file</value>
+  </data>
+  <data name="Import.PreviewTitle" xml:space="preserve">
+    <value>Check before saving</value>
+  </data>
+  <data name="Import.PreviewSummary" xml:space="preserve">
+    <value>{0} new products, {1} existing products, {2} stock batches</value>
+  </data>
+  <data name="Import.ReadyCount" xml:space="preserve">
+    <value>{0} rows ready</value>
+  </data>
+  <data name="Import.ErrorCount" xml:space="preserve">
+    <value>{0} rows with errors</value>
+  </data>
+  <data name="Import.Row" xml:space="preserve">
+    <value>Row</value>
+  </data>
+  <data name="Import.Product" xml:space="preserve">
+    <value>Product</value>
+  </data>
+  <data name="Import.Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Import.Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Import.Status.Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="Import.Status.Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="Import.Status.Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Import.ShownLimit" xml:space="preserve">
+    <value>Only the first {0} rows are shown, rows with problems first.</value>
+  </data>
+  <data name="Import.ImportAll" xml:space="preserve">
+    <value>Import everything</value>
+  </data>
+  <data name="Import.ImportValid" xml:space="preserve">
+    <value>Import the {0} valid rows only</value>
+  </data>
+  <data name="Import.Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Import.Done" xml:space="preserve">
+    <value>Import finished</value>
+  </data>
+  <data name="Import.DoneSummary" xml:space="preserve">
+    <value>{0} products created, {1} existing products, {2} stock batches recorded.</value>
+  </data>
+  <data name="Import.RejectedCount" xml:space="preserve">
+    <value>{0} rows were not imported.</value>
+  </data>
+  <data name="Import.DownloadRejected" xml:space="preserve">
+    <value>Download the rejected rows</value>
+  </data>
+  <data name="Import.OpenProducts" xml:space="preserve">
+    <value>Open the product list</value>
+  </data>
+  <data name="Import.FileTooBig" xml:space="preserve">
+    <value>The file could not be read. Files up to 5 MB are accepted.</value>
+  </data>
+  <data name="Import.ErrorColumn" xml:space="preserve">
+    <value>Why it was rejected</value>
+  </data>
+  <data name="Import.Sheet.Products" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="Import.Sheet.Notes" xml:space="preserve">
+    <value>Instructions</value>
+  </data>
+  <data name="Import.Example.Row1" xml:space="preserve">
+    <value>Amoxil;Amoxil;Amoxicillin;500 mg;GSK;General medicines;Capsules;Strip;Box;4;12.5;6221234567890;6221234567891;10;yes;L2301;2027-06-30;20;Box;30</value>
+  </data>
+  <data name="Import.Example.Row2" xml:space="preserve">
+    <value>Panadol;Panadol;Paracetamol;500 mg;;General medicines;Tablets;Strip;Box;3;8;;;;yes;;;;;</value>
+  </data>
+  <data name="Import.Note.Title" xml:space="preserve">
+    <value>How to fill the sheet</value>
+  </data>
+  <data name="Import.Note.Rows" xml:space="preserve">
+    <value>One row per product, or per batch of a product: repeat the names and strength of the product on each row and change the batch, expiry date, quantity and cost.</value>
+  </data>
+  <data name="Import.Note.Product" xml:space="preserve">
+    <value>Required for a new product: a name (Arabic or English), the category and the base unit. Category, dosage form and units are written by name as they appear in the lists.</value>
+  </data>
+  <data name="Import.Note.Units" xml:space="preserve">
+    <value>The base unit is the smallest unit you sell (strip, tablet). The larger unit is the pack (box) and the next column says how many base units it holds. The selling price is for the base unit; the stock cost is for the unit chosen for the quantity.</value>
+  </data>
+  <data name="Import.Note.Existing" xml:space="preserve">
+    <value>A product that already exists (same barcode, or same names and strength) is never changed; only the stock of its rows is added.</value>
+  </data>
+  <data name="Import.Note.Stock" xml:space="preserve">
+    <value>Opening stock: batch number, expiry date, quantity, the unit of the quantity (empty or the base unit name, or the larger unit name) and the cost of one unit of that chosen unit.</value>
+  </data>
+  <data name="Import.Note.Expiry" xml:space="preserve">
+    <value>Products that track expiry need an expiry date on every stock row. Leave the tracks-expiry column empty to mean yes.</value>
+  </data>
+  <data name="Import.Note.Dates" xml:space="preserve">
+    <value>Dates can be an Excel date, 2027-06-30, 30/06/2027, or month and year such as 06/2027 (the last day of that month). Barcodes keep their leading zeros.</value>
+  </data>
+  <data name="Import.Note.Again" xml:space="preserve">
+    <value>Uploading the same file again is safe: stock is never added twice. Rejected rows can be downloaded, corrected and uploaded again.</value>
+  </data>
+  <data name="Import.Col.NameArabic" xml:space="preserve">
+    <value>Arabic name</value>
+  </data>
+  <data name="Import.Col.NameEnglish" xml:space="preserve">
+    <value>English name</value>
+  </data>
+  <data name="Import.Col.ScientificName" xml:space="preserve">
+    <value>Scientific name</value>
+  </data>
+  <data name="Import.Col.Strength" xml:space="preserve">
+    <value>Strength</value>
+  </data>
+  <data name="Import.Col.Manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="Import.Col.Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Import.Col.DosageForm" xml:space="preserve">
+    <value>Dosage form</value>
+  </data>
+  <data name="Import.Col.BaseUnit" xml:space="preserve">
+    <value>Base unit</value>
+  </data>
+  <data name="Import.Col.LargerUnit" xml:space="preserve">
+    <value>Larger unit</value>
+  </data>
+  <data name="Import.Col.UnitsInLarger" xml:space="preserve">
+    <value>Base units in the larger unit</value>
+  </data>
+  <data name="Import.Col.SellingPrice" xml:space="preserve">
+    <value>Selling price (base unit)</value>
+  </data>
+  <data name="Import.Col.BaseBarcode" xml:space="preserve">
+    <value>Barcode of the base unit</value>
+  </data>
+  <data name="Import.Col.LargerBarcode" xml:space="preserve">
+    <value>Barcode of the larger unit</value>
+  </data>
+  <data name="Import.Col.MinimumStock" xml:space="preserve">
+    <value>Minimum stock</value>
+  </data>
+  <data name="Import.Col.TracksExpiry" xml:space="preserve">
+    <value>Tracks expiry (yes/no)</value>
+  </data>
+  <data name="Import.Col.BatchNumber" xml:space="preserve">
+    <value>Batch number</value>
+  </data>
+  <data name="Import.Col.ExpiryDate" xml:space="preserve">
+    <value>Expiry date</value>
+  </data>
+  <data name="Import.Col.Quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="Import.Col.QuantityUnit" xml:space="preserve">
+    <value>Unit of the quantity</value>
+  </data>
+  <data name="Import.Col.UnitCost" xml:space="preserve">
+    <value>Cost of one unit</value>
+  </data>
+  <data name="Import.Error.FileInvalid" xml:space="preserve">
+    <value>The file is not a valid Excel (.xlsx) file.</value>
+  </data>
+  <data name="Import.Error.NoRows" xml:space="preserve">
+    <value>The file has no data rows.</value>
+  </data>
+  <data name="Import.Error.TooManyRows" xml:space="preserve">
+    <value>The file has too many rows. The limit is {0} rows.</value>
+  </data>
+  <data name="Import.Error.HasErrors" xml:space="preserve">
+    <value>The file has errors. Fix them, or import only the valid rows.</value>
+  </data>
+  <data name="Import.Error.Unreadable" xml:space="preserve">
+    <value>The value in the column {0} cannot be read.</value>
+  </data>
+  <data name="Import.Error.CategoryRequired" xml:space="preserve">
+    <value>The category is required.</value>
+  </data>
+  <data name="Import.Error.UnknownCategory" xml:space="preserve">
+    <value>There is no category named {0}.</value>
+  </data>
+  <data name="Import.Error.UnknownDosageForm" xml:space="preserve">
+    <value>There is no dosage form named {0}.</value>
+  </data>
+  <data name="Import.Error.BaseUnitRequired" xml:space="preserve">
+    <value>The base unit is required.</value>
+  </data>
+  <data name="Import.Error.UnknownUnit" xml:space="preserve">
+    <value>There is no unit named {0}.</value>
+  </data>
+  <data name="Import.Error.LargerUnitNeedsCount" xml:space="preserve">
+    <value>Write how many base units the larger unit holds (2 or more).</value>
+  </data>
+  <data name="Import.Error.LargerUnitSameAsBase" xml:space="preserve">
+    <value>The larger unit must differ from the base unit.</value>
+  </data>
+  <data name="Import.Error.DuplicateBarcodeInFile" xml:space="preserve">
+    <value>The barcode {0} is used by another product in this file.</value>
+  </data>
+  <data name="Import.Error.InconsistentProduct" xml:space="preserve">
+    <value>This row contradicts the first row of the same product (category or units).</value>
+  </data>
+  <data name="Import.Error.QuantityRequired" xml:space="preserve">
+    <value>The quantity must be a number above zero.</value>
+  </data>
+  <data name="Import.Error.UnitCostRequired" xml:space="preserve">
+    <value>The cost is required for stock.</value>
+  </data>
+  <data name="Import.Error.ExpiryRequired" xml:space="preserve">
+    <value>This product needs an expiry date.</value>
+  </data>
+  <data name="Import.Error.UnknownQuantityUnit" xml:space="preserve">
+    <value>The unit {0} of the quantity is neither the base nor the larger unit.</value>
+  </data>
+  <data name="Import.Error.NoLargerUnit" xml:space="preserve">
+    <value>The quantity is in the larger unit but the product has none.</value>
+  </data>
+  <data name="Import.Error.StockRejected" xml:space="preserve">
+    <value>The stock of this row was rejected.</value>
+  </data>
+  <data name="Import.Error.ProductRejected" xml:space="preserve">
+    <value>The product was rejected.</value>
+  </data>
+  <data name="Import.Warning.ProductExists" xml:space="preserve">
+    <value>The product already exists and is not changed.</value>
+  </data>
+  <data name="Import.Warning.MatchedByBarcode" xml:space="preserve">
+    <value>Matched by barcode to an existing product with different names.</value>
+  </data>
+  <data name="Import.Warning.StockIgnored" xml:space="preserve">
+    <value>You may not record opening stock, so the stock of this row is ignored.</value>
+  </data>
+  <data name="Import.Warning.ExpiredBatch" xml:space="preserve">
+    <value>The expiry date has already passed.</value>
+  </data>
+  <data name="Import.Warning.DuplicateBatchInFile" xml:space="preserve">
+    <value>The same batch appears twice in the file; the quantities will be added together.</value>
+  </data>
+  <data name="Import.Progress" xml:space="preserve">
+    <value>Importing... {0} of {1} products</value>
+  </data>
 </root>

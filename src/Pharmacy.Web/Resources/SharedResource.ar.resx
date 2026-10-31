@@ -3015,4 +3015,271 @@
   <data name="Reconciliation.Check.PurchaseInvoices" xml:space="preserve">
     <value>مجاميع فواتير الشراء</value>
   </data>
+  <data name="AuditActions.Catalog.ProductsImported" xml:space="preserve">
+    <value>استيراد منتجات من Excel</value>
+  </data>
+  <data name="Import.Button" xml:space="preserve">
+    <value>استيراد من Excel</value>
+  </data>
+  <data name="Import.Title" xml:space="preserve">
+    <value>استيراد المنتجات والمخزون الافتتاحي</value>
+  </data>
+  <data name="Import.UploadTitle" xml:space="preserve">
+    <value>رفع ملف Excel</value>
+  </data>
+  <data name="Import.Intro" xml:space="preserve">
+    <value>نزّل القالب واملأ سطراً لكل منتج (وسطراً إضافياً بنفس المنتج لكل دفعة أخرى) ثم ارفعه. لا يُحفظ شيء قبل أن ترى الفحص وتؤكد.</value>
+  </data>
+  <data name="Import.DownloadTemplate" xml:space="preserve">
+    <value>تنزيل القالب</value>
+  </data>
+  <data name="Import.ChooseFile" xml:space="preserve">
+    <value>اختيار ملف Excel</value>
+  </data>
+  <data name="Import.PreviewTitle" xml:space="preserve">
+    <value>الفحص قبل الحفظ</value>
+  </data>
+  <data name="Import.PreviewSummary" xml:space="preserve">
+    <value>{0} منتج جديد، {1} منتج موجود، {2} دفعة مخزون</value>
+  </data>
+  <data name="Import.ReadyCount" xml:space="preserve">
+    <value>{0} سطر جاهز</value>
+  </data>
+  <data name="Import.ErrorCount" xml:space="preserve">
+    <value>{0} سطر فيه أخطاء</value>
+  </data>
+  <data name="Import.Row" xml:space="preserve">
+    <value>السطر</value>
+  </data>
+  <data name="Import.Product" xml:space="preserve">
+    <value>المنتج</value>
+  </data>
+  <data name="Import.Status" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="Import.Details" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="Import.Status.Ready" xml:space="preserve">
+    <value>جاهز</value>
+  </data>
+  <data name="Import.Status.Warning" xml:space="preserve">
+    <value>تنبيه</value>
+  </data>
+  <data name="Import.Status.Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="Import.ShownLimit" xml:space="preserve">
+    <value>تُعرض أول {0} سطر فقط، والأسطر التي فيها مشاكل أولاً.</value>
+  </data>
+  <data name="Import.ImportAll" xml:space="preserve">
+    <value>استيراد الكل</value>
+  </data>
+  <data name="Import.ImportValid" xml:space="preserve">
+    <value>استيراد الأسطر السليمة فقط ({0})</value>
+  </data>
+  <data name="Import.Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="Import.Done" xml:space="preserve">
+    <value>اكتمل الاستيراد</value>
+  </data>
+  <data name="Import.DoneSummary" xml:space="preserve">
+    <value>أُنشئ {0} منتج، {1} منتج موجود، وسُجّلت {2} دفعة مخزون.</value>
+  </data>
+  <data name="Import.RejectedCount" xml:space="preserve">
+    <value>لم يُستورد {0} سطر.</value>
+  </data>
+  <data name="Import.DownloadRejected" xml:space="preserve">
+    <value>تنزيل الأسطر المرفوضة</value>
+  </data>
+  <data name="Import.OpenProducts" xml:space="preserve">
+    <value>فتح قائمة المنتجات</value>
+  </data>
+  <data name="Import.FileTooBig" xml:space="preserve">
+    <value>تعذّرت قراءة الملف. الحد الأقصى 5 ميجابايت.</value>
+  </data>
+  <data name="Import.ErrorColumn" xml:space="preserve">
+    <value>سبب الرفض</value>
+  </data>
+  <data name="Import.Sheet.Products" xml:space="preserve">
+    <value>المنتجات</value>
+  </data>
+  <data name="Import.Sheet.Notes" xml:space="preserve">
+    <value>التعليمات</value>
+  </data>
+  <data name="Import.Example.Row1" xml:space="preserve">
+    <value>أموكسيل;Amoxil;Amoxicillin;500 mg;GSK;أدوية عامة;كبسولات;شريط;علبة;4;12.5;6221234567890;6221234567891;10;نعم;L2301;2027-06-30;20;علبة;30</value>
+  </data>
+  <data name="Import.Example.Row2" xml:space="preserve">
+    <value>بنادول;Panadol;Paracetamol;500 mg;;أدوية عامة;أقراص;شريط;علبة;3;8;;;;نعم;;;;;</value>
+  </data>
+  <data name="Import.Note.Title" xml:space="preserve">
+    <value>كيف تملأ الملف</value>
+  </data>
+  <data name="Import.Note.Rows" xml:space="preserve">
+    <value>سطر لكل منتج، أو لكل دفعة من المنتج: كرّر اسم المنتج والتركيز في كل سطر وغيّر رقم الدفعة وتاريخ الانتهاء والكمية والتكلفة.</value>
+  </data>
+  <data name="Import.Note.Product" xml:space="preserve">
+    <value>المطلوب للمنتج الجديد: اسم (عربي أو إنجليزي) والفئة والوحدة الأساسية. الفئة والشكل الدوائي والوحدات تُكتب بأسمائها كما في القوائم.</value>
+  </data>
+  <data name="Import.Note.Units" xml:space="preserve">
+    <value>الوحدة الأساسية أصغر وحدة تبيعها (شريط، حبة). الوحدة الأكبر هي العبوة (علبة)، والعمود التالي يحدد كم وحدة أساسية فيها. سعر البيع للوحدة الأساسية، وتكلفة المخزون للوحدة المختارة للكمية.</value>
+  </data>
+  <data name="Import.Note.Existing" xml:space="preserve">
+    <value>المنتج الموجود (نفس الباركود أو نفس الأسماء والتركيز) لا يُعدَّل أبداً، ويُضاف فقط مخزون أسطره.</value>
+  </data>
+  <data name="Import.Note.Stock" xml:space="preserve">
+    <value>المخزون الافتتاحي: رقم الدفعة وتاريخ الانتهاء والكمية ووحدة الكمية (فارغة أو اسم الوحدة الأساسية، أو اسم الوحدة الأكبر) وتكلفة وحدة واحدة من الوحدة المختارة.</value>
+  </data>
+  <data name="Import.Note.Expiry" xml:space="preserve">
+    <value>المنتج الذي له صلاحية يحتاج تاريخ انتهاء في كل سطر مخزون. اترك عمود الصلاحية فارغاً ويُعدّ نعم.</value>
+  </data>
+  <data name="Import.Note.Dates" xml:space="preserve">
+    <value>التاريخ يمكن أن يكون تاريخ Excel أو 2027-06-30 أو 30/06/2027 أو شهراً وسنة مثل 06/2027 (آخر يوم في الشهر). الباركود يحتفظ بالأصفار في أوله.</value>
+  </data>
+  <data name="Import.Note.Again" xml:space="preserve">
+    <value>رفع الملف نفسه مرة أخرى آمن: لا يُضاف المخزون مرتين. يمكنك تنزيل الأسطر المرفوضة وتصحيحها ورفعها من جديد.</value>
+  </data>
+  <data name="Import.Col.NameArabic" xml:space="preserve">
+    <value>الاسم العربي</value>
+  </data>
+  <data name="Import.Col.NameEnglish" xml:space="preserve">
+    <value>الاسم الإنجليزي</value>
+  </data>
+  <data name="Import.Col.ScientificName" xml:space="preserve">
+    <value>الاسم العلمي</value>
+  </data>
+  <data name="Import.Col.Strength" xml:space="preserve">
+    <value>التركيز</value>
+  </data>
+  <data name="Import.Col.Manufacturer" xml:space="preserve">
+    <value>الشركة</value>
+  </data>
+  <data name="Import.Col.Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="Import.Col.DosageForm" xml:space="preserve">
+    <value>الشكل الدوائي</value>
+  </data>
+  <data name="Import.Col.BaseUnit" xml:space="preserve">
+    <value>الوحدة الأساسية</value>
+  </data>
+  <data name="Import.Col.LargerUnit" xml:space="preserve">
+    <value>الوحدة الأكبر</value>
+  </data>
+  <data name="Import.Col.UnitsInLarger" xml:space="preserve">
+    <value>عدد الأساسية في الأكبر</value>
+  </data>
+  <data name="Import.Col.SellingPrice" xml:space="preserve">
+    <value>سعر البيع (للأساسية)</value>
+  </data>
+  <data name="Import.Col.BaseBarcode" xml:space="preserve">
+    <value>باركود الأساسية</value>
+  </data>
+  <data name="Import.Col.LargerBarcode" xml:space="preserve">
+    <value>باركود الأكبر</value>
+  </data>
+  <data name="Import.Col.MinimumStock" xml:space="preserve">
+    <value>الحد الأدنى للمخزون</value>
+  </data>
+  <data name="Import.Col.TracksExpiry" xml:space="preserve">
+    <value>له صلاحية (نعم/لا)</value>
+  </data>
+  <data name="Import.Col.BatchNumber" xml:space="preserve">
+    <value>رقم الدفعة</value>
+  </data>
+  <data name="Import.Col.ExpiryDate" xml:space="preserve">
+    <value>تاريخ الانتهاء</value>
+  </data>
+  <data name="Import.Col.Quantity" xml:space="preserve">
+    <value>الكمية</value>
+  </data>
+  <data name="Import.Col.QuantityUnit" xml:space="preserve">
+    <value>وحدة الكمية</value>
+  </data>
+  <data name="Import.Col.UnitCost" xml:space="preserve">
+    <value>تكلفة الوحدة</value>
+  </data>
+  <data name="Import.Error.FileInvalid" xml:space="preserve">
+    <value>الملف ليس ملف Excel (.xlsx) صالحاً.</value>
+  </data>
+  <data name="Import.Error.NoRows" xml:space="preserve">
+    <value>الملف لا يحتوي أسطر بيانات.</value>
+  </data>
+  <data name="Import.Error.TooManyRows" xml:space="preserve">
+    <value>عدد الأسطر كبير جداً. الحد الأقصى {0} سطر.</value>
+  </data>
+  <data name="Import.Error.HasErrors" xml:space="preserve">
+    <value>في الملف أخطاء. صحّحها أو استورد الأسطر السليمة فقط.</value>
+  </data>
+  <data name="Import.Error.Unreadable" xml:space="preserve">
+    <value>القيمة في عمود {0} غير مقروءة.</value>
+  </data>
+  <data name="Import.Error.CategoryRequired" xml:space="preserve">
+    <value>الفئة مطلوبة.</value>
+  </data>
+  <data name="Import.Error.UnknownCategory" xml:space="preserve">
+    <value>لا توجد فئة باسم {0}.</value>
+  </data>
+  <data name="Import.Error.UnknownDosageForm" xml:space="preserve">
+    <value>لا يوجد شكل دوائي باسم {0}.</value>
+  </data>
+  <data name="Import.Error.BaseUnitRequired" xml:space="preserve">
+    <value>الوحدة الأساسية مطلوبة.</value>
+  </data>
+  <data name="Import.Error.UnknownUnit" xml:space="preserve">
+    <value>لا توجد وحدة باسم {0}.</value>
+  </data>
+  <data name="Import.Error.LargerUnitNeedsCount" xml:space="preserve">
+    <value>اكتب كم وحدة أساسية في الوحدة الأكبر (2 فأكثر).</value>
+  </data>
+  <data name="Import.Error.LargerUnitSameAsBase" xml:space="preserve">
+    <value>يجب أن تختلف الوحدة الأكبر عن الأساسية.</value>
+  </data>
+  <data name="Import.Error.DuplicateBarcodeInFile" xml:space="preserve">
+    <value>الباركود {0} مستخدم لمنتج آخر في هذا الملف.</value>
+  </data>
+  <data name="Import.Error.InconsistentProduct" xml:space="preserve">
+    <value>هذا السطر يخالف السطر الأول لنفس المنتج (الفئة أو الوحدات).</value>
+  </data>
+  <data name="Import.Error.QuantityRequired" xml:space="preserve">
+    <value>الكمية يجب أن تكون رقماً أكبر من صفر.</value>
+  </data>
+  <data name="Import.Error.UnitCostRequired" xml:space="preserve">
+    <value>التكلفة مطلوبة للمخزون.</value>
+  </data>
+  <data name="Import.Error.ExpiryRequired" xml:space="preserve">
+    <value>هذا المنتج يحتاج تاريخ انتهاء.</value>
+  </data>
+  <data name="Import.Error.UnknownQuantityUnit" xml:space="preserve">
+    <value>وحدة الكمية {0} ليست الأساسية ولا الأكبر.</value>
+  </data>
+  <data name="Import.Error.NoLargerUnit" xml:space="preserve">
+    <value>الكمية بالوحدة الأكبر لكن المنتج ليس له وحدة أكبر.</value>
+  </data>
+  <data name="Import.Error.StockRejected" xml:space="preserve">
+    <value>رُفض مخزون هذا السطر.</value>
+  </data>
+  <data name="Import.Error.ProductRejected" xml:space="preserve">
+    <value>رُفض المنتج.</value>
+  </data>
+  <data name="Import.Warning.ProductExists" xml:space="preserve">
+    <value>المنتج موجود ولن يُعدَّل.</value>
+  </data>
+  <data name="Import.Warning.MatchedByBarcode" xml:space="preserve">
+    <value>طابق منتجاً موجوداً بالباركود رغم اختلاف الاسم.</value>
+  </data>
+  <data name="Import.Warning.StockIgnored" xml:space="preserve">
+    <value>لا تملك صلاحية تسجيل المخزون الافتتاحي، فيُتجاهل مخزون هذا السطر.</value>
+  </data>
+  <data name="Import.Warning.ExpiredBatch" xml:space="preserve">
+    <value>تاريخ الانتهاء مضى.</value>
+  </data>
+  <data name="Import.Warning.DuplicateBatchInFile" xml:space="preserve">
+    <value>الدفعة نفسها مكررة في الملف، وستُجمع كمياتها.</value>
+  </data>
+  <data name="Import.Progress" xml:space="preserve">
+    <value>جارٍ الاستيراد... {0} من {1} منتج</value>
+  </data>
 </root>

@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pharmacy.Application.Abstractions;
+using Pharmacy.Application.Import;
 using Pharmacy.Application.Reports;
 using Pharmacy.Application.Sales;
 using Pharmacy.Application.Users;
 using Pharmacy.Infrastructure.Identity;
+using Pharmacy.Infrastructure.Import;
 using Pharmacy.Infrastructure.Persistence;
 using Pharmacy.Infrastructure.Reporting;
 
@@ -34,6 +36,8 @@ public static class DependencyInjection
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ISupervisorVerifier, SupervisorVerifier>();
         services.AddSingleton<IReportExporter, ReportExporter>();
+        services.AddSingleton<IProductSheetReader, ProductSheetReader>();
+        services.AddSingleton<IProductSheetWriter, ProductSheetWriter>();
 
         return services;
     }

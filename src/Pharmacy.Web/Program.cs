@@ -12,6 +12,7 @@ using Pharmacy.Infrastructure.Persistence;
 using Pharmacy.Web.Authentication;
 using Pharmacy.Web.Common;
 using Pharmacy.Web.Components;
+using Pharmacy.Web.Import;
 using Pharmacy.Web.Localization;
 using Pharmacy.Web.Reports;
 using Serilog;
@@ -81,6 +82,7 @@ try
     builder.Services.AddScoped<SignInService>();
     builder.Services.AddScoped<ServiceRunner>();
     builder.Services.AddScoped<ReportDocumentBuilder>();
+    builder.Services.AddScoped<ImportSheets>();
     builder.Services.AddSingleton<SetupState>();
 
     var app = builder.Build();
@@ -112,6 +114,7 @@ try
     app.MapCultureEndpoints();
     app.MapAccountEndpoints();
     app.MapReportEndpoints();
+    app.MapImportEndpoints();
     app.MapHealthChecks("/health");
     app.MapRazorComponents<App>()
         .AddInteractiveServerRenderMode();

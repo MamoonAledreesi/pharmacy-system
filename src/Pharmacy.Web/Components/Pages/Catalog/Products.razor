@@ -9,6 +9,11 @@
     <MudText Typo="Typo.h4">@L["Nav.ProductList"]</MudText>
     <MudSpacer />
     <AuthorizeView Policy="@Permissions.CatalogManage">
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.UploadFile" Href="catalog/import" data-test="import-products">
+            @L["Import.Button"]
+        </MudButton>
+    </AuthorizeView>
+    <AuthorizeView Policy="@Permissions.CatalogManage">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Href="catalog/products/new">
             @L["Products.Add"]
         </MudButton>
