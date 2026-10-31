@@ -59,5 +59,5 @@ dotnet test
 Built in 14 sequential tasks, each going through analysis, plan, approval, implementation, tests and review. AI-assisted with Claude Code.
 
 ## الترخيص | License
-لم يُحدَّد ترخيص بعد؛ حقوق الاستخدام والنسخ محفوظة لصاحب المشروع إلى أن يُضاف ملف `LICENSE`.
-No license has been chosen yet; all rights are reserved until a `LICENSE` file is added.
+[MIT](LICENSE): يحق لأي شخص استخدام الكود وتعديله وتوزيعه، بشرط إبقاء اسم المؤلف وملف الترخيص، وبلا أي ضمان.
+Released under the [MIT License](LICENSE).
